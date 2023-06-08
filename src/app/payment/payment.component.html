@@ -1,0 +1,76 @@
+<app-hourglass style="text-align: center"
+               [message]="message"
+               [modal]="modal" ></app-hourglass>
+
+<div *ngIf="message=='' && buy_method=='crypto' && money && wallet_provider">
+    <div *ngIf="money" style="margin: 15px;">
+        <div style="margin: 15px;" class="mat-subheading-1">
+            Coût de l'opération: {{price}} {{money!.unity}} + Frais de service
+        </div>
+        <div *ngIf="balance>0" style="font-size: small">Vous avez {{balance/1e18 | number:"1.0-1"}} {{money!.unity}}</div>
+    </div>
+
+    <div *ngIf="balance<price && merchant && merchant.wallet && bank" style="margin-top: 20px;">
+        <div class="color-accent">Votre solde est insuffisant</div>
+
+        <button mat-raised-button color="primary"
+                style="margin: 20px;"
+                (click)="open_bank()">
+            Acquérir des {{money!.unity}}
+        </button>
+    </div>
+
+    <button type="button" mat-raised-button color="primary"
+            *ngIf="qrcode_buy_token.length==0"
+            style="margin: 20px;"
+            (click)="start_payment(price)">
+        Payer {{price}} {{money!.unity}}
+    </button>
+</div>
+
+
+<div *ngIf="message=='' && buy_method=='fiat' && merchant">
+    <div style="margin: 15px;" class="mat-subheading-1">
+        {{fiat_price}} {{merchant!.currency}}
+    </div>
+
+    <google-pay-button
+            environment="TEST"
+            buttonType="buy"
+            buttonColor="black"
+            [existingPaymentMethodRequired]="false"
+            [paymentRequest]="payment_request"
+            [clickCallback]="onClickPreventDefault"
+            [loadPaymentDataCallback]="onLoadPaymentData"
+            [readyToPayChangeCallback]="onReadyToPayChange"
+            (cancel)="cancel_fiat_payment()"
+            (error)="error_fiat_event($event)"
+    >
+    </google-pay-button>
+</div>
+
+<div *ngIf="qrcode_buy_token.length==0">
+    <div *ngIf="billing_to.length>0">
+        <table style="width:100%;">
+            <tr>
+                <td>Facture envoyée à<br>{{billing_to}}</td>
+                <td style="width: 30px;" class="color-accent"><mat-icon style="font-size: x-small" (click)="change_billing_address()">edit</mat-icon></td>
+            </tr>
+        </table>
+    </div>
+    <button type="button" mat-raised-button
+            style="margin-top: 20px;min-width:120px;"
+            *ngIf="billing_to.length==0"
+            (click)="change_billing_address()">
+        Recevoir<br>une facture
+    </button>
+
+    <button type="button" mat-raised-button
+            style="margin-top: 20px;min-width:120px;"
+            (click)="change_payment_mode()">
+        Autre mode<br>de paiement
+    </button>
+</div>
+
+
+

@@ -22,10 +22,34 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/CNAME",
+              "src/404.html",
+              "src/manifest.webmanifest",
+              "src/manifest.webmanifest"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              {
+                "input": "src/nfluent-dark.scss",
+                "bundleName": "nfluent-dark",
+                "inject": false
+              },
+              {
+                "input": "src/nfluent-yellow.scss",
+                "bundleName": "nfluent-yellow",
+                "inject": false
+              },
+              {
+                "input": "src/nfluent.scss",
+                "bundleName": "nfluent",
+                "inject": false
+              },
+              {
+                "input": "src/nfluent-mvx.scss",
+                "bundleName": "nfluent-mvx",
+                "inject": false
+              }
             ],
             "scripts": []
           },
@@ -34,13 +58,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "5000kb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "20kb",
+                  "maximumError": "40kb"
                 }
               ],
               "outputHashing": "all"
@@ -84,7 +108,8 @@
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.webmanifest"
             ],
             "styles": [
               "src/styles.css"
@@ -94,5 +119,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "db361fe4-7d9e-4776-8afb-a6fbada20320"
   }
 }

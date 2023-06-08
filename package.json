@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --live-reload --port 4200",
     "build": "ng build",
+    "deploy": "ng build --aot --output-hashing=none --source-map=false --optimization=true --configuration production && gh-pages -d ./dist --repo https://github.com/f80dev/NFTShortener.git -f -t true -b gh-pages -m \"update from gh-pages\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -20,7 +21,22 @@
     "@angular/router": "^16.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.13.0"
+    "zone.js": "~0.13.0",
+
+    "@abacritt/angularx-social-login": "1.2.5",
+   
+    "@angular/cdk": "16.0.0",
+ 
+    "@angular/material": "16.0.0",
+
+    "@angular/service-worker": "~16.0.0",
+    "@google-pay/button-angular": "^3.0.8",
+    "ng-navigator-share": "1.0.4",
+    "@multiversx/sdk-core": "^12.1.1",
+    "@multiversx/sdk-extension-provider": "^2.0.7",
+    "@multiversx/sdk-network-providers": "^1.4.0",
+    "@multiversx/sdk-wallet-connect-provider": "^3.2.1",
+    "@multiversx/sdk-web-wallet-provider": "^2.4.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.0.2",
