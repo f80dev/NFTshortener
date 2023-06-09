@@ -3,6 +3,7 @@ xcopy /f /y ..\NFTCalvi\src\app\splash\*.* src\app\splash\
 xcopy /f /y ..\NFTCalvi\src\app\input\*.* src\app\input\
 xcopy /f /y ..\NFTCalvi\src\app\signature\*.* src\app\signature\
 xcopy /f /y ..\NFTCalvi\src\app\payment\*.* src\app\payment\
+xcopy /f /y ..\NFTCalvi\src\app\autovalidator\*.* src\app\autovalidator\
 xcopy /f /y ..\NFTCalvi\src\app\faqs\*.* src\app\faqs\
 xcopy /f /y ..\NFTCalvi\src\app\about\*.* src\app\about\
 xcopy /f /y ..\NFTCalvi\src\app\prompt\*.* src\app\prompt\

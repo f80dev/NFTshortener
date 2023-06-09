@@ -1,0 +1,112 @@
+<div class="mainform">
+	<h2>NFluent URL Shortener</h2>
+	<div style="display: inline-block;max-width: 650px;width: 90%;">
+		<app-input label="Redirection" [value]="redirect" (valueChange)="redirect=$event"
+		           help="saisissez votre url de rediretion"></app-input>
+
+		<h3>Critères d'éliligibilités</h3>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>Possèder un NFT/SFT</mat-expansion-panel-header>
+
+			<app-input label="Réseau" [value]="network" (valueChange)="network=$event"
+			           value_field="value"
+			           [options]="networks"
+			           help="saisissez votre url de rediretion"></app-input>
+
+			<div style="width: 100%;display:flex;justify-content: stretch;" *ngIf="network">
+
+				<app-input label="Rechercher une collection" [value]="query_collection"
+				            style="width: 80%;"
+				           (valueChange)="query_collection=$event"
+				           label_button="Chercher"
+				           (validate)="run_query($event)"
+				           help="saisissez votre url de rediretion"></app-input>
+
+				<button mat-raised-button style="margin:10px;" (click)="open_gallery()">xSpotLight</button>
+
+
+
+			</div>
+			<app-hourglass [message]="message"></app-hourglass>
+			<br>
+
+			<div style="width: 100%;display:flex;justify-content: stretch;" *ngIf="collections.length>0">
+				<app-input label="Sélectionner une collection" [options]="collections"
+				           style="width:60%"
+				           [value]="collection" (valueChange)="collection=$event;get_first_nft()"></app-input>
+
+				<app-input value_type="number" [value]="min_required" (valueChange)="min_required=$event"
+				           label="Quantité minimum requise"></app-input>
+
+
+
+			</div>
+
+
+			<div *ngIf="nft">
+				<br>
+				Le premier NFT de cette collection<br>
+				<img class="mat-elevation-z6" [src]="nft.visual" style="width:150px;margin:20px;">
+				<br><br>
+			</div>
+
+			<div style="width: 100%;display:flex;justify-content: stretch;" *ngIf="collections.length>0">
+				<app-input label="Lien pour aquérir un NFT"
+				           style="width: 80%;"
+				           [value]="store" (valueChange)="store=$event"
+				           help="URL de la boutique"></app-input>
+
+				<button mat-raised-button style="margin:10px;" (click)="open_store()">Voir</button>
+
+			</div>
+
+
+		</mat-expansion-panel>
+
+
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>Authentification</mat-expansion-panel-header>
+			<div *ngIf="network.indexOf('elrond')>-1" style="width: 100;text-align: left;">
+				<mat-slide-toggle [(ngModel)]="connexion.wallet_connect">Wallet Connect</mat-slide-toggle><br><br>
+				<mat-slide-toggle [(ngModel)]="connexion.extension_wallet">Defi Wallet Extension</mat-slide-toggle>
+			</div>
+
+		</mat-expansion-panel>
+
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>Présentation</mat-expansion-panel-header>
+			<app-input label="Message d'acceuil"
+			           [value]="messages.intro" (valueChange)="messages.intro=$event"
+			           help=""></app-input>
+
+			<app-input label="Message en cas d'échec"
+			           [value]="messages.fail" (valueChange)="messages.fail=$event"
+			           help=""></app-input>
+
+			<app-input label="Style (CSS) applicable à l'écran"
+			           [value]="style" (valueChange)="style=$event"
+			           help=""></app-input>
+
+
+
+		</mat-expansion-panel>
+
+
+		<button mat-raised-button color="primary"
+		        *ngIf="url.length==0"
+		        (click)="create_link()">Créer le lien</button>
+
+		<div *ngIf="url.length>0">
+			<h4>{{url}}</h4>
+
+			<button mat-raised-button (click)="share_link()">Partager</button>
+			<button mat-raised-button (click)="reset()">Nouveau</button>
+			<button mat-raised-button (click)="open_link()">Tester</button>
+
+		</div>
+
+
+	</div>
+
+
+</div>

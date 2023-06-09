@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve --live-reload --port 4200",
     "build": "ng build",
-    "deploy": "ng build --aot --output-hashing=none --source-map=false --optimization=true --configuration production && gh-pages -d ./dist --repo https://github.com/f80dev/NFTShortener.git -f -t true -b gh-pages -m \"update from gh-pages\"",
+    "deploy": "ng build --aot --output-hashing=none --source-map=false --optimization=true --configuration production && gh-pages -d ./dist --repo https://github.com/f80dev/NFTshortener.git -f -t true -b gh-pages -m \"update from gh-pages\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -22,13 +22,13 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0",
-
     "@abacritt/angularx-social-login": "1.2.5",
-   
     "@angular/cdk": "16.0.0",
- 
     "@angular/material": "16.0.0",
-
+    "ng-gallery": "^8.0.3",
+    "ngx-socket-io": "^4.3.1",
+    "ngx-webcam": "^0.4.1",
+    "jsqr": "1.4.0",
     "@angular/service-worker": "~16.0.0",
     "@google-pay/button-angular": "^3.0.8",
     "ng-navigator-share": "1.0.4",

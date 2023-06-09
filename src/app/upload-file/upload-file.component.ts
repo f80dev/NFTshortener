@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {showMessage} from "../../tools";
 import {MAX_FILE_SIZE} from "../../definitions";
 

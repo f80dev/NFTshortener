@@ -1,0 +1,15 @@
+<div class="mainform">
+	<br>
+	<div style="max-width: 350px;display: inline-block;" *ngIf="messages && collection && network">
+		<app-autovalidator
+				validator_name="leblognfluent"
+				[collections]="[collection]"
+				(cancel)="_location.back()"
+				[network]="network"
+				style="margin-top: 10px;"
+				[title]="messages.intro"
+				(fail)="fail($event)"
+				(validate)="authent($event)"></app-autovalidator>
+	</div>
+
+</div>

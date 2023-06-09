@@ -1117,4 +1117,8 @@ export class NetworkService implements OnInit {
     canvas(svg: string,width="100%",height="100%") {
         return this._get("canvas/","svg="+encodeURIComponent(svg)+"&width="+width+"&height="+height);
     }
+
+    create_short_link(body:any) {
+        return this._post("short_link/","",body)
+    }
 }

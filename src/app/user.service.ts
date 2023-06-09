@@ -5,6 +5,7 @@ import {$$, CryptoKey, detect_network, isLocal} from "../tools";
 import {NetworkService} from "./network.service";
 import {Collection} from "../operation";
 import {Subject} from "rxjs";
+import {environment} from "../environments/environment";
 import {Merchant} from "./payment/payment.component";
 
 export interface UserProfil {
