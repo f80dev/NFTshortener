@@ -6,42 +6,22 @@ import {newCryptoKey} from "../tools";
 
 export const environment = {
     production: true,
-    forum:"",
+    forum:"https://discord.gg/BfC2E2ent",
     mail:"contact@nfluent.io",
-    version: "dev",
+    version: "0.1dev",
+    faqs:"{{domain_appli}}/assets/faqs.yaml",
+    appname:"NFlux",
+    networks:"elrond-devnet,elrond-mainnet",
+    visual:"./assets/coffre.jpg",
+    claim:"Valoriser vos contenus en quelques clics",
+
     server:"https://api.nfluent.io:4242",
-    appname:"NFT live",
-    splash_visual:"./assets/forge.jpg",
-    claim:"Transformer vos photos en NFT instantanément",
-    appli:"https://nftlive.nfluent.io",
-    wallet:"https://wallet.nfluent.io",
+    appli:"https://s.f80.fr",
     website:"https://nfluent.io",
-
-    stockage:{
-        stockage_document: "infura",
-        stockage:"gnftstorage",
-    },
-
-    nftlive:{
-        claim:"Transformer vos photos en NFT instantanément",
-        crypto_price:1,
-        fiat_price:0.5,
-        network:"elrond-devnet",
-        miner_key:"dan: Z0FBQUFBQmtJVXd6UTNFdE9sUzQ4djhwdjEzZ0NzSnF3cG5odXpyLTVGRURpUFJoU3V5YTZHbzFJMC1QVkNPbFpkV2I0TkVBcDVfNHVKWVNqMHo3UkxVc0QwRjRzVTIwbHA2Q0pGWnFXdWhqTThYSTJOdjhpSkhjZnZjMzZ2RDFORm84b0J6MDMwbDUyQ0JFMzNwemIxTlc4b0UxcTdXOXF5RDREYU5TTl9lbVMzV18zYWpmMkp1ZFpPcEw4N1pwVUVzVTc2NUVBTmFoZGJ6SldSMko3bHNfSnd4MEctbF9HWnVORmJIeTFneGppSGU0d0FSNnZjeWswelE5QkFoaWRqWktQb09SUGxxRXhOSFRxQUdxbmVEV0s4Tk83QlJSMUJSRzlfakhlSW1leEk1MmVVV3V6dFZfb1JrT0VhY3FrMzVCM3QxNDBXZTc3X1VvRXNJWFBGUmtadkZlSG1WQVVBPT0=",
-        collection: "SEMICOLL-9cf014",
-        royalties: 0
-    },
-
-    bank:{
-        miner: newCryptoKey("","","","nfluent: Z0FBQUFBQmtYUjJVbS1Uc0lpa2FTR2F0SnF4LW1HUHIzbHFKN2hCVmRPN3NRR1R3Wk4tUnhfcUxqUE9IQVdObzMxMHgtazhrT1hpWXVndENZallGNnI1Q2RTLVQ1N2d0TEQ2dHNmVlByV3B0RlR3SUMxejhKMHZUeVJ3NHl6dnNFNEIyZWk2eGZsS1hWU2FuQnljcGRDUEh4WFhSMTBRTFFLdHkxeTJuUjZxYWRRc1dVN2FqYlZzPQ=="),
-        title:"Bienvenu a la banque des NFluCoin",
-        refund:5,
-        token:"NFLUCOIN-4921ed",
-        network:"elrond-devnet",
-        limit: 10,
-        histo:"db-server-nfluent",
-    },
-
+    style:"nfluent-dark.css",
+    background:"./assets/wood.jpg",
+    logo:"./assets/icons/icon_nfluent_256.png",
+    default_bank:"https://faucet.nfluent.io",
 
     merchant:{
         id:"BCR2DN4TYD4Z5XCR",
@@ -59,6 +39,22 @@ export const environment = {
                 title:"La banque de NFluent",
                 refund: 5
             }
+    },
+
+    dictionnary: {
+        "en": {
+            "Délivrer un message":"Show a message",
+            "Eliligibilités: Possèder un NFT/SFT": "",
+            "Lien a raccourcir": "Link to short",
+            "Nom d'une collection": "Collection name",
+            "Sélectionner une collection": "Select a collection",
+            "Chercher": "Find",
+            "Réseau": "Network",
+            "Coller":"Paste",
+            "Le premier NFT de cette collection": "First NFT of this collection",
+            "Créer le lien":"Build the link",
+            "Lien pour acquérir un NFT":"Link to buy the required NFT"
+        }
     }
 };
 

@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {NavigationEnd, Router} from "@angular/router";
+
+declare const gtag: Function;
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'NFTshortener';
+  title = 'NGate';
+  constructor(
+      public router:Router
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        gtag('config', 'G-EJXLHTBQS1', { 'page_path': event.urlAfterRedirects });
+      }
+    })
+
+  }
 }

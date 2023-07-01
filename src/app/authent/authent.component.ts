@@ -1,5 +1,5 @@
 //Version 0.1
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NetworkService} from "../network.service";
 import {$$, isEmail, isLocal, now, setParams, showError, showMessage} from "../../tools";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -11,9 +11,11 @@ import {Connexion, Operation} from "../../operation";
 import {ADDR_ADMIN} from "../../definitions";
 import {DeviceService} from "../device.service";
 import { WalletConnectV2Provider } from "@multiversx/sdk-wallet-connect-provider";
+
 import { ExtensionProvider } from "@multiversx/sdk-extension-provider";
 import {WALLET_PROVIDER_DEVNET, WALLET_PROVIDER_MAINNET, WalletProvider} from "@multiversx/sdk-web-wallet-provider/out";
 import {Socket} from "ngx-socket-io";
+import {EvmWalletServiceService} from "../evm-wallet-service.service";
 
 //Installation de @multiversx/sdk-wallet-connect-provider via yarn add @multiversx/sdk-wallet-connect-provider
 
@@ -22,7 +24,7 @@ import {Socket} from "ngx-socket-io";
   templateUrl: './authent.component.html',
   styleUrls: ['./authent.component.css']
 })
-export class AuthentComponent implements OnInit {
+export class AuthentComponent implements OnInit,OnChanges {
 
   @Input() intro_message:string="";
   @Input() network:string="elrond-devnet";
@@ -43,7 +45,7 @@ export class AuthentComponent implements OnInit {
   //@Output('init_wallet') init_wallet: EventEmitter<{ provider:any,address:string }>=new EventEmitter();
 
   @Input() showAccesCode=false;         //Code secret d'accès (réservé)
-  @Input() showCancel=true;         //Proposer le bouton d'annulation
+  @Input() showCancel=false;         //Proposer le bouton d'annulation
   @Input() showWebcam=false;            //utilisation du QRCode dynamique du wallet nFluent
   @Input() showDynamicToken=false;      //Code dynamique utilisable en copié collé (a priori pas d'usage)
   @Input() use_cookie: boolean = false;
@@ -89,17 +91,26 @@ export class AuthentComponent implements OnInit {
       public routes:ActivatedRoute,
       public device:DeviceService,
       public socialAuthService: SocialAuthService,
-      public toast:MatSnackBar
+      public toast:MatSnackBar,
+      public evmwalletservice:EvmWalletServiceService
   ) {
 
-    const callbacks:any ={
-      onClientLogin: async ()=> {
-        this.address=await this.provider.getAddress();
-      },
-      onClientLogout: ()=> {},
+    if(this.network.indexOf("elrond")>-1){
+      const callbacks:any ={
+        onClientLogin: async ()=> {
+          this.address=await this.provider.getAddress();
+        },
+        onClientLogout: ()=> {},
+      }
+      this.provider = new WalletConnectV2Provider(callbacks, this.get_chain_id(), this.relayUrl, this.walletConnect_ProjectId);
+
     }
 
-    this.provider = new WalletConnectV2Provider(callbacks, this.get_chain_id(), this.relayUrl, this.walletConnect_ProjectId);
+    if(this.network.indexOf("polygon")>-1){
+
+    }
+
+
   }
 
   async init_wallet_provider(){
@@ -155,11 +166,6 @@ export class AuthentComponent implements OnInit {
 
     this.address="";
     if(this.use_cookie)this.address=localStorage.getItem("authent_address") || "";
-    this.device.isHandset$.subscribe((r:boolean)=>{
-      if(r){
-        this.showExtensionWallet=false;
-      }
-    });
 
     if(this.connexion){
       this.showWalletConnect=this.connexion.wallet_connect;
@@ -170,8 +176,14 @@ export class AuthentComponent implements OnInit {
       this.showWebcam = this.connexion.webcam
       this.showAddress = this.connexion.address
       this.showNfluentWalletConnect = this.connexion.nfluent_wallet_connect
-
     }
+
+    this.device.isHandset$.subscribe((r:boolean)=>{
+      if(r){
+        this.showExtensionWallet=false;
+      }
+    });
+
 
     this.refresh();
 
@@ -403,42 +415,32 @@ export class AuthentComponent implements OnInit {
 
   async open_wallet_connect() {
     //https://docs.multiversx.com/sdk-and-tools/sdk-js/sdk-js-signing-providers/#the-wallet-connect-provider
-    await this.provider.init()
-    const { uri, approval } = await this.provider.connect();
-    this.qrcode=this.api.server_nfluent+"/api/qrcode/"+encodeURIComponent(uri);
-    this.url_xportal_direct_connect="https://xportal.com/?wallet-connect="+uri; //"+this.provider.?relay-protocol%3Dirn&symKey=2a0e80dd8b982dac05eef5ce071fbe541d390fc302666d09856ae379416bfa6e"
-    this.url_xportal_direct_connect="https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet&link="+encodeURIComponent(this.url_xportal_direct_connect);
-    let address=await this.provider.login({approval});
-    if(address){
-      //this.init_wallet.emit({provider:this.provider,address:this.address});
-      this.strong=true;
-      this.validate(address);
-    } else {
-      this.oncancel.emit();
+    try{
+      await this.provider.init()
+      const { uri, approval } = await this.provider.connect();
+      this.qrcode=this.api.server_nfluent+"/api/qrcode/"+encodeURIComponent(uri);
+      this.url_xportal_direct_connect="https://xportal.com/?wallet-connect="+uri; //"+this.provider.?relay-protocol%3Dirn&symKey=2a0e80dd8b982dac05eef5ce071fbe541d390fc302666d09856ae379416bfa6e"
+      this.url_xportal_direct_connect="https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet&link="+encodeURIComponent(this.url_xportal_direct_connect);
+      let address=await this.provider.login({approval});
+      if(address){
+        //this.init_wallet.emit({provider:this.provider,address:this.address});
+        this.strong=true;
+        this.validate(address);
+      } else {
+        this.oncancel.emit();
+      }
+    }catch (e){
+      showError(this,"Impossible d'utiliser wallet connect pour l'instant. Utiliser une autre méthode pour accéder à votre wallet")
     }
+
+
+
   }
 
   async open_polygon_extension_wallet() {
     //Voir https://medium.com/upstate-interactive/how-to-connect-an-angular-application-to-a-smart-contract-using-web3js-f83689fb6909
-
-
-    // @ts-ignore
-    let ethereum = window.ethereum;
-    if (typeof ethereum !== 'undefined') {
-      console.log('MetaMask is installed!');
-    }
-    if (ethereum) {
-      this.web3Provider = ethereum;
-      try {
-        // Request account access
-        ethereum.request({ method: 'eth_requestAccounts' }).then( (address:any) => {
-          console.log("Account connected: ", address[0]); // Account address that you had imported
-        });
-      } catch (error) {
-        // User denied account access...
-        console.error("User denied account access");
-      }
-    }
+    let r=await this.evmwalletservice.connectWallet()
+    if(this.address!="")this.success();
   }
 
   open_xportal() {
@@ -453,5 +455,19 @@ export class AuthentComponent implements OnInit {
   active_webcam() {
     this.enabled_webcam=true;
     this.nfluent_wallet_connect_qrcode='';
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.network.indexOf("polygon")>-1){
+      this.evmwalletservice.checkWalletConnected().then((accounts:any[])=>{
+        this.address=accounts[0]
+        this.strong=true;
+      })
+    }
+
+    if(this.showWalletConnect && !this.showWebWallet && !this.showExtensionWallet){
+      if(this.network.indexOf("elrond")>-1)this.open_wallet_connect();
+
+    }
   }
 }

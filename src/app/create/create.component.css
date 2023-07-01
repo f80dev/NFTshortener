@@ -1,0 +1,12 @@
+button {
+    margin: 3px;
+    width: 120px;
+}
+
+mat-expansion-pannel {
+    padding: 1px !important;
+}
+
+app-input {
+    margin-top: 20px;
+}

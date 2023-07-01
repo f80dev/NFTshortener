@@ -59,6 +59,7 @@ export class UserService implements OnDestroy {
   verified_address: Boolean=false;
   wallet_provider: any;                   //Instance d'acces au wallet distant
   theme_mode: boolean=false;
+  target_mint: any;
 
   constructor(
       private httpClient: HttpClient,
@@ -84,8 +85,8 @@ export class UserService implements OnDestroy {
 
   get_collection(addr: string, network: string) {
     //Retourne l'ensemble des collections disponibles
-    return new Promise((resolve, reject) => {
-      this.network.get_collections(addr, network, false).subscribe((cols: any) => {
+    return new Promise<Collection[]>((resolve, reject) => {
+      this.network.get_collections(addr, network, false).subscribe((cols: Collection[]) => {
         this.collections = cols;
         resolve(cols);
       }, (err: any) => {
@@ -133,7 +134,7 @@ export class UserService implements OnDestroy {
         this.verified_address=verified_address;
         this.network.get_account(addr!, network).subscribe((result: any) => {
           let r=result[0];
-          this.balance = r.amount;
+          this.balance = r.amount || 0;
           this.key=this.network.find_key_by_address(r.address);
           if(!this.key){
             this.key = {
@@ -149,7 +150,8 @@ export class UserService implements OnDestroy {
           }
           this.addr = r.address;
           if (with_collections) {
-            this.get_collection(this.addr, network).then(() => {
+            this.get_collection(this.addr, network).then((cols:Collection[]) => {
+              this.collections=cols;
               this.addr_change.next(r.address);
               resolve(r.address);
             });

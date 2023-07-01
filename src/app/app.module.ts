@@ -28,7 +28,6 @@ import {MatButtonModule} from "@angular/material/button";
 import {DeviceService} from "./device.service";
 import {RouterModule, RouterOutlet, Routes} from "@angular/router";
 import { SafePipe } from './safe.pipe';
-import {FormsModule} from "@angular/forms";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {AskForPaymentComponent} from "./ask-for-payment/ask-for-payment.component";
@@ -49,8 +48,14 @@ import { AutovalidatorComponent } from './autovalidator/autovalidator.component'
 import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
 import {environment} from "../environments/environment";
 import {GOOGLE_CLIENT_ID} from "../definitions";
+import { TranslatePipe } from './translate.pipe';
+import {MatTabsModule} from "@angular/material/tabs";
+import { TokenSelectorComponent } from './token-selector/token-selector.component';
+import {MatListModule} from "@angular/material/list";
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 const config: SocketIoConfig = { url: environment.server, options: {} };
+
 
 const routes: Routes = [
   { path: 'about', component: AboutComponent},
@@ -62,7 +67,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent,
+      AppComponent,
     AskForPaymentComponent,
     InputComponent,
     FaqsComponent,
@@ -80,45 +85,50 @@ const routes: Routes = [
     SafePipe,
     AboutComponent,
     CreateComponent,
-    AutovalidatorComponent
+    AutovalidatorComponent,
+    TranslatePipe,
+    TokenSelectorComponent
   ],
-  imports: [
-    BrowserModule,
-    MatProgressSpinnerModule,
-    ClipboardModule,
-    SocialLoginModule,
-    MatCardModule,
-    MatFormFieldModule,
-    BrowserModule,
-    SocketIoModule.forRoot(config),
-    BrowserAnimationsModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
-    WebcamModule,
-    MatSelectModule,
-    MatSliderModule,
-    MatProgressBarModule,
-    GooglePayButtonModule,
-    MatDialogModule,
-    MatButtonModule,
-    FormsModule,
-    HttpClientModule,
-    MatSnackBarModule,
-    MatExpansionModule,
-    MatCheckboxModule,
-    RouterOutlet,
-    RouterModule.forRoot(routes),
-    MatStepperModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
-    A11yModule,
-    MatSlideToggleModule,
-  ],
+    imports: [
+        BrowserModule,
+        ReactiveFormsModule,
+        MatProgressSpinnerModule,
+        ClipboardModule,
+        SocialLoginModule,
+        MatCardModule,
+        MatFormFieldModule,
+        BrowserModule,
+        SocketIoModule.forRoot(config),
+        BrowserAnimationsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatIconModule,
+        WebcamModule,
+        MatSelectModule,
+        MatSliderModule,
+        MatProgressBarModule,
+        GooglePayButtonModule,
+        MatDialogModule,
+        MatButtonModule,
+        FormsModule,
+        HttpClientModule,
+        MatSnackBarModule,
+        MatExpansionModule,
+        MatCheckboxModule,
+        RouterOutlet,
+        RouterModule.forRoot(routes),
+        MatStepperModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000'
+        }),
+        A11yModule,
+        MatSlideToggleModule,
+        MatTabsModule,
+        MatListModule,
+    ],
   providers: [
     DeviceService,StyleManagerService,
     {provide: MAT_DIALOG_DATA, useValue: {hasBackdrop: false}},

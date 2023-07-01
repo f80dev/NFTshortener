@@ -1,15 +1,65 @@
-<div class="mainform">
-	<br>
-	<div style="max-width: 350px;display: inline-block;" *ngIf="messages && collection && network">
-		<app-autovalidator
-				validator_name="leblognfluent"
-				[collections]="[collection]"
-				(cancel)="_location.back()"
-				[network]="network"
-				style="margin-top: 10px;"
-				[title]="messages.intro"
-				(fail)="fail($event)"
-				(validate)="authent($event)"></app-autovalidator>
+<div class="mainform background-form" style="height:100vh;" [style]="config.style">
+	<app-hourglass [message]="message"></app-hourglass>
+	<div *ngIf="final_message==''">
+		<br>
+		<div class="mat-headline-5">{{config.messages.intro}}</div>
+		<br>
+		<div style="width:80%;max-width: 450px;display: inline-block;"
+		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
+			Pour continuer vous devez payer {{config.price}} {{config.merchant.wallet.unity}}<br><br>
+			<button mat-raised-button (click)="ask_paid()">Payer </button>
+			<button *ngIf="config?.bank && config?.bank.length>0"
+			        mat-raised-button
+			        (click)="open_bank()">Acquerir des {{config.merchant.wallet.unity}} </button>
+		</div>
+		<br>
+
+		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.collection && url.length==0">
+			Pour continuer vous devez posséder un NFT de la collection
+			<span *ngIf="config.store?.length>0"><a [href]="config.store">{{config.collection.name}}</a></span>
+			<span *ngIf="!config.store || config.store.length==0">{{config.collection.name}}</span>
+			<span *ngIf="config.price>0"> puis régler {{config.price}} {{config.merchant.wallet.unity}}</span>
+			<br><br>
+			<div style="margin: 10%">
+				<app-autovalidator
+						[validator_name]="validator_id"
+						[collections]="[config.collection.id]"
+						[connexion]="config.connexion"
+						(cancel)="close_form()"
+						[network]="config.network"
+						[showCollections]="false"
+						style="margin-top: 5%;"
+						title=""
+						(fail)="fail($event)"
+						(validate)="authent($event)"></app-autovalidator>
+			</div>
+
+		</div>
+
 	</div>
+	<br><br>
+
+	<div class="mat-headline-5" *ngIf="final_message!=''">
+		{{final_message}}<br><br>
+
+		<div *ngIf="config.collection">
+			<button mat-raised-button *ngIf="config.store!=''" (click)="open_buy()">
+				En Acquérir
+			</button>
+
+			<button mat-raised-button (click)="open_collection()">
+				Voir la collection
+			</button>
+
+			<button mat-raised-button (click)="close_form()">
+				Fermer
+			</button>
+		</div>
+
+	</div>
+
+	<button color="primary" mat-raised-button (click)="redirect()" *ngIf="url.length>0">
+		Continuer
+	</button>
 
 </div>
