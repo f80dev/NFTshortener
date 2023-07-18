@@ -1,8 +1,13 @@
 <div class="mainform background-form" style="height:100vh;" [style]="config.style">
-	<app-hourglass [message]="message"></app-hourglass>
+	<app-hourglass style="margin-top:10vh" [message]="message"></app-hourglass>
+
+	<mat-icon *ngIf="message!=''" style="cursor: pointer"
+	          title="Effacer l'adresse pré-enregistrée"
+	          (click)="clear_cookie()">delete</mat-icon>
+
 	<div *ngIf="final_message==''">
 		<br>
-		<div class="mat-headline-5">{{config.messages.intro}}</div>
+		<div class="mat-headline-4" style="margin:10%;">{{config.messages.intro}}</div>
 		<br>
 		<div style="width:80%;max-width: 450px;display: inline-block;"
 		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
@@ -13,6 +18,18 @@
 			        (click)="open_bank()">Acquerir des {{config.merchant.wallet.unity}} </button>
 		</div>
 		<br>
+
+		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.airdrop && message==''">
+
+			<div class="mat-headline-5" style="margin:10%;">{{config.messages.intro_message}}</div>
+
+			Authentifiez vous, pour recevoir {{config.airdrop.amount}} {{config.airdrop.token.name}}<br>
+			<app-authent [connexion]="config.connexion"
+			             (authent)="airdrop_authent($event)">
+			</app-authent>
+			<br>
+			<button mat-raised-button color="primary" (click)="redirect()">Continuez sans récompense</button>
+		</div>
 
 		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.collection && url.length==0">
 			Pour continuer vous devez posséder un NFT de la collection
@@ -58,7 +75,7 @@
 
 	</div>
 
-	<button color="primary" mat-raised-button (click)="redirect()" *ngIf="url.length>0">
+	<button color="primary" mat-raised-button (click)="redirect()" *ngIf="url.length>0 && !config.airdrop">
 		Continuer
 	</button>
 

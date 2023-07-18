@@ -25,14 +25,14 @@ export class CreateComponent implements OnInit {
     redirect: string = "";
     collection: Collection | undefined
     networks: any[]=[]
-    network:any=this.networks[0];
+    network:any;
     query_collection: string = "";
     collections:Collection[]=[];
     nft: NFT | null=null;
     domain=environment.appli;
     min_required=1;
     connexion: Connexion={
-        address: false,
+        address: false, keystore: false,
         direct_connect: false,
         email: false,
         extension_wallet: true,
@@ -267,15 +267,15 @@ export class CreateComponent implements OnInit {
         open(this.url,"Test")
     }
 
-    async paste_url() {
-        let obj:any=navigator.clipboard;
-        let url=await obj.readText();
-        if(url.startsWith("http")){
-            this.redirect=url;
-        }else{
-            showMessage(this,"Le presse papier ne contient pas de lien web")
-        }
-    }
+    // async paste_url() {
+    //     let obj:any=navigator.clipboard;
+    //     let url=await obj.readText();
+    //     if(url.startsWith("http")){
+    //         this.redirect=url;
+    //     }else{
+    //         showMessage(this,"Le presse papier ne contient pas de lien web")
+    //     }
+    // }
 
     open_about() {
         this.router.navigate(["about"]);
@@ -325,6 +325,7 @@ export class CreateComponent implements OnInit {
                 })
         } else {
             this.token=token;
+            if(token.url)this.bank=token.url;
         }
 
         // this.merchant.wallet!.token=token_id;

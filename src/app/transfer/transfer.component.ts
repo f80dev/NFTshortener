@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NetworkService} from "../network.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Clipboard} from "@angular/cdk/clipboard";
-import {$$, getParams, now, setParams, showError, showMessage} from "../../tools";
+import {$$, Bank, getParams, now, setParams, showError, showMessage} from "../../tools";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {PaymentTransaction} from "../payment/payment.component";
@@ -10,6 +10,7 @@ import {_ask_for_paiement} from "../ask-for-payment/ask-for-payment.component";
 import {UserService} from "../user.service";
 import {MatDialog} from "@angular/material/dialog";
 import {Connexion} from "../../operation";
+import {wait_message} from "../hourglass/hourglass.component";
 
 @Component({
   selector: 'app-transfer',
@@ -52,14 +53,26 @@ export class TransferComponent implements OnInit {
       cid=cid.split("=")[0]
       this.api._get("sl/"+cid).subscribe((r:any)=>{
         r.style=r.style || "background:none"
+        r.price=r.price || 0
         this.config=r;
-        for(let k of Object.keys(this.config.messages)){
-          if(this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
-          if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
+
+        if(r.hasOwnProperty("airdrop")){
+          this.config.connexion=r.connexion
+          this.config.messages.intro_message=r.messages;
+          this.config.airdrop=r.airdrop
+          this.url=r.redirect
+          this.config.network=r.network;
+          this.transfert_fund(!r.airdrop.force_authent ? localStorage.getItem("airdrop_address") : null)
+        }else{
+          for(let k of Object.keys(this.config.messages)){
+            if(this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
+            if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
+          }
+          if(!r.collection && r.price==0){
+            this.authent(r.redirect);
+          }
         }
-        if(!r.collection && r.price==0){
-          this.authent(r.redirect);
-        }
+
       },(err)=>{
         showError(this,err);
       })
@@ -84,7 +97,7 @@ export class TransferComponent implements OnInit {
 
   redirect() {
     if(!this.url.startsWith("http"))this.url="https://"+this.url;
-    open(this.url,"same");
+    window.location["href"]=this.url
   }
 
   close_form() {
@@ -112,7 +125,10 @@ export class TransferComponent implements OnInit {
         this.config.price,0,
         this.config.merchant,
         this.user.wallet_provider,
-        "Payer "+this.config.price+" "+this.config.merchant.wallet.unity,"Indiquer votre wallet de paiement","","",bill_content,"crypto");
+        "Payer "+this.config.price+" "+this.config.merchant.wallet.unity,
+        "Indiquer votre wallet de paiement","","",
+        bill_content,
+        "crypto");
     if(rc){
       this.authent(this.config.redirect);
     }
@@ -120,5 +136,35 @@ export class TransferComponent implements OnInit {
 
   open_bank() {
     open(this.config!.bank,"bank")
+  }
+
+  airdrop_authent($event: { strong: boolean; address: string; provider: any }) {
+    this.transfert_fund($event.address);
+  }
+
+  transfert_fund(address: string | null) {
+    if(!address)return false;
+    let bank:Bank={
+      histo: "",
+      limit: this.config.airdrop.limit_by_day,
+      wallet_limit:this.config.airdrop.limit_by_wallet,
+      miner: this.config.airdrop.dealer_wallet,
+      network: this.config.network,
+      refund: this.config.airdrop.amount,
+      title: "",
+      token: this.config.airdrop.token.identifier
+    }
+    wait_message(this,"Récompense en cours de transfert. Redirection vers "+this.url.replace("https://","")+" imminente")
+    setTimeout(()=>{this.redirect();},4000);
+    localStorage.setItem("airdrop_address",address)
+    this.api.refund(bank,address).subscribe((r:any)=>{
+      wait_message(this)
+      showMessage(this,"Vous avez été crédité de "+this.config.airdrop.amount+" "+this.config.airdrop.token.name)
+      },(err)=>{wait_message(this);showError(this,err)})
+    return true;
+  }
+
+  clear_cookie() {
+    localStorage.removeItem("airdrop_address")
   }
 }

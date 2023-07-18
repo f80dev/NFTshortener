@@ -39,10 +39,10 @@
 				           help="Lien internet vers une page, un fichier, une vidéo"></app-input>
 
 				<div style="margin-top:-10px;margin-left: 1%;">
-					<button mat-icon-button title="Récupérer le contenu du presse papier"
-					        (click)="paste_url()">
-						<mat-icon>content_paste</mat-icon>
-					</button>
+<!--					<button mat-icon-button title="Récupérer le contenu du presse papier"-->
+<!--					        (click)="paste_url()">-->
+<!--						<mat-icon>content_paste</mat-icon>-->
+<!--					</button>-->
 
 					<app-upload-file (uploaded)="upload_file($event)"
 					                 [title]="'Charger un fichier'"
@@ -69,7 +69,7 @@
 						<mat-slide-toggle [(ngModel)]="required.payment">Paiement</mat-slide-toggle>
 					</div>
 
-					<app-input label="Blockchain / Réseau"
+					<app-input label="Blockchain / Réseau" value_type="list"
 					           [value]="network" (valueChange)="network=$event"
 					           [style.opacity]="required.nft || required.payment ? 1 : 0.2"
 					           width="160px"
@@ -219,7 +219,7 @@
 
 
 							<div class="expansion-content-left" *ngIf="token">
-								<app-input [label]="'Lien vers une banque de '+token.name"
+								<app-input [label]="'Adresse pour acheter du '+token.name"
 								           style="width: 95%;"
 								           *ngIf="user.advance_mode || bank!.length>0"
 								           [value]="bank" (valueChange)="bank=$event"

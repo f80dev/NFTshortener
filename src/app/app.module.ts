@@ -53,6 +53,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import { TokenSelectorComponent } from './token-selector/token-selector.component';
 import {MatListModule} from "@angular/material/list";
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FilterPipe} from "./filter.pipe";
 
 const config: SocketIoConfig = { url: environment.server, options: {} };
 
@@ -83,6 +84,7 @@ const routes: Routes = [
     SplashComponent,
     ScannerComponent,
     SafePipe,
+      FilterPipe,
     AboutComponent,
     CreateComponent,
     AutovalidatorComponent,
