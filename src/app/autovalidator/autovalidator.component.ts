@@ -19,10 +19,10 @@ export class AutovalidatorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() network: string = "";
   @Input() validator_name: string = "";
   @Input() connexion: Connexion = {
-    keystore: false,
     direct_connect: false, extension_wallet: false, web_wallet: false,
     address: false,
     email: false,
+    keystore:"",
     google: false,
     nfluent_wallet_connect: false,
     on_device: false,

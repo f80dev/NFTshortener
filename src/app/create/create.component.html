@@ -120,7 +120,7 @@
 
 						<div style="display:inline-block;width: 100%;display:flex;justify-content: stretch;" *ngIf="collections && collections.length>0">
 							<app-input [label]="'Sélectionner une collection' | translate" [options]="collections"
-							           style="width:70%;color:white;"
+							           style="width:70%;color:white;" value_type="list"
 							           [value]="collection" (valueChange)="collection=$event;get_first_nft();local_save();"></app-input>
 
 							<app-input value_type="number" [value]="min_required" (valueChange)="min_required=$event"

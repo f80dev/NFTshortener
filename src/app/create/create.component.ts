@@ -32,7 +32,8 @@ export class CreateComponent implements OnInit {
     domain=environment.appli;
     min_required=1;
     connexion: Connexion={
-        address: false, keystore: false,
+        address: false,
+      keystore: "",
         direct_connect: false,
         email: false,
         extension_wallet: true,
@@ -93,7 +94,7 @@ export class CreateComponent implements OnInit {
             this.collections=[];
             return;
         }
-        wait_message(this,"Recherche des collections")
+        wait_message(this,"Recherche des collections contenant '"+this.query_collection+"' dans le nom")
         this.api.get_collections(this.query_collection,this.network.value,false,limit).subscribe((cols)=>{
             this.collections=cols;
             if(cols.length==0){

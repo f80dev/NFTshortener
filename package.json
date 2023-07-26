@@ -34,10 +34,10 @@
     "@google-pay/button-angular": "^3.0.8",
     "ng-navigator-share": "1.0.4",
     "@multiversx/sdk-core": "^12.1.1",
-    "@multiversx/sdk-extension-provider": "^2.0.7",
-    "@multiversx/sdk-network-providers": "^1.4.0",
-    "@multiversx/sdk-wallet-connect-provider": "^3.2.1",
-    "@multiversx/sdk-web-wallet-provider": "^2.4.0"
+    "@multiversx/sdk-extension-provider": "^3.0.0",
+    "@multiversx/sdk-network-providers": "^1.5.0",
+    "@multiversx/sdk-wallet-connect-provider": "^4.0.2",
+    "@multiversx/sdk-web-wallet-provider": "^3.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.0.2",
