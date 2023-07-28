@@ -18,10 +18,10 @@
 		<app-hourglass [message]="message"></app-hourglass>
 
 		<div style="max-width: 350px;display: inline-block;" *ngIf="show_login">
-			<app-authent [showNfluentWalletConnect]="true"
-			             (authent)="authent($event)"
-			             [showExtensionWallet]="true"
-			             [showWalletConnect]="true">
+			<app-authent [connexion]="connexion"
+                   [network]="network.value"
+                   (cancel)="show_login=false"
+			             (authent)="authent($event)">
 			</app-authent>
 
 			<button mat-raised-button (click)="show_login=false">Annuler</button>
@@ -118,10 +118,16 @@
 
 						<br>
 
+            <div *ngIf="query_collection!='' && collections.length==0">
+              Aucune collection disponible
+            </div>
+
 						<div style="display:inline-block;width: 100%;display:flex;justify-content: stretch;" *ngIf="collections && collections.length>0">
 							<app-input [label]="'Sélectionner une collection' | translate" [options]="collections"
 							           style="width:70%;color:white;" value_type="list"
 							           [value]="collection" (valueChange)="collection=$event;get_first_nft();local_save();"></app-input>
+
+
 
 							<app-input value_type="number" [value]="min_required" (valueChange)="min_required=$event"
 							           width="120px"
@@ -190,14 +196,23 @@
 									<mat-icon>visibility</mat-icon>
 								</button>
 
-							</div>
+                <app-input label="Voir uniquement les monnaies de l'adresse de paiement"
+                           value_type="boolean" [value]="filter_by_wallet" style="margin-left: 10px;margin-top: -15px;"
+                           *ngIf="address!='' && !token" (valueChange)="token_filter_by_account()">
+                </app-input>
+
+              </div>
+
 
 							<div class="expansion-content-left" style="align-items: flex-start;">
 								<app-token-selector label="Monnaie utilisée" style="width: 75%;margin: 5px;"
+                                    [owner]="token_filter"
+                                    (unselect)="token=null"
 								                    [value]="token" [network]="network.value" size="30px"
 								                    (valueChange)="update_token($event)"></app-token-selector>
 
-								<button mat-icon-button
+
+                <button mat-icon-button
 								        title="Créer une monnaie"
 								        (click)="open_create_esdt()"><mat-icon>build</mat-icon></button>
 
@@ -206,8 +221,10 @@
 <!--								        (click)="open_search_esdt()"><mat-icon>explorer</mat-icon></button>-->
 							</div>
 
+
+
 							<div class="expansion-content-left" *ngIf="token">
-								<app-input label="Montant demandé" value_type="number" style="width: 65%;"
+								<app-input label="Montant demandé à l'ouverture du lien" value_type="number" style="width: 65%;"
 								           [value]="price" (valueChange)="price=$event"
 								           help="Prix demandé"></app-input>
 
@@ -220,10 +237,10 @@
 
 							<div class="expansion-content-left" *ngIf="token">
 								<app-input [label]="'Adresse pour acheter du '+token.name"
-								           style="width: 95%;"
+								           style="width: 65%;"
 								           *ngIf="user.advance_mode || bank!.length>0"
 								           [value]="bank" (valueChange)="bank=$event"
-								           help="Adresse web de la banque"></app-input>
+								           help="Si l'internaute ne posséde pas la monnaie requise"></app-input>
 
 							</div>
 

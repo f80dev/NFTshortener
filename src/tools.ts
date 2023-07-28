@@ -92,7 +92,7 @@ export function getBrowserName() {
 }
 
 
-export function setParams(_d:any,prefix="",param_name="p") : string {
+export function setParams(_d:any,prefix="",param_name="p",domain="") : string {
   //Encryptage des parametres de l'url
   //Version 1.0
   let rc=[];
@@ -102,10 +102,17 @@ export function setParams(_d:any,prefix="",param_name="p") : string {
     rc.push(k+"="+encodeURIComponent(_d[k]));
   }
   let url=encrypt(prefix+rc.join("&"));
+  if(domain!=""){
+    if(domain.indexOf("?")>-1){
+      domain=domain+"&"
+    }else{
+      domain=domain+"?"
+    }
+  }
   if(param_name!="")
-    return param_name+"="+encodeURIComponent(url);
+    return domain+param_name+"="+encodeURIComponent(url);
   else
-    return encodeURIComponent(url);
+    return domain+encodeURIComponent(url);
 }
 
 export function enterFullScreen(element:any) {
@@ -309,7 +316,14 @@ export function getParams(routes:ActivatedRoute,local_setting_params="",force_tr
 }
 
 export function decrypt(s:string | any) : string {
-  if(s)return atob(s);
+  if(s){
+    try{
+      return atob(s);
+    }catch (e){
+      $$("Impossible de décoder les paramètres ",s)
+    }
+
+  }
   return "";
 }
 

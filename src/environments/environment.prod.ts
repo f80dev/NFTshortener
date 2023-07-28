@@ -5,57 +5,58 @@
 import {newCryptoKey} from "../tools";
 
 export const environment = {
-    production: true,
-    forum:"https://discord.gg/BfC2E2ent",
-    mail:"contact@nfluent.io",
-    version: "0.1dev",
-    faqs:"{{domain_appli}}/assets/faqs.yaml",
-    appname:"NFlux",
-    networks:"elrond-devnet,elrond-mainnet",
-    visual:"./assets/coffre.jpg",
-    claim:"Valoriser vos contenus en quelques clics",
+  production: true,
+  forum:"https://discord.gg/BfC2E2ent",
+  mail:"contact@nfluent.io",
+  version: "0.1dev",
+  faqs:"{{domain_appli}}/assets/faqs.yaml",
+  appname:"NFlux",
+  networks:"elrond-devnet,elrond-mainnet",
+  visual:"./assets/coffre.jpg",
+  claim:"Valoriser vos contenus en quelques clics",
+  company:"Nfluent",
 
-    server:"https://api.nfluent.io:4242",
-    appli:"https://s.f80.fr",
-    website:"https://nfluent.io",
-    style:"nfluent-dark.css",
-    background:"./assets/wood.jpg",
-    logo:"./assets/icons/icon_nfluent_256.png",
-    default_bank:"https://faucet.nfluent.io",
+  server:"https://api.nfluent.io:4242",
+  appli:"https://s.f80.fr",
+  website:"https://nfluent.io",
+  style:"nfluent-dark.css",
+  background:"./assets/wood.jpg",
+  logo:"./assets/icons/icon_nfluent_256.png",
+  default_bank:"https://faucet.nfluent.io",
 
-    merchant:{
-        id:"BCR2DN4TYD4Z5XCR",
-        name:"NFluenT",
-        currency:"EUR",
-        country:"FR",
-        contact:"contact@nfluent.io",
-        wallet:
-            {
-                token:"NFLUCOIN-4921ed",
-                address:"erd1gkd6f8wm79v3fsyyklp2qkhq0eek28cnr4jhj9h87zwqxwdz7uwstdzj3m",
-                network:"elrond-devnet",
-                unity: "NfluCoint",
-                bank: "nfluent: Z0FBQUFBQmtYUjJVbS1Uc0lpa2FTR2F0SnF4LW1HUHIzbHFKN2hCVmRPN3NRR1R3Wk4tUnhfcUxqUE9IQVdObzMxMHgtazhrT1hpWXVndENZallGNnI1Q2RTLVQ1N2d0TEQ2dHNmVlByV3B0RlR3SUMxejhKMHZUeVJ3NHl6dnNFNEIyZWk2eGZsS1hWU2FuQnljcGRDUEh4WFhSMTBRTFFLdHkxeTJuUjZxYWRRc1dVN2FqYlZzPQ==",
-                title:"La banque de NFluent",
-                refund: 5
-            }
-    },
+  merchant:{
+    id:"BCR2DN4TYD4Z5XCR",
+    name:"NFluenT",
+    currency:"EUR",
+    country:"FR",
+    contact:"contact@nfluent.io",
+    wallet:
+      {
+        token:"NFLUCOIN-4921ed",
+        address:"erd1gkd6f8wm79v3fsyyklp2qkhq0eek28cnr4jhj9h87zwqxwdz7uwstdzj3m",
+        network:"elrond-devnet",
+        unity: "NfluCoint",
+        bank: "nfluent: Z0FBQUFBQmtYUjJVbS1Uc0lpa2FTR2F0SnF4LW1HUHIzbHFKN2hCVmRPN3NRR1R3Wk4tUnhfcUxqUE9IQVdObzMxMHgtazhrT1hpWXVndENZallGNnI1Q2RTLVQ1N2d0TEQ2dHNmVlByV3B0RlR3SUMxejhKMHZUeVJ3NHl6dnNFNEIyZWk2eGZsS1hWU2FuQnljcGRDUEh4WFhSMTBRTFFLdHkxeTJuUjZxYWRRc1dVN2FqYlZzPQ==",
+        title:"La banque de NFluent",
+        refund: 5
+      }
+  },
 
-    dictionnary: {
-        "en": {
-            "Délivrer un message":"Show a message",
-            "Eliligibilités: Possèder un NFT/SFT": "",
-            "Lien a raccourcir": "Link to short",
-            "Nom d'une collection": "Collection name",
-            "Sélectionner une collection": "Select a collection",
-            "Chercher": "Find",
-            "Réseau": "Network",
-            "Coller":"Paste",
-            "Le premier NFT de cette collection": "First NFT of this collection",
-            "Créer le lien":"Build the link",
-            "Lien pour acquérir un NFT":"Link to buy the required NFT"
-        }
+  dictionnary: {
+    "en": {
+      "Délivrer un message":"Show a message",
+      "Eliligibilités: Possèder un NFT/SFT": "",
+      "Lien a raccourcir": "Link to short",
+      "Nom d'une collection": "Collection name",
+      "Sélectionner une collection": "Select a collection",
+      "Chercher": "Find",
+      "Réseau": "Network",
+      "Coller":"Paste",
+      "Le premier NFT de cette collection": "First NFT of this collection",
+      "Créer le lien":"Build the link",
+      "Lien pour acquérir un NFT":"Link to buy the required NFT"
     }
+  }
 };
 
 
