@@ -19,12 +19,13 @@
 		</div>
 		<br>
 
-		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.airdrop && message==''">
+		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.airdrop && message=='' && address==''">
 
 			<div class="mat-headline-5" style="margin:10%;">{{config.messages.intro_message}}</div>
 
 			Authentifiez vous, pour recevoir {{config.airdrop.amount}} {{config.airdrop.token.name}}<br>
 			<app-authent [connexion]="config.connexion"
+                   [network]="config.network"
 			             (authent)="airdrop_authent($event)">
 			</app-authent>
 			<br>
@@ -37,7 +38,7 @@
 			<span *ngIf="!config.store || config.store.length==0">{{config.collection.name}}</span>
 			<span *ngIf="config.price>0"> puis régler {{config.price}} {{config.merchant.wallet.unity}}</span>
 			<br><br>
-			<div style="margin: 10%">
+			<div style="margin: 10%" *ngIf="config.collection">
 				<app-autovalidator
 						[validator_name]="validator_id"
 						[collections]="[config.collection.id]"

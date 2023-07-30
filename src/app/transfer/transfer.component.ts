@@ -26,6 +26,7 @@ export class TransferComponent implements OnInit {
   message="";
   provider: any;
   authentification: Connexion | undefined;
+  address: string=""
 
 
   public constructor(
@@ -58,11 +59,12 @@ export class TransferComponent implements OnInit {
 
         if(r.hasOwnProperty("airdrop")){
           this.config.connexion=r.connexion
-          this.config.messages.intro_message=r.messages;
           this.config.airdrop=r.airdrop
           this.url=r.redirect
           this.config.network=r.network;
-          this.transfert_fund(!r.airdrop.force_authent ? localStorage.getItem("airdrop_address") : null)
+          this.config.messages=r.messages;
+          this.address=localStorage.getItem("airdrop_address") || ""
+          this.transfert_fund(!r.airdrop.force_authent ? this.address : null)
         }else{
           for(let k of Object.keys(this.config.messages)){
             if(this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
