@@ -106,6 +106,7 @@ export class CreateComponent implements OnInit {
       } else {
         showMessage(this,this.query_collection.length+" collections trouvées")
         this.collection=this.collections[0];
+        this.get_first_nft()
       }
       if(cols.length==limit)showMessage(this,"Il manque probablement des réponses")
       wait_message(this)
@@ -148,9 +149,9 @@ export class CreateComponent implements OnInit {
   ]
   address: string="";
 
-  open_gallery(main="xspotlight.com/collections/{{col}}") {
-    let prefix=this.network.indexOf("devnet")>-1 ? "devnet." : ""
-    let url="https://"+prefix+main.replace("{{col}}",this.query_collection)
+  open_gallery(collection_id:string,main="xspotlight.com/collections/{{col}}") {
+    let prefix=this.network.value.indexOf("devnet")>-1 ? "devnet." : ""
+    let url="https://"+prefix+main.replace("{{col}}",collection_id)
     open(url,"search")
   }
 
@@ -197,7 +198,7 @@ export class CreateComponent implements OnInit {
       store:this.store,
       style:this.dialog_style,
       bank:this.bank,
-      price:this.required.payment ? this.price : 0
+      price:this.required.payment ? this.price : 1
     }
     if(this.required.payment){
       body["merchant"]=merchant;

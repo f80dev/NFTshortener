@@ -38,10 +38,10 @@
 				           (validate)="showAccessRequiredSection=true"
 				           help="Lien internet vers une page, un fichier, une vidéo"></app-input>
 
-				<div style="margin-top:-10px;margin-left: 1%;">
+				<div style="margin-left: 1%;">
 <!--					<button mat-icon-button title="Récupérer le contenu du presse papier"-->
 <!--					        (click)="paste_url()">-->
-<!--						<mat-icon>content_paste</mat-icon>-->
+<!--						<mat-icon>contentt_paste</mat-icon>-->
 <!--					</button>-->
 
 					<app-upload-file (uploaded)="upload_file($event)"
@@ -96,10 +96,11 @@
 				<mat-tab-group animationDuration="1000ms" style="margin-left: -10px;">
 					<mat-tab label="NFT" *ngIf="required.nft" style="margin-left: -10px;">
 					<div style="margin-top: 10px;">
-						<div class="expansion-content" style="justify-content: flex-start;"  *ngIf="network">
+						<div class="expansion-content"  *ngIf="network && collections.length==0">
 
 							<app-input label="Nom d'une collection / Wallet" [value]="query_collection"
 							           width="90%"
+                         [showClear]="true"
 							           (valueChange)="query_collection=$event"
 							           label_button="Chercher"
 							           (validate)="run_query($event)"
@@ -122,12 +123,13 @@
               Aucune collection disponible
             </div>
 
-						<div style="display:inline-block;width: 100%;display:flex;justify-content: stretch;" *ngIf="collections && collections.length>0">
+						<div class="expansion-content"  *ngIf="collections && collections.length>0">
 							<app-input [label]="'Sélectionner une collection' | translate" [options]="collections"
-							           style="width:70%;color:white;" value_type="list"
+							           style="width:60%;color:white;" value_type="list"
 							           [value]="collection" (valueChange)="collection=$event;get_first_nft();local_save();"></app-input>
 
-
+              <button mat-icon-button  (click)="collections=[]">
+                <mat-icon>cancel</mat-icon></button>
 
 							<app-input value_type="number" [value]="min_required" (valueChange)="min_required=$event"
 							           width="120px"
@@ -138,7 +140,9 @@
 
 						<div *ngIf="nft && nft.visual && collections.length>0 && collection">
 							<br>
-							{{'Le premier NFT de cette collection' | translate}}<br>
+              {{'Le premier NFT de cette collection' | translate}}
+              <mat-icon style="cursor:pointer" (click)="open_gallery(collection.id)">explorer</mat-icon>
+              <br>
 							<img class="mat-elevation-z6" [src]="nft.visual" style="width:150px;margin:20px;">
 							<br><br>
 						</div>
@@ -175,36 +179,43 @@
 								           [value]="address" (valueChange)="address=$event;local_save();"
 								           help="Adresse du wallet récupérant le paiement"></app-input>
 
-								<button mat-icon-button style="margin-top: -10px"
-								        title="Scanner un wallet"
-								        (click)="show_scanner=!show_scanner">
-									<mat-icon>qr_code_scanner</mat-icon></button>
+								<div style="margin-top: -10px;">
+                  <button mat-icon-button
+                          title="Scanner un wallet"
+                          (click)="show_scanner=!show_scanner">
+                    <mat-icon>qr_code_scanner</mat-icon></button>
 
-								<button mat-icon-button
-								        *ngIf="address==''"
-								        style="margin-top: -10px;"
-								        title="Créer un wallet"
-								        (click)="create_account()">
-									<mat-icon>add_circle</mat-icon>
-								</button>
+                  <button mat-icon-button
+                          (click)="show_login=true"
+                          title="L'adresse de votre wallet">
+                    <mat-icon>login</mat-icon>
+                  </button>
 
-								<button mat-icon-button
-								        *ngIf="address!=''"
-								        style="margin-top: -10px;"
-								        title="Voir le wallet"
-								        (click)="open_wallet()">
-									<mat-icon>visibility</mat-icon>
-								</button>
+
+                  <button mat-icon-button
+                          *ngIf="address==''"
+                          title="Créer un wallet"
+                          (click)="create_account()">
+                    <mat-icon>add_circle</mat-icon>
+                  </button>
+
+                  <button mat-icon-button
+                          *ngIf="address!=''"
+                          title="Voir le wallet"
+                          (click)="open_wallet()">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </div>
 
                 <app-input label="Voir uniquement les monnaies de l'adresse de paiement"
                            value_type="boolean" [value]="filter_by_wallet" style="margin-left: 10px;margin-top: -15px;"
-                           *ngIf="address!='' && !token" (valueChange)="token_filter_by_account()">
+                           *ngIf="address!=''" (valueChange)="token_filter_by_account()">
                 </app-input>
 
               </div>
 
 
-							<div class="expansion-content-left" style="align-items: flex-start;">
+							<div class="expansion-content-left" style="align-items: flex-start;" *ngIf="address!=''">
 								<app-token-selector label="Monnaie utilisée" style="width: 75%;margin: 5px;"
                                     [owner]="token_filter"
                                     (unselect)="token=null"
@@ -222,20 +233,19 @@
 							</div>
 
 
-
-							<div class="expansion-content-left" *ngIf="token">
+							<div class="expansion-content-left" *ngIf="address!='' && token">
 								<app-input label="Montant demandé à l'ouverture du lien" value_type="number" style="width: 65%;"
 								           [value]="price" (valueChange)="price=$event"
 								           help="Prix demandé"></app-input>
 
-								<div style="width: 25%;text-align:center;margin-top:-15px;display: inline-block" *ngIf="token">Monnaie:
+								<div style="width: 25%;text-align:center;margin-top:-15px;display: inline-block">Monnaie:
 									<div class="color-primary mat-subheading-1">{{token.name}}</div>
-								</div>p
+								</div>
 								<div style="width: 70px;margin-top:-10px;display: inline-block" *ngIf="!token" class="color-primary">Token non valide</div>
 							</div>
 
 
-							<div class="expansion-content-left" *ngIf="token">
+							<div class="expansion-content-left" *ngIf="address!='' && token">
 								<app-input [label]="'Adresse pour acheter du '+token.name"
 								           style="width: 65%;"
 								           *ngIf="user.advance_mode || bank!.length>0"
