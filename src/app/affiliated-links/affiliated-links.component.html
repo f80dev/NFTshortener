@@ -1,0 +1,52 @@
+<div class="mainform" style="max-width: 600px;text-align: center;">
+    <div *ngIf="!sel_url">
+        <h3>Sélectionner l'url à proposer</h3>
+        <table class="table-elevation" style="width:90%;">
+            <tr *ngFor="let url of urls">
+                <td>
+                    {{url!.url}}
+                </td>
+                <td>
+                    Recevez {{url!.airdrop!.amount}} {{url!.airdrop!.token!.label}} par clic (jusqu'a {{url!.airdrop!.limit_by_day}} par jours)
+                </td>
+                <td>
+                    <button mat-raised-button (click)="sel_url=url">Sélectionner</button>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <br>
+
+    <div *ngIf="sel_url">
+        <div *ngIf="address==''">
+            <h2>Votre wallet pour recevoir les gains</h2>
+            <app-authent
+
+                    size="250px"
+                    [use_cookie]="true"
+                    [showWalletConnect]="true"
+                    [showAddress]="true"
+                    [showGoogle]="true"
+                    [showEmail]="true"
+                    [showWebWallet]="true"
+                    [showExtensionWallet]="true"
+                    (authent)="address=$event.address"
+                    (disconnect)="cancel()"
+                    (invalid)="cancel()"
+                    style="margin-top: 10px;"></app-authent>
+        </div>
+        <div *ngIf="address!=''">
+            Réception des gains sur <app-link [content]="address" [network]="sel_url.airdrop.network"></app-link>
+        </div>
+
+        <div class="mat-headline-6">
+            {{url}}
+        </div>
+
+    </div>
+
+
+
+</div>

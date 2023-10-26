@@ -10,19 +10,25 @@ export const environment = {
   mail:"contact@nfluent.io",
   version: "0.1dev",
   faqs:"{{domain_appli}}/assets/faqs.yaml",
-  appname:"NFlux",
-  networks:"elrond-devnet,elrond-mainnet",
+  appname:"Gate",
+  networks:[
+    {label:"MultiversX Test",value:"elrond-devnet"},
+    {label:"MultiversX",value:"elrond-mainnet"}
+  ],
   visual:"./assets/coffre.jpg",
   claim:"Valoriser vos contenus en quelques clics",
   company:"Nfluent",
 
   server:"https://api.nfluent.io:4242",
-  appli:"https://s.f80.fr",
+  appli:"https://gate.nfluent.io",
   website:"https://nfluent.io",
   style:"nfluent-dark.css",
   background:"./assets/wood.jpg",
   logo:"./assets/icons/icon_nfluent_256.png",
   default_bank:"https://faucet.nfluent.io",
+  histo:"db-server-nfluent_local",
+  redirect_server:"https://gate.nfluent.io",
+
 
   merchant:{
     id:"BCR2DN4TYD4Z5XCR",

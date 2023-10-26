@@ -1,0 +1,21 @@
+.image-button {
+  width: 250px;
+  margin: 15px;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  padding: 20px;
+}
+
+.icon-image-button {
+  font-size: 3rem;
+  width: 80px;
+  height: 80px;
+}
+
+.image-button-label {
+  margin-top: 10px;
+  font-size: large;
+  height: 70px;
+  vertical-align: center;
+}

@@ -1,0 +1,38 @@
+<app-splash
+  [appname]="appname"
+  [duration]="2000"
+  [image]="visual"
+  [description]="claim"></app-splash>
+
+
+<app-tuto title="{{appname}} est un programme destiné aux propriétaire de site web, streamer,<br>créateurs de contenus souhaitant fidéliser leur communauté et vendre leur production"
+          [delay]="4"
+          background="https://images.unsplash.com/photo-1612034834415-72a023db0303?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          align="right"
+          [duration]="30" *ngIf="slide==1" (close)="slide=slide+1"></app-tuto>
+
+<app-tuto title="<br><br>{{appname}} est totalement gratuit,<br><br>et ne nécessite aucune connaissance en développement"
+          [duration]="30" align="right" align_image="left" [force]="true"
+          background="https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
+          *ngIf="slide==2" (close)="slide=slide+1"></app-tuto>
+
+
+<div class="mainform" [style.background-image]="'url('+background+')'" *ngIf="slide>=3">
+  <app-input label="Vous êtes ?" [options]="profils" fontname="mat-headline-6"
+             width="300px" style="display: inline-block;margin-top:3%;"
+             (valueChange)="update_profil($event)"></app-input>
+  <br>
+
+  <div class="mat-body-2" *ngIf="scenario!=''" style="margin: 1%;max-width: 500px;display: inline-block;text-align: center;opacity: 0.7;font-style: italic;w">
+    "{{scenario}}"
+  </div>
+  <br>
+
+
+  <div *ngFor="let option of options" class="image-button mat-elevation-z8 mat-headline-5 blackform"  (click)="open_menu(option)">
+    <div class="image-button-label color-primary">{{option.title}}</div>
+    <mat-icon class="icon-image-button color-primary">{{option.icon}}</mat-icon>
+  </div>
+
+
+</div>

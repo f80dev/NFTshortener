@@ -1,5 +1,5 @@
 <div class="mainform background-form" style="height:100vh;" [style]="config.style">
-	<app-hourglass style="margin-top:10vh" [message]="message"></app-hourglass>
+	<app-hourglass style="margin-top:5vh" [message]="message"></app-hourglass>
 
 	<mat-icon *ngIf="message!=''" style="cursor: pointer"
 	          title="Effacer l'adresse pré-enregistrée"
@@ -7,38 +7,51 @@
 
 	<div *ngIf="final_message==''">
 		<br>
-		<div class="mat-headline-4" style="margin:10%;">{{config.messages.intro}}</div>
-		<br>
-		<div style="width:80%;max-width: 450px;display: inline-block;"
+		<div class="mat-headline-4" style="margin:3%;">{{config.messages.intro}}</div>
+		<div style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
 		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
-			Pour continuer vous devez payer {{config.price}} {{config.merchant.wallet.unity}}<br><br>
-			<button mat-raised-button (click)="ask_paid()">Payer </button>
-			<button *ngIf="config?.bank && config?.bank.length>0"
-			        mat-raised-button
-			        (click)="open_bank()">Acquerir des {{config.merchant.wallet.unity}} </button>
+			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}<br><br>
+
+      <button mat-raised-button (click)="ask_paid()" style="margin-top: 100px;">S'authentifier & payer</button>
+			<br><br>
+
+      <a *ngIf="config?.bank && config?.bank.length>0"
+              class="mat-body-2"
+			        [href]="this.config!.bank">
+                En savoir plus ou acqérir des {{config.merchant.wallet.unity}}
+			        </a>
 		</div>
 		<br>
 
-		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.airdrop && message=='' && address==''">
-
+		<div style="width:80%;max-width: 450px;display: inline-block;"
+         *ngIf="config && config.airdrop && message=='' && address==''">
 			<div class="mat-headline-5" style="margin:10%;">{{config.messages.intro_message}}</div>
 
-			Authentifiez vous, pour recevoir {{config.airdrop.amount}} {{config.airdrop.token.name}}<br>
+      <br>
+      <div *ngIf="config.airdrop.token.name">Authentifiez vous, pour recevoir {{config.airdrop.amount}} {{config.airdrop.token.name}}<br></div>
+      <div *ngIf="config.airdrop.collection">
+        Authentifiez vous, pour recevoir {{config.airdrop.amount}} NFT de la collection {{config.airdrop.collection.name}}
+        <br><br>
+      </div>
+
 			<app-authent [connexion]="config.connexion"
                    [network]="config.network"
 			             (authent)="airdrop_authent($event)">
 			</app-authent>
-			<br>
-			<button mat-raised-button color="primary" (click)="redirect()">Continuez sans récompense</button>
+
+			<br><br>
+      Vous pouvez également continuer vers {{url}} sans récompense<br>
+      <br>
+			<button mat-raised-button color="primary" (click)="redirect()">Continuez</button>
 		</div>
 
-		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config && config.collection && url.length==0">
+		<div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.collection && url.length==0">
 			Pour continuer vous devez posséder un NFT de la collection
 			<span *ngIf="config.store?.length>0"><a [href]="config.store">{{config.collection.name}}</a></span>
 			<span *ngIf="!config.store || config.store.length==0">{{config.collection.name}}</span>
-			<span *ngIf="config.price>0"> puis régler {{config.price}} {{config.merchant.wallet.unity}}</span>
+			<span *ngIf="config.price>0 && config.merchant"> puis régler {{config.price}} {{config.merchant.wallet.unity}}</span>
 			<br><br>
-			<div style="margin: 10%" *ngIf="config.collection">
+			<div style="margin: 5%;width:90%;">
 				<app-autovalidator
 						[validator_name]="validator_id"
 						[collections]="[config.collection.id]"
@@ -46,8 +59,7 @@
 						(cancel)="close_form()"
 						[network]="config.network"
 						[showCollections]="false"
-						style="margin-top: 5%;"
-						title=""
+						title="Authentification requise"
 						(fail)="fail($event)"
 						(validate)="authent($event)"></app-autovalidator>
 			</div>
@@ -76,7 +88,9 @@
 
 	</div>
 
-	<button color="primary" mat-raised-button (click)="redirect()" *ngIf="url.length>0 && !config.airdrop">
+  <br>
+	<button color="primary" mat-raised-button
+          (click)="redirect()" *ngIf="url.length>0 && !config.airdrop">
 		Continuer
 	</button>
 

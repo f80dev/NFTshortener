@@ -54,28 +54,47 @@ import { TokenSelectorComponent } from './token-selector/token-selector.componen
 import {MatListModule} from "@angular/material/list";
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FilterPipe} from "./filter.pipe";
-
+import {CollectionSelectorComponent} from "./collection-selector/collection-selector.component";
+import {ShowroomComponent} from "./showroom/showroom.component";
+import {SelkeyComponent} from "./selkey/selkey.component";
+import {PluginComponent} from "./plugin/plugin.component";
+import {AffiliatedLinksComponent} from "./affiliated-links/affiliated-links.component";
+import {ScreencutterPipe} from "./screencutter.pipe";
+import {GenlinkComponent} from "./genlink/genlink.component";
+import {LinkComponent} from "./link/link.component";
+import {TutoComponent} from "./tuto/tuto.component";
+import { MenuComponent } from './menu/menu.component';
+import { MintComponent } from './mint/mint.component';
 const config: SocketIoConfig = { url: environment.server, options: {} };
 
 
 const routes: Routes = [
   { path: 'about', component: AboutComponent},
   { path: 'create', component: CreateComponent},
+  { path: 'links', component: AffiliatedLinksComponent},
+  { path: 'plugin', component: PluginComponent},
   { path: 'admin', component: AdminComponent,pathMatch: 'full' },
+  { path: 'mint', component: MintComponent},
   { path: 'redirect', component: TransferComponent},
+  { path: 'menu', component: MenuComponent},
   { path: '', component: TransferComponent},
 ]
 
 @NgModule({
   declarations: [
-      AppComponent,
+    AppComponent,
     AskForPaymentComponent,
     InputComponent,
     FaqsComponent,
+    ShowroomComponent,
     AuthentComponent,
     AdminComponent,
     PromptComponent,
-      TransferComponent,
+    TransferComponent,
+    PluginComponent,
+    LinkComponent,
+    AffiliatedLinksComponent,
+    GenlinkComponent,
     PaymentComponent,
     FileDragNDropDirective,
     SignatureComponent,
@@ -84,12 +103,18 @@ const routes: Routes = [
     SplashComponent,
     ScannerComponent,
     SafePipe,
-      FilterPipe,
+    FilterPipe,
     AboutComponent,
     CreateComponent,
     AutovalidatorComponent,
     TranslatePipe,
-    TokenSelectorComponent
+    TokenSelectorComponent,
+    CollectionSelectorComponent,
+    SelkeyComponent,
+    ScreencutterPipe,
+    TutoComponent,
+    MenuComponent,
+    MintComponent
   ],
     imports: [
         BrowserModule,

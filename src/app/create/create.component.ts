@@ -3,7 +3,16 @@ import {NetworkService} from "../network.service";
 import {Collection, Connexion} from "../../operation";
 import {NFT} from "../../nft";
 import {wait_message} from "../hourglass/hourglass.component";
-import {$$, apply_params, getParams, setParams, showError, showMessage} from "../../tools";
+import {
+  $$,
+  apply_params,
+  get_images_from_banks,
+  getParams,
+  isURL,
+  setParams,
+  showError,
+  showMessage
+} from "../../tools";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -33,13 +42,14 @@ export class CreateComponent implements OnInit {
   domain=environment.appli;
   min_required=1;
   connexion: Connexion={
+    private_key: false,
     keystore: false,
     address: false,
     direct_connect: false,
     email: false,
     extension_wallet: true,
     google: false,
-    nfluent_wallet_connect: true,
+    nfluent_wallet_connect: false,
     on_device: false,
     wallet_connect: true,
     web_wallet: true,
@@ -55,18 +65,15 @@ export class CreateComponent implements OnInit {
   final_message="";
   url: string = "";
 
-  appname: string=environment.appname;
-  visual: string=environment.visual;
-  claim: string = environment.claim;
-  background: string="";
+
+  background_image: string="";
   border: string="2px"
-  filter_by_wallet: boolean = false;
+  filter_by_wallet: boolean = true;
   size: string="98%"
   showAccessRequiredSection: boolean=true;
   token: any;
 
   local_save(){
-    localStorage.setItem("redirect",this.redirect);
     localStorage.setItem("query_collection",this.query_collection)
     localStorage.setItem("token",this.token)
   }
@@ -90,50 +97,30 @@ export class CreateComponent implements OnInit {
     })
   }
 
-  run_query($event: any,limit=300) {
-    this.nft=null;
-    if(!this.query_collection || this.query_collection==""){
-      this.collections=[];
-      return;
-    }
-    wait_message(this,"Recherche des collections contenant '"+this.query_collection+"' dans le nom")
 
-    this.api.get_collections(this.query_collection,this.network.value,false,limit).subscribe((cols)=>{
-      this.collections=cols;
 
-      if(cols.length==0){
-        showMessage(this,"Aucune collection pour cette recherche "+this.query_collection)
-      } else {
-        showMessage(this,this.query_collection.length+" collections trouvées")
-        this.collection=this.collections[0];
-        this.get_first_nft()
-      }
-      if(cols.length==limit)showMessage(this,"Il manque probablement des réponses")
-      wait_message(this)
-    })
-  }
-
-  get_first_nft() {
-    if(this.collection){
-      if(this.store.indexOf("xspotlight")>-1){
-        this.store="https://"+(this.network.value.indexOf("devnet")>-1 ? "devnet." : "")+"xspotlight.com/collections/"+this.collection.id;
-      }
-      wait_message(this,"Chargement du premier NFT")
-      this.api.get_nfts_from_collection(this.collection.id,this.network.value).subscribe((result)=>{
-        wait_message(this)
-        if(result && result.nfts.length>0){
-          this.nft=result.nfts[0];
-        }else {
-          this.nft = null;
-          showMessage(this,"Cette collection ne contient aucun NFT")
-        }
-      })
-    }
-  }
+  // get_first_nft() {
+  //   if(this.collection){
+  //     if(this.store.indexOf("xspotlight")>-1){
+  //       this.store="https://"+(this.network.value.indexOf("devnet")>-1 ? "devnet." : "")+"xspotlight.com/collections/"+this.collection.id;
+  //     }
+  //     wait_message(this,"Chargement du premier NFT")
+  //     this.api.get_nfts_from_collection(this.collection.id,this.network.value).subscribe((result)=>{
+  //       wait_message(this)
+  //       if(result && result.nfts.length>0){
+  //         this.nft=result.nfts[0];
+  //       }else {
+  //         this.nft = null;
+  //         showMessage(this,"Cette collection ne contient aucun NFT")
+  //       }
+  //     })
+  //   }
+  // }
 
   //explorer.multiversx.com/collections/
   show_login: boolean=false;
   dialog_style: string="color:white;background-color: #53576EFF;"
+  appname: string=environment.appname;
 
   price: number = 1;
   required: { nft: boolean, payment: boolean } = {nft:false,payment:false};
@@ -159,6 +146,10 @@ export class CreateComponent implements OnInit {
     open(this.store,"store")
   }
 
+  is_valide_URL(url:string){
+    return isURL(url)
+  }
+
 
 
   async create_link() {
@@ -172,7 +163,7 @@ export class CreateComponent implements OnInit {
       wallet.token=this.token.identifier
     }
     if(this.required.nft){
-      if(!this.collection || !this.nft){
+      if(!this.collection){
         showMessage(this,"Vous devez sélectionner une collection non vide");return;
       }
     }
@@ -188,7 +179,9 @@ export class CreateComponent implements OnInit {
     let r=await _prompt(this,"Confirmation de création du lien","",this.desc,"oui/non","Fabriquer","Annuler")
     if(r!="yes")return;
 
-
+    if(this.background_image!=''){
+      this.dialog_style=this.dialog_style+"background-image:url('"+this.background_image+"');background-size:cover;"
+    }
     let body:any={
       redirect:this.redirect,
       connexion:this.connexion,
@@ -237,24 +230,25 @@ export class CreateComponent implements OnInit {
     let params:any=await getParams(this.routes)
     apply_params(this,params,environment);
 
-    this.networks=(params.networks || environment.networks).split(",").map((x:any)=>{return({label:x,value:x})});
-    this.network=this.networks[0];
+    this.networks=params.networks ? params.networks.split(",").map((x:any)=>{return({label:x,value:x})}) : environment.networks
+    if(params.network){
+      for(let n of this.networks){
+        if(n.value==params.network)this.network=n;
+      }
+    } else {
+      this.network=this.networks[0];
+    }
 
-    this.bank=params.bank || environment.default_bank || ""
-    this.redirect=params.redirect ||  localStorage.getItem("redirect") || ""
-    this.required.payment=(params.required=="payment")
+    this.bank=params.bank || ""
+    this.redirect=params.redirect ||   ""
+    this.required.payment=(params.required=="payment" || params.required=="token")
     this.required.nft=(params.required=="nft")
     this.address=params.address || ""
-
 
     this.query_collection=params.query || params.collection || localStorage.getItem("query_collection") || "";
     this.domain=params.domain || environment.appli;
     this.update_token(params.token || "NFLUCOIN-4921ed")
     this.price=params.price || 0;
-    if(this.query_collection!='' && this.required.nft){
-      this.run_query(this.query_collection);
-      this.showAccessRequiredSection=true;
-    }
   }
 
   share_link() {
@@ -285,8 +279,16 @@ export class CreateComponent implements OnInit {
   //         showMessage(this,"Le presse papier ne contient pas de lien web")
   //     }
   // }
-
-
+  show_nft_store: boolean=false;
+  show_content=true;
+  show_test_wallet: boolean=false;
+  title="Limiter l'accès ou valoriser un contenu";
+  intro: any;
+  visual=environment.visual
+  claim=environment.claim
+  slide: number=1
+  show_access_condition=false;
+  background: string=""
 
 
   open_about() {
@@ -301,20 +303,13 @@ export class CreateComponent implements OnInit {
 
   async authent(connect: { strong: boolean; address: string; provider: any }) {
     this.show_login=false;
-
+    this.show_access_condition=true;
     let result:any=await this.user.init(connect.address,this.network.value,true)
-    if(this.address=='')this.address=connect.address;
-    if(this.required.nft && this.query_collection==''){
-      this.query_collection=connect.address;
-      this.run_query(connect.address);
-    }
+    this.address=connect.address;
+    this.token_filter=connect.address;
     this.showAccessRequiredSection=true;
-
   }
 
-  show_my_collection() {
-
-  }
 
   upload_file($event: any) {
     wait_message(this,"Chargement du fichier");
@@ -326,6 +321,10 @@ export class CreateComponent implements OnInit {
 
   show_esdt() {
 
+  }
+
+  select_collection(c:any){
+    this.collection=c;
   }
 
   update_token(token: any) {
@@ -350,14 +349,10 @@ export class CreateComponent implements OnInit {
     // }
   }
 
-  open_create_esdt() {
-    showMessage(this,"Depuis le wallet web, choisir la rubrique Create Token puis reporter l'identifiant dans "+this.appname,6000,()=>{
-      open("https://wallet.multiversx.com/issue-token","wallet")
-    },"Ouvrir le wallet")
-  }
+
 
   async create_account() {
-    let email=await _prompt(this,"Création d'un wallet","","Indiquer votre adresse email","text","Créer le wallet","Annuler",false)
+    let email=await _prompt(this,"Création d'un wallet pour recevoir les paiements","","Indiquer votre adresse email","text","Créer le wallet","Annuler",false)
     this.api.create_account(this.network.value,email).subscribe((r:any)=>{
       this.address=r.address;
       showMessage(this,"Consulter votre mail pour récupérer les informations de votre nouveau wallet",10000)
@@ -365,19 +360,22 @@ export class CreateComponent implements OnInit {
   }
 
   open_wallet() {
-    let url="https://explorer.multiversx.com/accounts/"+this.address+"/tokens";
-    if(this.network.value.indexOf("devnet"))url=url.replace("explorer","devnet-explorer");
-    open(url,"explorer")
+    if(this.address.length>10){
+      let url="https://explorer.multiversx.com/accounts/"+this.address+"/tokens";
+      if(this.network.value.indexOf("devnet")){
+        url=url.replace("explorer","devnet-explorer");
+      }
+      open(url,"explorer")
+    }
   }
 
-  scan_wallet($event: any) {
+  scan_wallet($event: any){
+    debugger
     this.address=$event.data
-    this.show_scanner=false;
+    this.token_filter=this.address
+    this.show_scanner=false
   }
 
-  open_search_esdt() {
-
-  }
 
   update_marketplace($event: any) {
     if($event!=""){
@@ -386,8 +384,23 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  token_filter_by_account() {
-    this.filter_by_wallet=!this.filter_by_wallet
-    this.token_filter=this.filter_by_wallet ? this.address : ""
+  token_filter_by_account(new_value:any) {
+    this.token_filter=new_value ? this.address : ""
+  }
+
+  set_public_wallet($event: any) {
+    this.address=$event.address
+    this.token_filter=this.address
+  }
+
+  on_cancel() {
+    this.show_test_wallet=false
+  }
+
+  async find_images() {
+    let images=await get_images_from_banks(this,this.api,"background",false,1)
+    if(images.length>0){
+      this.background_image=images[0].image
+    }
   }
 }

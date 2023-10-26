@@ -10,8 +10,12 @@ export const environment = {
   forum:"https://discord.gg/BfC2E2ent",
   mail:"contact@nfluent.io",
   version: "0.1dev",
-  appname:"NFlux",
-  networks:"elrond-devnet,elrond-mainnet",
+  appname:"Gate",
+  networks:[
+    {label:"MultiversX Test",value:"elrond-devnet"},
+    {label:"MultiversX",value:"elrond-mainnet"},
+    {label:"MultiversX Test v2",value:"elrond-devnet2"},
+  ],
   visual:"./assets/coffre.jpg",
   claim:"Valoriser vos contenus en quelques clics",
 
@@ -23,6 +27,9 @@ export const environment = {
   logo:"./assets/icons/icon_nfluent_256.png",
   default_bank:"http://faucet.nfluent.io",
   company:"Nfluent",
+  histo:"db-server-nfluent_local",
+  redirect_server:"http://localhost:4200",
+
 
   merchant:{
     id:"BCR2DN4TYD4Z5XCR",

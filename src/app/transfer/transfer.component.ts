@@ -19,15 +19,12 @@ import {wait_message} from "../hourglass/hourglass.component";
 })
 export class TransferComponent implements OnInit {
   url: string="";
-  show_message: string="";
   config:any={style:"",messages:{intro_message:"",fail:"Accès impossible, vous n'avez pas le NFT requis"},collection:"",store:""};
   validator_id="valid_"+now("rand")
   final_message="";
   message="";
   provider: any;
-  authentification: Connexion | undefined;
   address: string=""
-
 
   public constructor(
       public api:NetworkService,
@@ -49,10 +46,11 @@ export class TransferComponent implements OnInit {
       if(url.indexOf("?")>-1)cid=url.split("?")[1]
     }
     if(!cid || cid.length>10){
-      this.router.navigate(["create"],{queryParams:params})
+      this.router.navigate(["menu"],{queryParams:params})
     }else{
       cid=cid.split("=")[0]
       this.api._get("sl/"+cid).subscribe((r:any)=>{
+        $$("URL courte: Récupération des paramètres ",r)
         r.style=r.style || "background:none"
         r.price=r.price || 0
         this.config=r;
@@ -63,11 +61,17 @@ export class TransferComponent implements OnInit {
           this.url=r.redirect
           this.config.network=r.network;
           this.config.messages=r.messages;
-          this.address=localStorage.getItem("airdrop_address") || ""
-          this.transfert_fund(!r.airdrop.force_authent ? this.address : null)
+
+          if(r.airdrop.force_authent){
+            this.address=""
+          }else{
+            this.address=localStorage.getItem("airdrop_address") || ""
+            this.transfert_fund(this.address)
+          }
+
         }else{
           for(let k of Object.keys(this.config.messages)){
-            if(this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
+            if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
             if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
           }
           if(!r.collection && r.price==0){
@@ -94,6 +98,8 @@ export class TransferComponent implements OnInit {
     }
     if(this.config.redirect){
       this.url = this.config.redirect + (this.config.redirect.indexOf("?") > -1 ? "&" : "?") + setParams({ts: now()})
+      showMessage(this,"Vous allez être redirigé automatiquement")
+      setTimeout(()=>{this.redirect()},1000)
     }
   }
 
@@ -136,9 +142,6 @@ export class TransferComponent implements OnInit {
     }
   }
 
-  open_bank() {
-    open(this.config!.bank,"bank")
-  }
 
   airdrop_authent($event: { strong: boolean; address: string; provider: any }) {
     this.transfert_fund($event.address);
@@ -154,7 +157,8 @@ export class TransferComponent implements OnInit {
       network: this.config.network,
       refund: this.config.airdrop.amount,
       title: "",
-      token: this.config.airdrop.token.identifier
+      token: this.config.airdrop.token || "",
+      collection: this.config.airdrop.collection ? (this.config.airdrop.collection.id || "") : ""
     }
     wait_message(this,"Récompense en cours de transfert. Redirection vers "+this.url.replace("https://","")+" imminente")
     setTimeout(()=>{this.redirect();},4000);

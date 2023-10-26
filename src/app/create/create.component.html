@@ -1,331 +1,382 @@
 <app-splash
-		[appname]="appname"
-		[duration]="2000"
-		[image]="visual"
-		[description]="claim"></app-splash>
+  [appname]="appname"
+  [duration]="intro"
+  [image]="visual"
+  [description]="claim"></app-splash>
 
 
-<div class="background-form" [style.background-image]="'url('+background+')'">
-	<div class="popup-form background-component mat-elevation-z18" style="min-height: 96vh;margin:0;padding: 0;" [style.margin]="border" [style.width]="size" >
-		<mat-icon style="color:lightgray;display: block;position: absolute;right:10px;top:5px;opacity: 0.5;cursor: pointer;z-index: 10;"
-		          title="Passer en mode avancé pour accèder à des options supplémentaire"
-		          (click)="switch_mode()">
-			person_add
-		</mat-icon>
+<!--tutoriel-->
+<app-tuto title="{{appname}} fonctionne comme un 'péage' entre vos utilisateurs et vos contenus web"
+          background="./assets/peage.jpg"
+          [duration]="40" *ngIf="slide==1" (close)="slide=slide+1"></app-tuto>
 
-		<div class="titleform" style="cursor: pointer;margin:15px;" (click)="open_about()">{{appname}}</div>
+<app-tuto title="Le passage de ce péage peut se faire par contrôle de NFT ou par versement d'une crypto"
+          [duration]="40" background="./assets/coins.webp"
+          *ngIf="slide==2" (close)="slide=slide+1"></app-tuto>
 
-		<app-hourglass [message]="message"></app-hourglass>
+<app-tuto title="Dans les deux cas, l'utilisateur doit s'authentifier puis<br><ul><li>payer en crypto</li><li>ou posséder le NFT requis</li></ul>"
+          background="./assets/scan.webp" align="left"
+          [duration]="40"
+          *ngIf="slide==3" (close)="slide=slide+1"></app-tuto>
 
-		<div style="max-width: 350px;display: inline-block;" *ngIf="show_login">
-			<app-authent [connexion]="connexion"
+
+<div class="background-form" [style.background-image]="'url('+background+')'" *ngIf="slide>3">
+  <div class="popup-form background-component mat-elevation-z18"
+       style="min-height: 100vh;margin:0;padding: 0;"
+       [style.margin]="border" [style.width]="size" >
+    <mat-icon style="color:lightgray;display: block;position: absolute;right:10px;top:5px;opacity: 0.5;cursor: pointer;z-index: 10;"
+              title="Passer en mode avancé pour accèder à des options supplémentaire"
+              (click)="switch_mode()">
+      person_add
+    </mat-icon>
+
+    <div class="titleform" style="cursor: pointer;margin:15px;" (click)="open_about()">{{title}}</div>
+
+    <app-hourglass [message]="message"></app-hourglass>
+
+    <div style="max-width: 350px;display: inline-block;" *ngIf="show_login">
+      <app-authent [connexion]="connexion"
                    [network]="network.value"
                    (cancel)="show_login=false"
-			             (authent)="authent($event)">
-			</app-authent>
+                   (authent)="authent($event)">
+      </app-authent>
 
-			<button mat-raised-button (click)="show_login=false">Annuler</button>
-		</div>
+      <button mat-raised-button (click)="show_login=false">Annuler</button>
+    </div>
 
 
-		<div *ngIf="url=='' && !show_login">
+    <div *ngIf="url=='' && !show_login">
 
-			<div class="expansion-content-left">
-				<app-input [label]="'Adresse du contenu' | translate" autofocus
-				           fontname="mat-subheading-1"
-				           [value]="redirect" (valueChange)="redirect=$event;local_save();"
-				           style="width: 70%;"
-				           (validate)="showAccessRequiredSection=true"
-				           help="Lien internet vers une page, un fichier, une vidéo"></app-input>
+      <mat-accordion [multi]="false">
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>Détail du contenu</mat-expansion-panel-header>
+          <div class="expansion-content-left" style="width: 100%;">
+            <p style="width: 70%;">
+              Indiquer le lien ou le fichier à protéger par NFT ou facturer par crypto
+            </p>
+            <app-input [label]="'Adresse du contenu' | translate" autofocus
+                       fontname="mat-subheading-1"
+                       [value]="redirect" (valueChange)="redirect=$event;local_save();"
+                       style="width: 80%;"
+                       (validate)="showAccessRequiredSection=true"
+                       help="Lien internet vers une page, un fichier, une vidéo"></app-input>
 
-				<div style="margin-left: 1%;">
-<!--					<button mat-icon-button title="Récupérer le contenu du presse papier"-->
-<!--					        (click)="paste_url()">-->
-<!--						<mat-icon>contentt_paste</mat-icon>-->
-<!--					</button>-->
 
-					<app-upload-file (uploaded)="upload_file($event)"
-					                 [title]="'Charger un fichier'"
-					                 [maxsize]="10000000"
-					                 [zone]="true" style="display: inline-block;"
-					                 icon="file_upload"></app-upload-file>
-				</div>
+            <!--					<button mat-icon-button title="Récupérer le contenu du presse papier"-->
+            <!--					        (click)="paste_url()">-->
+            <!--						<mat-icon>contentt_paste</mat-icon>-->
+            <!--					</button>-->
 
-			</div>
+            <app-upload-file (uploaded)="upload_file($event)"
+                             [title]="'Charger un fichier'"
+                             [maxsize]="10000000"
+                             [zone]="true" style="margin-left: 2%;display: inline-flex;"
+                             icon="file_upload"></app-upload-file>
 
-			<app-input [label]="'Délivrer un message' | translate"
-			           style="width: 70%"
-			           [value]="messages.success" (valueChange)="messages.success=$event"
-			           value_type="memo" [rows]="2" [cols]="40" *ngIf="user.advance_mode"
-			           help="Message à afficher"></app-input>
 
-			<mat-expansion-panel [expanded]="showAccessRequiredSection" *ngIf="redirect && redirect.length>3">
-				<mat-expansion-panel-header>{{"Restrictions d'accès" | translate}}</mat-expansion-panel-header>
+            <app-input [label]="'Délivrer un message' | translate"
+                       style="width: 70%"
+                       [value]="messages.success" (valueChange)="messages.success=$event"
+                       value_type="memo" [rows]="2" [cols]="40" *ngIf="user.advance_mode"
+                       help="Message à afficher"></app-input>
 
-				<div class="expansion-content-left">
-					<br>
-					<div style="width: 35%;text-align: left;margin-top: -20px;">
-						<mat-slide-toggle [(ngModel)]="required.nft">Posséder un NFT</mat-slide-toggle><br><br>
-						<mat-slide-toggle [(ngModel)]="required.payment">Paiement</mat-slide-toggle>
-					</div>
+            <app-input label="Message de promotion / mise en avant du contenu" style="margin-top: 5px;width:100%;"
+                       *ngIf="is_valide_URL(redirect)"
+                       [help]="'Message affiché à l\'ouverture du lien court créé par '+this.appname"
+                       [value]="messages.intro" (valueChange)="messages.intro=$event"
+            ></app-input>
 
-					<app-input label="Blockchain / Réseau" value_type="list"
-					           [value]="network" (valueChange)="network=$event"
-					           [style.opacity]="required.nft || required.payment ? 1 : 0.2"
-					           width="160px"
-					           [options]="networks" style="display: inline-block;"
-					           help="saisissez votre url de rediretion"></app-input>
 
-				</div>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel *ngIf="is_valide_URL(redirect)" [expanded]="show_access_condition">
+          <mat-expansion-panel-header>{{"Conditions d'accès" | translate}}</mat-expansion-panel-header>
 
-				<div style="display: inline-block;" *ngIf="required.payment || required.nft">
-					<button mat-raised-button (click)="show_login=true"
-					        title="Se connecter à son wallet"
-					        *ngIf="!show_login && !user.isConnected()">
-						Connexion
-					</button>
-
-					<button mat-raised-button (click)="user.logout();show_login=false;"
-					        title="Se déconnecter"
-					        *ngIf="user.isConnected()">
-						Déconnexion
-					</button>
-				</div>
-
-				<br>
-				<mat-tab-group animationDuration="1000ms" style="margin-left: -10px;">
-					<mat-tab label="NFT" *ngIf="required.nft" style="margin-left: -10px;">
-					<div style="margin-top: 10px;">
-						<div class="expansion-content"  *ngIf="network && collections.length==0">
-
-							<app-input label="Nom d'une collection / Wallet" [value]="query_collection"
-							           width="90%"
-                         [showClear]="true"
-							           (valueChange)="query_collection=$event"
-							           label_button="Chercher"
-							           (validate)="run_query($event)"
-							           help="saisissez votre url de rediretion"></app-input>
-
-							<!--					<button mat-icon-button *ngIf="user.addr!=''" (click)="show_my_collection()">-->
-							<!--						<mat-icon>person</mat-icon>-->
-							<!--					</button>-->
-
-<!--							<button mat-raised-button [disabled]="query_collection==''" (click)="open_gallery()"-->
-<!--							        style="margin-top: -20px;margin-left: 10px;">-->
-<!--								Explorer-->
-<!--							</button>-->
-
-						</div>
-
-						<br>
-
-            <div *ngIf="query_collection!='' && collections.length==0">
-              Aucune collection disponible
+          <div class="expansion-content-left" style="justify-content:space-between;margin-top: -25px;">
+            <div style="width: 45%;margin-left:-10px;text-align: left;">
+              <mat-slide-toggle [(ngModel)]="required.nft" (click)="show_content=false">Posséder un NFT</mat-slide-toggle>
+              <br><br>
+              <mat-slide-toggle [(ngModel)]="required.payment"  (click)="show_content=false">Paiement</mat-slide-toggle>
             </div>
 
-						<div class="expansion-content"  *ngIf="collections && collections.length>0">
-							<app-input [label]="'Sélectionner une collection' | translate" [options]="collections"
-							           style="width:60%;color:white;" value_type="list"
-							           [value]="collection" (valueChange)="collection=$event;get_first_nft();local_save();"></app-input>
+            <app-input label="Blockchain / Réseau" value_type="list"
+                       [value]="network" (valueChange)="network=$event"
+                       [style.opacity]="required.nft || required.payment ? 1 : 0.2"
+                       width="160px"
+                       [options]="networks" style="display: inline-block;margin-left: 10px;"
+                       help="saisissez votre url de rediretion"></app-input>
 
-              <button mat-icon-button  (click)="collections=[]">
-                <mat-icon>cancel</mat-icon></button>
+          </div>
 
-							<app-input value_type="number" [value]="min_required" (valueChange)="min_required=$event"
-							           width="120px"
-							           label="Quantité requise"></app-input>
+          <div style="display: inline-block;" *ngIf="required.payment || required.nft">
+            <!--          <button mat-raised-button (click)="show_login=true"-->
+            <!--                  title="Se connecter à son wallet"-->
+            <!--                  *ngIf="!show_login && !user.isConnected()">-->
+            <!--            Connexion-->
+            <!--          </button>-->
 
-						</div>
+            <button mat-raised-button (click)="user.logout();show_login=false;"
+                    title="Se déconnecter"
+                    *ngIf="user.isConnected()">
+              Déconnexion
+            </button>
+          </div>
+
+          <br>
+          <mat-tab-group animationDuration="1000ms" style="margin-left: -10px;min-height:200px;">
+            <mat-tab label="NFT" *ngIf="required.nft" style="margin-left: -10px;">
+              <div style="margin-top: 10px;width:100%;">
+
+                <br>
+
+                <app-collection-selector [network]="network.value"
+                                         [owner]="address"
+                                         [query]="query_collection"
+                                         w_image="150px" [min_supply]="1"
+                                         title="Sélectionner une collection (toutes non vides)"
+                                         (selected)="select_collection($event)">
+                </app-collection-selector>
 
 
-						<div *ngIf="nft && nft.visual && collections.length>0 && collection">
-							<br>
-              {{'Le premier NFT de cette collection' | translate}}
-              <mat-icon style="cursor:pointer" (click)="open_gallery(collection.id)">explorer</mat-icon>
-              <br>
-							<img class="mat-elevation-z6" [src]="nft.visual" style="width:150px;margin:20px;">
-							<br><br>
-						</div>
+                <div *ngIf="collection">
+                  <p>
+                    <br>
+                    Le visiteur doit posséder au moins {{min_required}} NFT de la collection {{collection.name}}<br><br>
+                    Attention aux contre-façons, ne pas se baser uniquement sur le nom de la collection mais également sur son identifiant
+                    <strong>{{collection.id}}</strong>
+                  </p>
 
-						<div style="width: 100%;display:flex;justify-content: stretch;" *ngIf="collections.length>0">
-							<app-input [label]="'Lien pour aquérir un NFT' | translate"
-							           style="width: 65%;"
-							           [value]="store" (valueChange)="store=$event"
-							           help="URL de la boutique"></app-input>
+                  <div class="expansion-content" >
 
-							<app-input [label]="'Marketplace' | translate"
-							           style="width: 25%;" value_field="value"
-							           [options]="marketplaces" (valueChange)="update_marketplace($event)"
-							           help="URL de la boutique"></app-input>
+                    <app-input value_type="number" [value]="min_required" (valueChange)="min_required=$event"
+                               width="120px"
+                               help="Mininum de NFT requis"
+                               label="Quantité requise"></app-input>
 
-							<button mat-icon-button style="margin:10px;margin-top: 20px;" (click)="open_store()">
-								<mat-icon>visibility</mat-icon>
-							</button>
-						</div>
-					</div>
-					</mat-tab>
-					<mat-tab label="Paiement" *ngIf="required.payment" >
-						<div  class="expansion-content" style="margin-top: 10px;margin-left: -15px;width:100%;">
-							<div *ngIf="show_scanner">
-								<app-scanner (flash)="scan_wallet($event)"
-								             (cancel)="show_scanner=false"
-								             size="200px"
-								></app-scanner>
+                    <button mat-raised-button
+                            *ngIf="!show_nft_store"
+                            title="Ajouter un lien présenter au contrôle pour acheter le NFT manquant"
+                            (click)="show_nft_store=true">
+                      Ajouter un store NFT
+                    </button>
 
-							</div>
 
-							<div class="expansion-content-left" style="width: 110%;">
-								<app-input label="Adresse des paiements" style="width: 66%"
-								           [value]="address" (valueChange)="address=$event;local_save();"
-								           help="Adresse du wallet récupérant le paiement"></app-input>
+                    <app-input [label]="'Site web pour aquérir un NFT' | translate"
+                               style="width: 200px;"
+                               *ngIf="show_nft_store"
+                               [value]="store" (valueChange)="store=$event"
+                               help="URL de la boutique"></app-input>
 
-								<div style="margin-top: -10px;">
+                    <app-input [label]="'Marketplace' | translate"
+                               style="width: 100px;" value_field="value"
+                               *ngIf="show_nft_store"
+                               [options]="marketplaces" (valueChange)="update_marketplace($event)"
+                               help="URL de la boutique"></app-input>
+
+                    <button mat-icon-button
+                            *ngIf="show_nft_store"
+                            (click)="open_store()">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+
+
+
+                  </div>
+
+                </div>
+
+
+              </div>
+            </mat-tab>
+            <mat-tab label="Paiement" *ngIf="required.payment" >
+              <div  class="expansion-content" style="margin-top: 10px;margin-left: -5px;width:100%;">
+                <div *ngIf="show_scanner">
+                  <app-scanner (flash)="scan_wallet($event)"
+                               (cancel)="show_scanner=false"
+                               size="200px"
+                  ></app-scanner>
+
+                </div>
+
+
+
+                <app-input label="Adresse de paiement" style="width: 100%;"
+                           [value]="address" (valueChange)="address=$event;local_save();"
+                           (cancel)="on_cancel()"
+                           [force_preview]="true" (preview)="open_wallet()"
+                           help="Adresse du wallet récupérant le paiement"></app-input>
+
+
+
+                <div class="expansion-content-left" style="justify-content:center;width: 100%;" *ngIf="address==''">
+
+                  <button mat-icon-button
+                          title="Les wallets de test"
+                          *ngIf="network.value=='elrond-devnet'"
+                          (click)="show_test_wallet=!show_test_wallet">
+                    <mat-icon>build</mat-icon>
+                  </button>
+
+
                   <button mat-icon-button
                           title="Scanner un wallet"
+                          *ngIf="!show_test_wallet"
                           (click)="show_scanner=!show_scanner">
                     <mat-icon>qr_code_scanner</mat-icon></button>
 
+
                   <button mat-icon-button
-                          (click)="show_login=true"
+                          (click)="show_login=true" *ngIf="!show_test_wallet"
                           title="L'adresse de votre wallet">
                     <mat-icon>login</mat-icon>
                   </button>
 
-
-                  <button mat-icon-button
-                          *ngIf="address==''"
-                          title="Créer un wallet"
+                  <button mat-icon-button *ngIf="!show_test_wallet"
+                          title="Créer un wallet pour recevoir les paiements"
                           (click)="create_account()">
                     <mat-icon>add_circle</mat-icon>
                   </button>
 
-                  <button mat-icon-button
-                          *ngIf="address!=''"
-                          title="Voir le wallet"
-                          (click)="open_wallet()">
-                    <mat-icon>visibility</mat-icon>
-                  </button>
+
+                  <app-selkey
+                    *ngIf="show_test_wallet"
+                    style="display:inline-flex;width:250px;"
+                    [can_see_explorer]="false"
+                    [with_balance]="false"
+                    [default_index]="-1"
+                    [can_see_nfluent_wallet]="false"
+                    filter="bob,alice,dudule,carol,franck,eve,dan"
+                    label="wallets test"
+                    (onChange)="set_public_wallet($event)"
+                    [network]="network.value"></app-selkey>
+
+
                 </div>
 
-                <app-input label="Voir uniquement les monnaies de l'adresse de paiement"
-                           value_type="boolean" [value]="filter_by_wallet" style="margin-left: 10px;margin-top: -15px;"
-                           *ngIf="address!=''" (valueChange)="token_filter_by_account()">
-                </app-input>
+
+                <div class="expansion-content-left" style="align-items: flex-start;" *ngIf="address!=''">
+                  <br>
+                  <app-input label="Voir uniquement les monnaies de l'adresse de paiement"
+                             value_type="boolean"
+                             [value]="filter_by_wallet"
+                             style="text-align:left;margin-top:-5px;margin-left: 10px;margin-bottom: 5px;"
+                             (valueChange)="token_filter_by_account($event)">
+                  </app-input>
+                  <br>
+                  <app-token-selector label="Monnaie sélectionnée"
+                                      style="width: 100%;margin: 5px;display:flex;"
+                                      [owner]="token_filter"
+                                      (unselect)="token=null"
+                                      [value]="token" [network]="network.value" size="30px"
+                                      (valueChange)="update_token($event)"></app-token-selector>
+
+
+                  <!--								<button mat-icon-button-->
+                  <!--								        title="Chercher une monnaie"-->
+                  <!--								        (click)="open_search_esdt()"><mat-icon>explorer</mat-icon></button>-->
+                </div>
+
+
+                <div *ngIf="address!='' && token" style="width: 100%;margin-top: 15px">
+                  <app-input label="Montant demandé" value_type="number"
+                             style="width:100%;max-width: 350px;"
+                             [unity]="token.name"
+                             [value]="price" (valueChange)="price=$event"
+                             help="Le visiteur doit également disposé de quelques fraction d'eGld pour les frais de services"></app-input>
+
+
+                  <!--                <div style="width: 25%;text-align:center;margin-top:-15px;display: inline-block">Monnaie:-->
+                  <!--                  <div class="color-primary mat-subheading-1">{{token.name}}</div>-->
+                  <!--                </div>-->
+                  <!--                <div style="width: 70px;margin-top:-10px;display: inline-block" *ngIf="!token" class="color-primary">Token non valide</div>-->
+
+                  <br>
+                  <app-input [label]="'Lien d\'information ou d\'achat pour la monnaie \''+token.name+'\''"
+                             style="width:100%;max-width: 350px;"
+                             [value]="bank" (valueChange)="bank=$event"
+                             help="Il peut être interessant de préciser ou le visiteur peut acquérir la monnaie demandée"></app-input>
+
+                </div>
 
               </div>
 
-
-							<div class="expansion-content-left" style="align-items: flex-start;" *ngIf="address!=''">
-								<app-token-selector label="Monnaie utilisée" style="width: 75%;margin: 5px;"
-                                    [owner]="token_filter"
-                                    (unselect)="token=null"
-								                    [value]="token" [network]="network.value" size="30px"
-								                    (valueChange)="update_token($event)"></app-token-selector>
+            </mat-tab>
+          </mat-tab-group>
 
 
-                <button mat-icon-button
-								        title="Créer une monnaie"
-								        (click)="open_create_esdt()"><mat-icon>build</mat-icon></button>
+        </mat-expansion-panel>
+        <mat-expansion-panel *ngIf="user.advance_mode">
+          <mat-expansion-panel-header>Méthode d'authentification</mat-expansion-panel-header>
+          Authentification possible via:<br><br>
+          <div *ngIf="network.indexOf('elrond')>-1" style="width: 100%;text-align: left;">
+            <mat-slide-toggle [(ngModel)]="connexion.wallet_connect">Wallet Connect</mat-slide-toggle><br><br>
+            <mat-slide-toggle [(ngModel)]="connexion.extension_wallet">Defi Wallet Extension</mat-slide-toggle><br><br>
+            <mat-slide-toggle [(ngModel)]="connexion.nfluent_wallet_connect" title="Wallet dédié NFluent">Nfluent Wallet</mat-slide-toggle><br><br>
+            <mat-slide-toggle [(ngModel)]="connexion.email" title="Email">Email</mat-slide-toggle><br>
+          </div>
 
-<!--								<button mat-icon-button-->
-<!--								        title="Chercher une monnaie"-->
-<!--								        (click)="open_search_esdt()"><mat-icon>explorer</mat-icon></button>-->
-							</div>
+        </mat-expansion-panel>
+        <mat-expansion-panel *ngIf="(required.payment || required.nft) && is_valide_URL(redirect)">
+          <mat-expansion-panel-header>Personnalisation des messages</mat-expansion-panel-header>
+          <app-tuto
+            [force]="true"
+            label="L'usage des termes __collection__ ou __coin__  permet d'intégrer le nom des collection et monnaie dans les messages"></app-tuto>
+          <br>
 
+          <app-input label="Message en cas d'échec" style="margin-top: 30px;"
+                     [value]="messages.fail" (valueChange)="messages.fail=$event"
+                     help="Message affiché lorsque le visiteur n'a pas le NFT requis"></app-input>
+          <br>
 
-							<div class="expansion-content-left" *ngIf="address!='' && token">
-								<app-input label="Montant demandé à l'ouverture du lien" value_type="number" style="width: 65%;"
-								           [value]="price" (valueChange)="price=$event"
-								           help="Prix demandé"></app-input>
+          <app-input label="Message en cas de succes" style="margin-top: 30px;"
+                     [value]="messages.success" (valueChange)="messages.success=$event"
+                     help=""></app-input><br>
 
-								<div style="width: 25%;text-align:center;margin-top:-15px;display: inline-block">Monnaie:
-									<div class="color-primary mat-subheading-1">{{token.name}}</div>
-								</div>
-								<div style="width: 70px;margin-top:-10px;display: inline-block" *ngIf="!token" class="color-primary">Token non valide</div>
-							</div>
+          <div class="expansion-content-left" style="margin-top: -20px;">
+            <app-input label="Image de fond" style="width:75%;margin-right: 10px;"
+                       [value]="background_image" (valueChange)="background_image=$event"
+                       help="Cette image sera affiché comme fond d'écran"></app-input>
 
+            <button mat-raised-button (click)="find_images()">Banques d'images</button>
 
-							<div class="expansion-content-left" *ngIf="address!='' && token">
-								<app-input [label]="'Adresse pour acheter du '+token.name"
-								           style="width: 65%;"
-								           *ngIf="user.advance_mode || bank!.length>0"
-								           [value]="bank" (valueChange)="bank=$event"
-								           help="Si l'internaute ne posséde pas la monnaie requise"></app-input>
+          </div>
 
-							</div>
+          <br>
 
-						</div>
+          <app-input label="Style de la fenêtre" *ngIf="user.advance_mode" style="margin-top: 30px;"
+                     [value]="dialog_style" (valueChange)="dialog_style=$event"
+                     help=""></app-input>
 
-					</mat-tab>
-				</mat-tab-group>
+        </mat-expansion-panel>
+      </mat-accordion>
 
+      <br>
+      <button mat-raised-button color="primary"
+              style="width: 150px"
+              [disabled]="!is_valide_URL(redirect) || (!token && !collection)"
+              title="Fabrication du lien payant / nécessitant le NFT"
+              (click)="create_link()">Suivant</button>
 
-			</mat-expansion-panel>
+    </div>
 
+    <div *ngIf="url!=''">
+      <br>
+      {{desc}} en utilisant le lien :
+      <br><br>
+      <div class="color-primary mat-subheading-1">{{url}}</div>
+      <br>
 
-			<mat-expansion-panel *ngIf="user.advance_mode">
-				<mat-expansion-panel-header>Méthode d'authentification</mat-expansion-panel-header>
-				Authentification possible via:<br><br>
-				<div *ngIf="network.indexOf('elrond')>-1" style="width: 100%;text-align: left;">
-					<mat-slide-toggle [(ngModel)]="connexion.wallet_connect">Wallet Connect</mat-slide-toggle><br><br>
-					<mat-slide-toggle [(ngModel)]="connexion.extension_wallet">Defi Wallet Extension</mat-slide-toggle><br><br>
-					<mat-slide-toggle [(ngModel)]="connexion.nfluent_wallet_connect" title="Wallet dédié NFluent">Nfluent Wallet</mat-slide-toggle><br><br>
-					<mat-slide-toggle [(ngModel)]="connexion.email" title="Email">Email</mat-slide-toggle><br>
-				</div>
+      <img [src]="url_qrcode" style="width: 80%;max-width: 250px">
+      <br><br><br>
 
-			</mat-expansion-panel>
+      <button mat-raised-button color="primary" (click)="share_link()">Partager</button>
+      <button mat-raised-button (click)="reset()">Nouveau</button>
+      <button mat-raised-button (click)="open_link()">Tester</button>
 
-			<mat-expansion-panel *ngIf="(required.payment || required.nft) && redirect && redirect.length>3 && redirect.indexOf('.')>0">
-				<mat-expansion-panel-header>Présentation</mat-expansion-panel-header>
-				<p style="width:80%">L'usage des termes __collection__ ou __coin__  permet d'intégrer le nom des collection et monnaie dans les messages</p>
-				<br>
-				<app-input label="Message d'accueil" style="margin-top: 15px;"
-				           [help]="'Message affiché à l\'ouverture du lien court créé par '+this.appname"
-				           [value]="messages.intro" (valueChange)="messages.intro=$event"
-				           ></app-input>
-				<br>
-
-				<app-input label="Message en cas d'échec" style="margin-top: 30px;"
-				           [value]="messages.fail" (valueChange)="messages.fail=$event"
-				           help="Message affiché lorsque le visiteur n'a pas le NFT requis"></app-input>
-				<br>
-
-				<app-input label="Message en cas de succes" style="margin-top: 30px;"
-				           [value]="messages.success" (valueChange)="messages.success=$event"
-				           help=""></app-input><br>
-
-				<app-input label="Style de la fenêtre" *ngIf="user.advance_mode" style="margin-top: 30px;"
-				           [value]="dialog_style" (valueChange)="dialog_style=$event"
-				           help=""></app-input>
-
-			</mat-expansion-panel>
-
-			<button mat-raised-button color="primary" class="mat-headline-6"
-			        style="width: 150px"
-			        [disabled]="!redirect || redirect.length<3"
-			        (click)="create_link()">Créer le lien</button>
-			<br>
-
-		</div>
-
-		<div *ngIf="url!=''">
-			<br>
-			{{desc}} en utilisant le lien :
-			<br><br>
-			<div class="color-primary mat-subheading-1">{{url}}</div>
-			<br>
-
-			<img [src]="url_qrcode" style="width: 80%;max-width: 250px">
-			<br><br><br>
-
-			<button mat-raised-button color="primary" (click)="share_link()">Partager</button>
-			<button mat-raised-button (click)="reset()">Nouveau</button>
-			<button mat-raised-button (click)="open_link()">Tester</button>
-
-		</div>
+    </div>
 
 
-	</div>
+  </div>
 
 
 </div>

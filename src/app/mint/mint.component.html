@@ -1,0 +1,20 @@
+<div class="mainform">
+  <p style="margin-top: 50px;">
+    La création de monnaie n'est pas encore prise en charge.
+    Cette fonction est néanmoins possible en passant par le wallet web.
+  </p>
+
+  <app-input label="Blockchain / Réseau" value_type="list"
+             [value]="network" (valueChange)="network=$event"
+             width="300px" fontname="mat-headline-6"
+             [options]="networks" style="display: inline-block;margin-top:50px;"
+             help="saisissez votre url de rediretion"></app-input>
+
+  <br>
+  <button mat-raised-button (click)="open_wallet()"
+          color="primary"
+          style="margin-top: 50px;">
+    Accèder au wallet
+  </button>
+
+</div>
