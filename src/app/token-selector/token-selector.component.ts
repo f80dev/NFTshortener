@@ -1,22 +1,42 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NetworkService} from "../network.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {$$, showMessage} from "../../tools";
+import {_prompt} from "../prompt/prompt.component";
+import {MatDialog} from "@angular/material/dialog";
+import {HourglassComponent} from "../hourglass/hourglass.component";
+import {MatFormField} from "@angular/material/form-field";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatIcon} from "@angular/material/icon";
+import {InputComponent} from "../input/input.component";
+import {NgIf} from "@angular/common";
+import {LinkComponent} from "../link/link.component";
 
 const BACKUP_IMG="https://tokenforge.nfluent.io/assets/icons/egld-token-logo.webp"
 
 @Component({
   selector: 'app-token-selector',
+  standalone: true,
+    imports: [
+        HourglassComponent,
+        MatFormField,
+        MatSelect,
+        MatOption, NgIf,
+        MatIcon,
+        InputComponent, LinkComponent
+    ],
   templateUrl: './token-selector.component.html',
   styleUrls: ['./token-selector.component.css']
 })
-export class TokenSelectorComponent implements OnChanges {
+export class TokenSelectorComponent implements OnChanges,OnInit {
   @Input() network:string=""
   @Input() filter:string=""
+  @Input() owner:string=""
   @Input() type:string="Fungible";
   @Input() size:string="30px";
+  @Input() size_selected:string="80px";
+  @Input() label_selected:string="Monnaie sélectionnée"
   @Input() refresh_delay:number=0;
-  @Input() owner:string=""
   @Input() show_createtoken_button=true;
   @Input("value") sel_token:any={id:""}
   @Input() label="Sélectionner un token"
@@ -30,23 +50,24 @@ export class TokenSelectorComponent implements OnChanges {
   message: string="";
   handler:any
   filter_by_name="";
-  save_owner: string="";
+  owner_filter: string="";
   handle: any=0
-
+  sel_filter="all";
 
   constructor(
       public api:NetworkService,
-      public toast:MatSnackBar
+      public toast:MatSnackBar,
+      public dialog:MatDialog
   ) {
 
   }
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes["owner"] && changes["owner"].currentValue!="")this.save_owner=changes["owner"].currentValue
+
     if(changes["network"] || changes["filter"] || changes["owner"]){
-      if(changes["owner"].currentValue==0)clearInterval(this.handle)
-      this.refresh();
+      if(!changes["owner"] || changes["owner"].currentValue=="")clearInterval(this.handle)
+      setTimeout(()=>{this.refresh();},500)
     }
     if(changes["refresh_delay"] && this.handle==0 && changes["refresh_delay"].currentValue>0){
       $$("Mise en place d'une collection des ESDT toute les "+changes["refresh_delay"].currentValue+" secondes")
@@ -66,12 +87,22 @@ export class TokenSelectorComponent implements OnChanges {
   }
 
 
+  ngOnInit() {
+    if(this.owner!=''){
+      this.owner_filter=this.owner;
+      this.sel_filter="owner"
+    }else{
+      this.sel_filter="all"
+      this.owner_filter=""
+    }
+  }
+
   refresh() : void {
     if(!this.filter)this.filter="";
     if(this.network=="")return
 
-    if(!this.handle || this.refresh_delay==0)this.message="Recherche des monnaies"+(this.owner ? " de "+this.owner : "")
-    this.api.find_tokens(this.network,this.owner,this.with_detail,2000).subscribe({next:(tokens:any[])=>{
+    if(!this.handle || this.refresh_delay==0)this.message="Recherche des monnaies"+(this.owner_filter ? " de "+this.owner_filter : "")
+    this.api.find_tokens(this.network,this.owner_filter,this.with_detail,2000).subscribe({next:(tokens:any[])=>{
         this.tokens=[];
         this.message=""
         for(let t of tokens){
@@ -105,13 +136,11 @@ export class TokenSelectorComponent implements OnChanges {
     this.handler=setTimeout(()=>{this.refresh()},1000)
   }
 
-  switch_token() {
-    if(this.owner==""){
-      this.owner=this.save_owner;
-      this.label="Monnaies du wallet"
+  switch_token(evt:any) {
+    if(evt=="owner"){
+      this.owner_filter=this.owner;
     }else{
-      this.label="Toutes les monnaies"
-      this.owner=""
+      this.owner_filter=""
     }
     this.refresh();
   }
@@ -120,5 +149,15 @@ export class TokenSelectorComponent implements OnChanges {
     showMessage(this,"Depuis le wallet web, choisir la rubrique Create Token puis reporter l'identifiant",6000,()=>{
       open("https://wallet.multiversx.com/issue-token","wallet")
     },"Ouvrir le wallet")
+  }
+
+  async open_search_token() {
+    let rep:string=await _prompt(this,"Rechercher sur le nom","","","text","Rechercher","Annuler",false)
+    if(rep){
+      this.filter_by_name=rep
+    } else {
+      this.filter_by_name=""
+    }
+
   }
 }

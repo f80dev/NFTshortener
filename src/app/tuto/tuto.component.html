@@ -33,8 +33,8 @@
 </div>
 
 <!--Présentation en mode plein écran-->
-<div *ngIf="_type=='title'" [ngStyle]="contentStyle">
-  <div [ngStyle]="background_style" ></div>
+<div *ngIf="_type=='title'" [style]="contentStyle">
+  <div [style]="background_style" ></div>
   <div  *ngIf="_type=='title'" style="width:100%;height: 100%;text-align: center;position:fixed;display:block;left:0;top:0;z-index: 9000000;backdrop-filter: none;">
 
     <div style="margin: 10%;width:80%;margin-bottom:1%;display: inline-block;" [style.text-align]="text_align"
@@ -50,7 +50,7 @@
     <!--        Si pad d'image on créé un espace-->
     <div *ngIf="image!.length==0" style="margin-top:5%;"></div>
 
-    <div [ngStyle]='{display:"inline-block",width:"90%","margin-left":"5%","margin-top":"5%","text-align":text_align,"font-size": "medium","margin-bottom": "5vh"}'
+    <div [style]='{display:"inline-block",width:"90%","margin-left":"5%","margin-top":"5%","text-align":text_align,"font-size": "medium","margin-bottom": "5vh"}'
          [innerHTML]="subtitle"></div>
 
     <br>

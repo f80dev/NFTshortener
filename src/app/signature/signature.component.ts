@@ -2,9 +2,14 @@ import {Component, Input, OnInit} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {Router} from "@angular/router";
 import {NetworkService} from "../network.service";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-signature',
+  standalone:true,
+  imports: [
+    MatIcon
+  ],
   templateUrl: './signature.component.html',
   styleUrls: ['./signature.component.css']
 })

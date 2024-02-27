@@ -516,7 +516,7 @@ export function hasWebcam(result:boolean) {
 
 
 export function showError(vm:any,err:any=null){
-  $$("!Error ",err);
+  $$("!Error ",err.message);
   if(vm && vm.hasOwnProperty("message"))vm.message="";
   let mes="Oops, un petit problème technique. Veuillez recommencer l'opération";
   if(err && err.hasOwnProperty("error"))mes=err.error;
@@ -653,6 +653,7 @@ export function getWalletUrl(network="elrond"): string {
 
 export function detect_type_network(network:string){
   if(network.indexOf("devnet")>-1)return "devnet";
+  if(network.toLowerCase().indexOf(" test")>-1)return "devnet";
   return "mainnet";
 }
 
@@ -685,12 +686,18 @@ export interface Bank {
   histo: string //Base de données de stockage de l'historique des transactions
 }
 
-export function convert_to_list(text:string="",separator=",") : string[] {
+export function convert_to_list(text:string="",separator=",",labelandvalue=false) : any[] {
   if(!text)return [];
   if(typeof text!="string")return text;
   text=text.trim()
   if(text.length==0)return [];
-  return text.split(",");
+  let rc:any[]=text.split(",")
+  if(labelandvalue){
+    rc=[]
+    for(let t of text.split(","))
+      rc.push({label:t,value:t})
+  }
+  return rc
 }
 
 export function extract_bank_from_param(params:any) : Bank | undefined {

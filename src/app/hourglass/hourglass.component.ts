@@ -1,17 +1,30 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Router} from '@angular/router';
+import {$$} from "../../tools";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {MatIcon} from "@angular/material/icon";
+import {NgIf, NgStyle} from "@angular/common";
+import {MatProgressBar} from "@angular/material/progress-bar";
 
 export function wait_message(vm:any,message="",modal=false,duration=1000000) : boolean {
   //Active les messages d'attentes
   if(!vm.hasOwnProperty("message"))return false;
   if(vm.hasOwnProperty("modal"))vm.modal=modal;
   vm.message=message;
+  $$("Affichage de "+message)
   setTimeout(()=>{vm.message=""},duration);
   return true;
 }
 
 @Component({
   selector: 'app-hourglass',
+  standalone:true,
+  imports: [
+    MatProgressSpinner,
+    MatIcon,
+    NgStyle,NgIf,
+    MatProgressBar
+  ],
   templateUrl: './hourglass.component.html',
   styleUrls: ['./hourglass.component.css']
 })

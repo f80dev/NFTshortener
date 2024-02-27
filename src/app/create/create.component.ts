@@ -5,11 +5,10 @@ import {NFT} from "../../nft";
 import {wait_message} from "../hourglass/hourglass.component";
 import {
   $$,
-  apply_params,
+  apply_params, encrypt,
   get_images_from_banks,
   getParams,
   isURL,
-  setParams,
   showError,
   showMessage
 } from "../../tools";
@@ -32,10 +31,11 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class CreateComponent implements OnInit {
   redirect: string = "";
+  gate_server: string = "";
   token_filter="";
   collection: Collection | undefined
   networks: any[]=[]
-  network:any;
+  network:{label:string,value:string}={label:"",value:""}
   query_collection: string = "";
   collections:Collection[]=[];
   nft: NFT | null=null;
@@ -64,7 +64,6 @@ export class CreateComponent implements OnInit {
   }
   final_message="";
   url: string = "";
-
 
   background_image: string="";
   border: string="2px"
@@ -121,6 +120,7 @@ export class CreateComponent implements OnInit {
   show_login: boolean=false;
   dialog_style: string="color:white;background-color: #53576EFF;"
   appname: string=environment.appname;
+  version=environment.version
 
   price: number = 1;
   required: { nft: boolean, payment: boolean } = {nft:false,payment:false};
@@ -152,7 +152,8 @@ export class CreateComponent implements OnInit {
 
 
 
-  async create_link() {
+
+  async create_link(as_service=false) {
     let wallet:any={address:this.address,token:"",unity:"",network:this.network.value}
 
     if(this.required.payment){
@@ -176,12 +177,10 @@ export class CreateComponent implements OnInit {
     if(this.required.nft)this.desc=this.desc+" aux possesseurs d'un NFT de la collection "+this.collection!.name;
     if(this.required.payment)this.desc=this.desc+" après réglement de "+this.price+" "+this.token.name
 
-    let r=await _prompt(this,"Confirmation de création du lien","",this.desc,"oui/non","Fabriquer","Annuler")
-    if(r!="yes")return;
-
     if(this.background_image!=''){
       this.dialog_style=this.dialog_style+"background-image:url('"+this.background_image+"');background-size:cover;"
     }
+
     let body:any={
       redirect:this.redirect,
       connexion:this.connexion,
@@ -200,30 +199,61 @@ export class CreateComponent implements OnInit {
     }
 
 
-    let url_domain=this.domain
+    if(as_service){
+      let service=await _prompt(this,"Nom du service",this.appname,"","text","Confirmer","Annnuler",false)
 
-    this.api.create_short_link(body).subscribe({next:(result:any)=>{
-        if(!this.required.nft && !this.required.payment){
-          url_domain=environment.server+"/api/sl/"
-        } else {
-          url_domain=(url_domain+"?").replace("/?","?")
-        }//Si pas de collection, le lien renvoi directement a l'api
-
-        this.url=url_domain+result.cid;
-        if(!this.url.startsWith("http")){
-          if(this.url.indexOf("localhost")>-1){
-            this.url="http://"+this.url;
-          } else {
-            this.url="https://"+this.url;
+      //TODO: a terminer
+      if(service){
+        let description=await _prompt(this,"Description du service",this.title,"","text","Confirmer","Annnuler",false)
+        if(description){
+          let body_service={
+            service:service,
+            url:body,
+            description:description
           }
+          $$("Ajout du service ",body)
+          this.api._post(environment.shorter_service+"/api/services/","",body_service)
         }
-        this.clipboard.copy(this.url);
-        this.api.qrcode(this.url,"json").subscribe((r:any)=>{
-          this.url_qrcode=r.qrcode;
-        })
+      }else{
+        return
+      }
+    }else{
+      let r=await _prompt(this,"Confirmation de création du lien","",this.desc,"oui/non","Fabriquer","Annuler")
+      if(r!="yes")return;
 
-        showMessage(this,"Votre lien est disponible dans le presse-papier")
-      },error:(err)=>{showError(this,err)}})
+      let url="https://"+this.gate_server+"/?p="+encrypt(JSON.stringify(body))
+
+      this.api.create_short_link({url:url}).subscribe({next:(result:any)=>{
+          // if(!this.required.nft && !this.required.payment){
+          //   url_domain=
+          // } else {
+          //   url_domain=(url_domain+"?").replace("/?","?")
+          // }
+          //Si pas de collection, le lien renvoi directement a l'api
+
+          this.url=environment.shorter_service+"/"+result.cid;
+          if(!this.url.startsWith("http")){
+            if(this.url.indexOf("localhost")>-1){
+              this.url="http://"+this.url;
+            } else {
+              this.url="https://"+this.url;
+            }
+          }
+          this.clipboard.copy(this.url);
+          this.api.qrcode(this.url,"json").subscribe((r:any)=>{
+            this.url_qrcode=r.qrcode;
+          })
+
+          showMessage(this,"Votre lien est disponible dans le presse-papier")
+        },
+        error:(err)=>{
+        showError(this,err)
+      }})
+    }
+
+
+
+
   }
 
   async ngOnInit() {
@@ -232,22 +262,25 @@ export class CreateComponent implements OnInit {
 
     this.networks=params.networks ? params.networks.split(",").map((x:any)=>{return({label:x,value:x})}) : environment.networks
     if(params.network){
-      for(let n of this.networks){
-        if(n.value==params.network)this.network=n;
+      let result=this.networks.filter(item => item.value==params.network)
+      if(result.length>0){
+        this.networks=result;
+        this.network=result[0]
       }
     } else {
       this.network=this.networks[0];
     }
 
     this.bank=params.bank || ""
-    this.redirect=params.redirect ||   ""
+    this.redirect=params.redirect || ""
+    this.gate_server=params.gate_server || environment.gate_server || "gate.nfluent.io"
     this.required.payment=(params.required=="payment" || params.required=="token")
     this.required.nft=(params.required=="nft")
     this.address=params.address || ""
 
     this.query_collection=params.query || params.collection || localStorage.getItem("query_collection") || "";
     this.domain=params.domain || environment.appli;
-    this.update_token(params.token || "NFLUCOIN-4921ed")
+    this.update_token(params.token || environment.token || "")
     this.price=params.price || 0;
   }
 
@@ -259,11 +292,14 @@ export class CreateComponent implements OnInit {
     })
   }
 
-  reset() {
-    this.redirect="";
-    this.url="";
-    this.desc="";
-    this.required={nft:false,payment:false};
+  async reset() {
+    let rep=await _prompt(this,"Effacer le travail actuel","","","oui/non","Effacer","Conserver")
+    if(rep=="yes"){
+      this.redirect="";
+      this.url="";
+      this.desc="";
+      this.required={nft:false,payment:false};
+    }
   }
 
   open_link() {
@@ -354,7 +390,10 @@ export class CreateComponent implements OnInit {
   async create_account() {
     let email=await _prompt(this,"Création d'un wallet pour recevoir les paiements","","Indiquer votre adresse email","text","Créer le wallet","Annuler",false)
     this.api.create_account(this.network.value,email).subscribe((r:any)=>{
-      this.address=r.address;
+      this.address=r.address
+      this.filter_by_wallet=false
+      this.token_filter=""
+      this.token=undefined
       showMessage(this,"Consulter votre mail pour récupérer les informations de votre nouveau wallet",10000)
     })
   }
@@ -370,7 +409,6 @@ export class CreateComponent implements OnInit {
   }
 
   scan_wallet($event: any){
-    debugger
     this.address=$event.data
     this.token_filter=this.address
     this.show_scanner=false

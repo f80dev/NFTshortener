@@ -19,7 +19,7 @@ import {wait_message} from "../hourglass/hourglass.component";
 })
 export class TransferComponent implements OnInit {
   url: string="";
-  config:any={style:"",messages:{intro_message:"",fail:"Accès impossible, vous n'avez pas le NFT requis"},collection:"",store:""};
+  config:any={identity:false,style:"",messages:{intro_message:"",fail:"Accès impossible, vous n'avez pas le NFT requis"},collection: null,store:""};
   validator_id="valid_"+now("rand")
   final_message="";
   message="";
@@ -39,50 +39,50 @@ export class TransferComponent implements OnInit {
   }
 
   async ngOnInit() {
-    let params:any=await getParams(this.routes);
-    let cid=params.cid;
-    if(!cid){
-      let url=this.router.url
-      if(url.indexOf("?")>-1)cid=url.split("?")[1]
-    }
-    if(!cid || cid.length>10){
-      this.router.navigate(["menu"],{queryParams:params})
+    let r:any=await getParams(this.routes);
+    // let cid=params.cid;
+    // if(!cid){
+    //   let url=this.router.url
+    //   if(url.indexOf("?")>-1)cid=url.split("?")[1]
+    // }
+    // if(!cid || cid.length>10){
+    //   this.router.navigate(["menu"],{queryParams:params})
+    // }else{
+    //   cid=cid.split("=")[0]
+    //   this.api._get("sl/"+cid).subscribe((r:any)=>{
+    //     $$("URL courte: Récupération des paramètres ",r)
+    r.style=r.style || "background:none"
+    r.price=r.price || 0
+    this.config=r;
+
+    if(r.hasOwnProperty("airdrop")){
+      this.config.connexion=r.connexion
+      this.config.airdrop=r.airdrop
+      this.url=r.redirect
+      this.config.network=r.network;
+      this.config.messages=r.messages;
+
+      if(r.airdrop.force_authent){
+        this.address=""
+      }else{
+        this.address=localStorage.getItem("airdrop_address") || ""
+        this.transfert_fund(this.address)
+      }
+
     }else{
-      cid=cid.split("=")[0]
-      this.api._get("sl/"+cid).subscribe((r:any)=>{
-        $$("URL courte: Récupération des paramètres ",r)
-        r.style=r.style || "background:none"
-        r.price=r.price || 0
-        this.config=r;
-
-        if(r.hasOwnProperty("airdrop")){
-          this.config.connexion=r.connexion
-          this.config.airdrop=r.airdrop
-          this.url=r.redirect
-          this.config.network=r.network;
-          this.config.messages=r.messages;
-
-          if(r.airdrop.force_authent){
-            this.address=""
-          }else{
-            this.address=localStorage.getItem("airdrop_address") || ""
-            this.transfert_fund(this.address)
-          }
-
-        }else{
-          for(let k of Object.keys(this.config.messages)){
-            if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
-            if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
-          }
-          if(!r.collection && r.price==0){
-            this.authent(r.redirect);
-          }
-        }
-
-      },(err)=>{
-        showError(this,err);
-      })
+      for(let k of Object.keys(this.config.messages)){
+        if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
+        if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
+      }
+      if(!r.collection && r.price==0){
+        this.authent(r.redirect);
+      }
     }
+
+      // },(err)=>{
+      //   showError(this,err);
+      // })
+    // }
   }
 
 
@@ -165,7 +165,8 @@ export class TransferComponent implements OnInit {
     localStorage.setItem("airdrop_address",address)
     this.api.refund(bank,address).subscribe((r:any)=>{
       wait_message(this)
-      showMessage(this,"Vous avez été crédité de "+this.config.airdrop.amount+" "+this.config.airdrop.token.name)
+      let name=this.config.airdrop.collection.label ? "NFT de la collection "+this.config.airdrop.collection.label : this.config.airdrop.token
+      showMessage(this,"Vous avez été crédité de "+this.config.airdrop.amount+" "+name)
       },(err)=>{wait_message(this);showError(this,err)})
     return true;
   }

@@ -2,7 +2,12 @@
      *ngIf="show==0">
 </div>
 
-<div class="splash-screen" [style.background-image]="'url('+image+')'" [style.filter]="filter" @fadeOut *ngIf="show==1">
+<div class="splash-screen"
+     [style.background-image]="'url('+image+')'"
+     [style.filter]="filter" @fadeOut
+     *ngIf="show==1">
+
   <div class="mat-headline-1" style="color: white;margin-top: 20%;">{{appname}}</div>
   <div class="mat-headline-5" style="color: white;">{{description}}</div>
+
 </div>

@@ -10,9 +10,28 @@
     {{content.substring(0,60)+"..."}}
   </a>
 
+  <div style="display: inline-block;opacity: 0.8;">
+    <mat-icon (click)="short_link()"
+              title="raccourcir cette adresse"
+              style="cursor: pointer;font-size: medium;margin-bottom: -10px;"
+              *ngIf="content.startsWith('http') && redirect_server!=''">
+      content_cut
+    </mat-icon>
+
+    <mat-icon (click)="open_web()"
+              title="Voir le contenu du lien"
+              style="cursor: pointer;font-size: medium;margin-bottom: -10px;"
+              *ngIf="content.startsWith('http')">
+      visibility
+    </mat-icon>
+  </div>
+
+
   <a *ngIf="content.startsWith('erd')" [href]="get_explorer(content,suffix)" target="_blank" [title]="title">
-    <span *ngIf="icon==''">{{content | slice:0:20}}</span>
+    <span *ngIf="icon==''">{{content.replace(content.substring(10,30),"..")}}</span>
     <mat-icon *ngIf="icon!=''">{{icon}}</mat-icon>
   </a>
+
+
 
 </div>

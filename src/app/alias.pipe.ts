@@ -3,7 +3,8 @@ import {NetworkService} from "./network.service";
 
 
 @Pipe({
-  name: 'alias'
+  name: 'alias',
+  standalone:true
 })
 export class AliasPipe implements PipeTransform {
 

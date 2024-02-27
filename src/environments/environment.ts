@@ -9,7 +9,7 @@ export const environment = {
   faqs:"{{domain_appli}}/assets/faqs.yaml",
   forum:"https://discord.gg/BfC2E2ent",
   mail:"contact@nfluent.io",
-  version: "0.1dev",
+  version: "0.2dev",
   appname:"Gate",
   networks:[
     {label:"MultiversX Test",value:"elrond-devnet"},
@@ -18,17 +18,20 @@ export const environment = {
   ],
   visual:"./assets/coffre.jpg",
   claim:"Valoriser vos contenus en quelques clics",
+  token:"NFLUCOIN-4921ed",
 
   appli:"http://localhost:4200",
   server:"http://127.0.0.1:4242",
   website:"https://nfluent.io",
   style:"nfluent-dark.css",
   background:"./assets/wood.jpg",
-  logo:"./assets/icons/icon_nfluent_256.png",
+  logo:"./assets/logo.png",
   default_bank:"http://faucet.nfluent.io",
   company:"Nfluent",
   histo:"db-server-nfluent_local",
-  redirect_server:"http://localhost:4200",
+  gate_server:"http://localhost:4200",
+  //shorter_service:"https://t.f80.fr",
+  shorter_service: "http://localhost:80",
 
 
   merchant:{

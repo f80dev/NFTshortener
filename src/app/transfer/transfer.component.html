@@ -12,11 +12,13 @@
 		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
 			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}<br><br>
 
-      <button mat-raised-button (click)="ask_paid()" style="margin-top: 100px;">S'authentifier & payer</button>
+      <button mat-raised-button (click)="ask_paid()" style="margin-top: 100px;height: 60px;width: 120px;">
+        <div class="mat-headline-6" style="margin-bottom: 0;">Payer</div>
+      </button>
 			<br><br>
 
       <a *ngIf="config?.bank && config?.bank.length>0"
-              class="mat-body-2"
+              class="mat-body-2" style="margin: 100px;"
 			        [href]="this.config!.bank">
                 En savoir plus ou acqérir des {{config.merchant.wallet.unity}}
 			        </a>
@@ -54,7 +56,7 @@
 			<div style="margin: 5%;width:90%;">
 				<app-autovalidator
 						[validator_name]="validator_id"
-						[collections]="[config.collection.id]"
+						[collections]="[config.collection]"
 						[connexion]="config.connexion"
 						(cancel)="close_form()"
 						[network]="config.network"
@@ -63,8 +65,23 @@
 						(fail)="fail($event)"
 						(validate)="authent($event)"></app-autovalidator>
 			</div>
-
 		</div>
+
+
+
+    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.identity">
+			Pour continuer vous devez vous authentifier
+			<br><br>
+			<div style="margin: 5%;width:90%;">
+				<app-authent [connexion]="config.connexion"
+                     [network]="config.network"
+                     (authent)="authent($event)">
+
+        </app-authent>
+			</div>
+		</div>
+
+
 
 	</div>
 	<br><br>

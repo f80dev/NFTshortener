@@ -4,8 +4,7 @@
   <div class="mat-headline-5 color-primary" *ngIf="faqs.length>0">{{title}}</div>
   <mat-expansion-panel [expanded]="faq.visible" togglePosition="before"
                        class="app-panel" style="margin:5px"
-                       *ngFor="let faq of faqs"
-                       name="faq">
+                       *ngFor="let faq of faqs">
 
     <mat-expansion-panel-header collapsedHeight="60px" expandedHeight="60px" style="text-align: left;">
       <span *ngIf="!faq.visible" class="faq-title mat-body-2 color-primary">

@@ -67,8 +67,7 @@ export class NetworkService implements OnInit {
     }
 
 
-    init_keys(with_balance=false,access_code:string="",operation_id:string="",network="") {
-        if(network.length==0)network=this.network;
+    init_keys(with_balance=false,access_code:string="",operation_id:string="",network=""): Promise<CryptoKey[]> {
         return new Promise<CryptoKey[]>((resolve, reject) => {
             this.wait("Chargement des clés");
             if(network!=''){
@@ -85,7 +84,6 @@ export class NetworkService implements OnInit {
             } else {
                 reject();
             }
-
         });
     }
 
@@ -870,7 +868,7 @@ export class NetworkService implements OnInit {
                 body.transaction=t.toSendable()
             }
             $$("Envoi du corps pour execution ",body)
-            return this._post("execute/","", body).subscribe({
+            return this._post("execute/","", body,120000).subscribe({
                 next:(r:any)=>{resolve(r)},
                 error:(err:any)=> {reject(err)}
             })
@@ -901,21 +899,33 @@ export class NetworkService implements OnInit {
     }
 
 
-    refund(bank:Bank,dest:string,comment="") {
+    refund(bank:Bank,dest:string,comment="",gift_for_transaction=0) {
         //@bp.route('/refund/<address>/<amount>/<token>/',methods=["POST"])
-        let body={token:bank.token,collection:bank.collection,amount:bank.refund,bank:bank.miner,data:comment,network:bank.network,limit:bank.limit,histo:bank.histo}
+        let body={
+            token:bank.token,
+            collection:bank.collection,
+            amount:bank.refund,
+            miner:bank.miner,
+            data:comment,
+            gift_for_transaction:gift_for_transaction,
+            network:bank.network,
+            limit:bank.limit,
+            histo:null
+        }
+        $$("Appel de refund sur "+dest,body)
         return this._post("refund/"+dest+"/","",body,200000);
     }
 
-    get_collections(owners_or_collections: string,network="",detail=false,limit=300,operations='canCreate') {
+    get_collections(owners_or_collections: string,network="",detail=false,limit=300,operations='canCreate',min_supply=0,min_balance=0,query="") {
         if(network.length==0)network=this.network;
-        let url=this.server_nfluent+"/api/collections/"+owners_or_collections+"/?network="+network+"&limit="+limit+"&detail="+detail+"&operations="+operations;
+        let url="/api/collections/?owner="+owners_or_collections+"&query="+query+"&network="+network+"&limit="+limit+"&detail="+detail+"&operations="+operations+"&min_supply="+min_supply+"&min_balance="+min_balance;
+        url=this.server_nfluent+url.replace("//","/")
         return this.httpClient.get<Collection[]>(url);
     }
 
     create_collection(new_collection: Collection,network="",simulation=false) {
         if(network=="")network=this.network
-        return this.httpClient.post(this.server_nfluent+"/api/create_collection/?network="+network+"&simulation="+simulation,new_collection);
+        return this._post("create_collection/","network="+network+"&simulation="+simulation,new_collection,60000);
     }
 
     get_minerpool() {
@@ -1014,15 +1024,16 @@ export class NetworkService implements OnInit {
 
     upload_attributes(config_name:string,file:string) {
         //Associer un fichier d'attributs au visuel des calques
-        return this.httpClient.post(this.server_nfluent+"/api/upload_attributes_file/"+config_name+"/",file);
+        return this._post("upload_attributes_file/"+config_name+"/","",file);
     }
 
-    set_role(collection_id: string, owner: string, network: string) {
-        return this.httpClient.post(this.server_nfluent+"/api/set_role_for_collection/",{
+    set_role(collection_id: string, owner: string, network: string,roles="ESDTRoleNFTCreate") {
+        return this._post("set_role_for_collection/","",{
             network:network,
             collection_id:collection_id,
+            roles:roles,
             owner:owner
-        });
+        })
     }
 
 
@@ -1144,7 +1155,8 @@ export class NetworkService implements OnInit {
     }
 
     create_short_link(body:any) {
-        return this._post("short_link/","",body)
+        return this._post(environment.shorter_service+"/api/add/","",body)
+        //return this._post("short_link/","",body)
     }
 
     find_tokens(network: string, filter: string,with_detail=false,limit=200) {

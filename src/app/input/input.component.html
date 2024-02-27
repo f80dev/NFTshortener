@@ -1,6 +1,6 @@
 <div class="input-elements" [style.width]="width" [style.max-width]="maxwidth" [ngClass]="fontname">
 
-  <div style="padding:0px;margin:2px;" *ngIf="value_type=='boolean'">
+  <div style="padding:0;margin:2px;" *ngIf="value_type=='boolean'">
     <mat-checkbox [(ngModel)]="value"
                       style="width: 100%;padding:0;margin:0;"
                       color="primary"
@@ -73,7 +73,7 @@
     </mat-hint>
   </mat-form-field>
 
-  <button mat-raised-button mat-button
+  <button mat-raised-button
           *ngIf="label_button.length>0"
           style="height: 40px;margin-left:10px;"
           [disabled]="!value || value.length==0"
@@ -82,7 +82,7 @@
     {{label_button}}
   </button>
 
-  <button mat-raised-button mat-button
+  <button mat-raised-button
           *ngIf="cancel_button.length>0"
           [title]="help_button"
           (click)="on_cancel()">
@@ -107,8 +107,8 @@
     <div *ngIf="label.length>0" style="margin:10px;" class="mat-caption">{{label}}</div>
     <div style="overflow: scroll;" [style.height]="height">
       <mat-selection-list (selectionChange)="sel_change($event)" [multiple]="multiselect" >
-        <mat-list-option *ngFor="let option of options | filter:['label',filter]" [value]="option">
-          <img matListItemAvatar [src]="option.image" [style.width]="size_image" [style.height]="size_image">
+        <mat-list-option *ngFor="let option of options" [value]="option">
+          <img matListItemAvatar [src]="option.image" [style.width]="size_image" [style.height]="size_image" alt="Image de NFT">
           <span [ngClass]="fontname">{{option.label}}</span>
         </mat-list-option>
       </mat-selection-list>

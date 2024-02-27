@@ -9,14 +9,14 @@
 </div>
 
 
-<div *ngIf="message && message.length>0 && !modal" [ngStyle]="{maxwidth:maxwidth,marginTop:marginTop,display:'inline-block',marginBottom:'5px'}">
+<div *ngIf="message && message.length>0 && !modal" [style]="{maxwidth:maxwidth,marginTop:marginTop,display:'inline-block',marginBottom:'5px'}">
   <table style="width:100%;display: inline-block;height: min-content;">
     <tr>
       <td *ngIf="diameter>0">
         <mat-spinner [diameter]="diameter"></mat-spinner>
       </td>
 
-      <td [ngStyle]="{'text-align': 'left','font-size':fontsize}">
+      <td [style]="{'text-align': 'left','font-size':fontsize}">
         {{message}}
       </td>
 
@@ -40,7 +40,7 @@
 
 
   <mat-progress-bar
-                    style="max-width:300px;width: 90%;margin:0px;margin-left: 5%;"
+                    style="max-width:300px;width: 90%;margin:0;margin-left: 5%;"
                     mode="determinate"
                     [value]="current" *ngIf="step>0">
   </mat-progress-bar>

@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {NgIf} from "@angular/common";
 
 
 //voir https://medium.com/cloud-native-the-gathering/how-to-use-css-to-fade-in-and-fade-out-html-text-and-pictures-f45c11364f08
@@ -12,6 +13,8 @@ const fadeOut = trigger('fadeOut', [leaveTrans]);
 
 @Component({
   selector: 'app-splash',
+  standalone:true,
+  imports:[NgIf],
   templateUrl: './splash.component.html',
   styleUrls: ['./splash.component.css'],
   animations: [fadeOut]

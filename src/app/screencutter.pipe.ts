@@ -2,7 +2,8 @@ import { Pipe, PipeTransform, HostListener } from '@angular/core';
 import {DeviceService} from "./device.service";
 
 @Pipe({
-  name: 'screencutter'
+  name: 'screencutter',
+  standalone:true
 })
 export class ScreencutterPipe implements PipeTransform {
   private screenwidth: number=500;

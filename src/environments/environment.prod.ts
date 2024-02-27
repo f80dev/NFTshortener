@@ -8,7 +8,7 @@ export const environment = {
   production: true,
   forum:"https://discord.gg/BfC2E2ent",
   mail:"contact@nfluent.io",
-  version: "0.1dev",
+  version: "0.2",
   faqs:"{{domain_appli}}/assets/faqs.yaml",
   appname:"Gate",
   networks:[
@@ -24,11 +24,12 @@ export const environment = {
   website:"https://nfluent.io",
   style:"nfluent-dark.css",
   background:"./assets/wood.jpg",
-  logo:"./assets/icons/icon_nfluent_256.png",
+  logo:"./assets/logo.png",
   default_bank:"https://faucet.nfluent.io",
   histo:"db-server-nfluent_local",
   redirect_server:"https://gate.nfluent.io",
-
+  token:"",
+  shorter_service:"https://t.f80.fr",
 
   merchant:{
     id:"BCR2DN4TYD4Z5XCR",

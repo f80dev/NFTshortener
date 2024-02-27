@@ -8,23 +8,23 @@
       <mat-expansion-panel-header class="color-primary">Utiliser Wallet Connect</mat-expansion-panel-header>
       <mat-card style="text-align: center;width: fit-content;display: inline-block;" class="multiverx-background" *ngIf="qrcode.length==0">
         <mat-card-title class="multiversx-text">S'authentifier sur MultiversX via</mat-card-title>
-        <button   mat-raised-button class="multiversx-button"
+        <button mat-raised-button class="multiversx-button"
                 *ngIf="showWalletConnect && qrcode.length==0"
                 (click)="open_wallet_connect()">
           L'application xPortal
-        </button><br>
+        </button>
 
-        <button   mat-raised-button class="multiversx-button"
+        <button mat-raised-button class="multiversx-button"
                 *ngIf="showWebWallet"
                 (click)="open_web_wallet()">
           Le wallet du Web
-        </button><br>
+        </button>
 
-        <button   mat-raised-button class="multiversx-button"
+        <button mat-raised-button class="multiversx-button"
                 *ngIf="showExtensionWallet"
                 (click)="open_extension_wallet()">
           L'extension Chrome
-        </button><br>
+        </button>
 
 
       </mat-card>

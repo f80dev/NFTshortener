@@ -1,29 +1,52 @@
 //Version 0.1
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges,  OnInit, Output, SimpleChanges} from '@angular/core';
 import {NetworkService} from "../network.service";
-import {$$, eval_direct_url_xportal, isEmail, isLocal, now, setParams, showError, showMessage} from "../../tools";
+import {$$, eval_direct_url_xportal, isEmail, isLocal, now,  showError, showMessage} from "../../tools";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {environment} from "../../environments/environment";
-import {Location} from "@angular/common";
+import {Location, NgIf} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
-import {SocialAuthService} from "@abacritt/angularx-social-login";
+import {GoogleSigninButtonModule, SocialAuthService} from "@abacritt/angularx-social-login";
 import {Connexion, Operation} from "../../operation";
 import {ADDR_ADMIN} from "../../definitions";
 import {DeviceService} from "../device.service";
 import { WalletConnectV2Provider } from "@multiversx/sdk-wallet-connect-provider";
-
 import { ExtensionProvider } from "@multiversx/sdk-extension-provider";
-import {WALLET_PROVIDER_DEVNET, WALLET_PROVIDER_MAINNET, WalletProvider} from "@multiversx/sdk-web-wallet-provider/out";
+import {WALLET_PROVIDER_DEVNET, WALLET_PROVIDER_MAINNET, WalletProvider} from "@multiversx/sdk-web-wallet-provider";
 import {Socket} from "ngx-socket-io";
 import {EvmWalletServiceService} from "../evm-wallet-service.service";
 import {_prompt} from "../prompt/prompt.component";
 import {MatDialog} from "@angular/material/dialog";
+import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from "@angular/material/expansion";
+import {MatCard, MatCardTitle} from "@angular/material/card";
+import {ScannerComponent} from "../scanner/scanner.component";
+import {CdkCopyToClipboard} from "@angular/cdk/clipboard";
+import {InputComponent} from "../input/input.component";
+import {MatIcon} from "@angular/material/icon";
+import {UploadFileComponent} from "../upload-file/upload-file.component";
+import {MatButton} from "@angular/material/button";
 
 //Installation de @multiversx/sdk-wallet-connect-provider via yarn add @multiversx/sdk-wallet-connect-provider
 
 @Component({
   selector: 'app-authent',
   templateUrl: './authent.component.html',
+  standalone: true,
+    imports: [
+        MatExpansionPanel,
+        MatExpansionPanelHeader,
+        MatCardTitle,
+        MatAccordion,
+        MatCard,
+        ScannerComponent,
+        CdkCopyToClipboard,
+        InputComponent,
+        GoogleSigninButtonModule,
+        MatIcon,
+        UploadFileComponent,
+        NgIf,
+        MatButton
+    ],
   styleUrls: ['./authent.component.css']
 })
 export class AuthentComponent implements OnInit,OnChanges {
@@ -158,23 +181,15 @@ export class AuthentComponent implements OnInit,OnChanges {
 
 
 
+
   ngOnInit(): void {
 
     setTimeout(()=>{        //TODO : cet item doit passer dans l'update
       this.api.server_nfluent=this.nfluent_server;
 
-      if(this.network.indexOf("elrond")>-1){
-        const callbacks:any ={
-          onClientLogin: async ()=> {
-            this.address=await this.provider.getAddress();
-          },
-          onClientLogout: ()=> {},
-        }
-        this.provider = new WalletConnectV2Provider(callbacks, this.get_chain_id(), this.relayUrl, this.walletConnect_ProjectId);
-      }
 
-      if(this.network.indexOf("polygon")>-1){
-      }
+      // if(this.network.indexOf("polygon")>-1){
+      // }
 
 
       this.address="";
@@ -204,9 +219,9 @@ export class AuthentComponent implements OnInit,OnChanges {
       this.refresh();
       //Création d'un validateur nécéssaire pour le nfluent wallet connect
       let validator_name="val_"+now("rand")
-      this.api.subscribe_as_validator("",this.network,validator_name).subscribe((result:any)=>{
-        this.nfluent_wallet_connect_qrcode=this.api.server_nfluent+"/api/qrcode/"+encodeURIComponent(result.access_code);
-      });
+      // this.api.subscribe_as_validator("",this.network,validator_name).subscribe((result:any)=>{
+      //   this.nfluent_wallet_connect_qrcode=this.api.server_nfluent+"/api/qrcode/"+encodeURIComponent(result.access_code);
+      // });
       this.socket.on(validator_name,((data:any) => {
         this.address=data.address;
         this.success()
@@ -361,8 +376,10 @@ export class AuthentComponent implements OnInit,OnChanges {
   onflash($event: {data:string}) {
     //Flash du nfluent_wallet
       if($event.data.length>20){
-        $$("Lecture de l'adresse "+$event.data);
-        this.api.check_access_code($event.data).subscribe((result:any)=>{
+        let addr=$event.data
+        addr=addr.replace("multiversx:","").split("?")[0]
+        $$("Lecture de l'adresse "+addr);
+        this.api.check_access_code(addr).subscribe((result:any)=>{
           this.address=result.addr;
           this.enabled_webcam=false;
           this.validate();
@@ -422,7 +439,9 @@ export class AuthentComponent implements OnInit,OnChanges {
     //tag webwallet open_webwallet
     //https://docs.multiversx.com/sdk-and-tools/sdk-js/sdk-js-signing-providers/#the-web-wallet-provider
     this.provider=new WalletProvider(this.network.indexOf("devnet")>-1 ? WALLET_PROVIDER_DEVNET : WALLET_PROVIDER_MAINNET)
-    const callback_url = this.callback=="" ? encodeURIComponent(environment.appli+"/"+this._location.path(true)) : encodeURIComponent(environment.appli+this.callback)
+    this.provider.redirectDelayMilliseconds=30000
+
+    const callback_url = this.callback=="" ? encodeURIComponent(environment.appli+"/"+this._location.path(true)) : encodeURIComponent(this.callback)
     try{
       let address=await this.provider.login({callback_url})
       this.strong=address.length>0;
@@ -444,6 +463,18 @@ export class AuthentComponent implements OnInit,OnChanges {
 
   async open_wallet_connect() {
     //https://docs.multiversx.com/sdk-and-tools/sdk-js/sdk-js-signing-providers/#the-wallet-connect-provider
+
+    const callbacks:any ={
+      onClientLogin: async ()=> {
+        $$("Connexion wallet connect ")
+        this.address=await this.provider.getAddress();
+        },
+      onClientLogout: ()=> {
+        $$("Déconnexion de wallet connect")
+      },
+    }
+    this.provider = new WalletConnectV2Provider(callbacks, this.get_chain_id(), this.relayUrl, this.walletConnect_ProjectId);
+
     try{
       await this.provider.init()
       const { uri, approval } = await this.provider.connect();

@@ -14,15 +14,17 @@ import {
 } from "@multiversx/sdk-core/out";
 import {WalletConnectV2Provider} from "@multiversx/sdk-wallet-connect-provider/out";
 import {NetworkService} from "../network.service";
-import {$$, Bank, eval_direct_url_xportal, now, setParams, showMessage} from "../../tools";
+import {$$, Bank, eval_direct_url_xportal, now, setParams, showError, showMessage} from "../../tools";
 import { Account } from "@multiversx/sdk-core";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers";
 import {_prompt} from "../prompt/prompt.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
-import {ReadyToPayChangeResponse} from "@google-pay/button-angular";
-import {wait_message} from "../hourglass/hourglass.component";
+import {GooglePayButtonModule, ReadyToPayChangeResponse} from "@google-pay/button-angular";
+import {HourglassComponent, wait_message} from "../hourglass/hourglass.component";
 import {DeviceService} from "../device.service";
+import {DecimalPipe, NgIf} from "@angular/common";
+import {MatIcon} from "@angular/material/icon";
 
 export interface PaymentTransaction {
   transaction:string ,
@@ -70,6 +72,13 @@ export function extract_merchant_from_param(params:any) : Merchant | undefined {
 
 @Component({
   selector: 'app-payment',
+  standalone:true,
+  imports: [
+    HourglassComponent,
+    DecimalPipe,
+    MatIcon,NgIf,
+    GooglePayButtonModule
+  ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
@@ -115,13 +124,19 @@ export class PaymentComponent implements AfterContentInit,OnDestroy {
   refresh(){
     let network=this.merchant?.wallet!.network!
     let token=this.merchant?.wallet?.token || "egld"
-    this.networkService.get_token(token,network).subscribe(async (money)=>{
-      this.money=money
-      if(this.wallet_provider && this.wallet_provider.account){
-        this.user=this.wallet_provider.account.address;
-        this.show_user_balance(this.user,token,network)
+    this.networkService.get_token(token,network).subscribe({
+      next:async (money)=>{
+        this.money=money
+        if(this.wallet_provider && this.wallet_provider.account){
+          this.user=this.wallet_provider.account.address;
+          this.show_user_balance(this.user,token,network)
+        }
+      },
+      error:(err:any)=>{
+        this.money=undefined
+        showError(this,err)
       }
-    });
+    })
 
     if(this.merchant) {
       this.payment_request = {
@@ -167,7 +182,7 @@ export class PaymentComponent implements AfterContentInit,OnDestroy {
   }
 
   ngOnChanges(changes: any): void {
-    if(changes.user.currentValue){
+    if(changes.user.currentValue && this.money){
       this.show_user_balance(changes.user.currentValue,this.money!.id,this.merchant?.wallet?.network!)
     }
   }
@@ -182,16 +197,19 @@ export class PaymentComponent implements AfterContentInit,OnDestroy {
 
 
   onLoadPaymentData = (event: google.payments.api.PaymentData): void => {
-    let rc:PaymentTransaction={
-      transaction:event.paymentMethodData.description || "",
-      unity:this.money!.unity,
-      address:event.paymentMethodData.description || "",
-      price:0,
-      ts:now("str"),
-      billing_to:this.billing_to,
-      provider:null
-    }
-    this.onpaid.emit(rc);
+      let unity="EUR"
+      if(this.money)unity=this.money.unity
+      let rc:PaymentTransaction={
+        transaction:event.paymentMethodData.description || "",
+        unity:unity,
+        address:event.paymentMethodData.description || "",
+        price:0,
+        ts:now("str"),
+        billing_to:this.billing_to,
+        provider:null
+      }
+      this.onpaid.emit(rc);
+
   };
 
   // onPaymentDataAuthorized: google.payments.api.PaymentAuthorizedHandler = paymentData => {

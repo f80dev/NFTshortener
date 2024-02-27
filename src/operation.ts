@@ -403,4 +403,22 @@ export function check_nft(ope:Operation){
 }
 
 
+export function emptyCollection() : Collection {
+  return {
+    cover: undefined,
+    description: undefined,
+    gallery: undefined,
+    id: "",
+    link: "",
+    name: "",
+    options: [],
+    owner: "",
+    price: undefined,
+    roles: undefined,
+    supply: 0,
+    type: undefined,
+    visual: undefined
+  }
+}
+
 

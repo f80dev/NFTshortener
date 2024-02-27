@@ -2,14 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute, Router} from "@angular/router";
 import {apply_params, getParams} from "../../tools";
-import {Location} from "@angular/common";
+import {Location, NgIf} from "@angular/common";
 import {StyleManagerService} from "../style-manager.service";
 import {UserService} from "../user.service";
 import {NgNavigatorShareService} from "ng-navigator-share";
 import {_prompt} from "../prompt/prompt.component";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-about',
+  standalone:true,
+  imports: [
+    MatIcon, NgIf
+  ],
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })

@@ -1,9 +1,17 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Router} from "@angular/router";
 import {hashCode} from "../../tools";
+import {WebcamModule} from "ngx-webcam";
+import {MatIcon} from "@angular/material/icon";
+import {NgIf} from "@angular/common";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-tuto',
+  standalone: true,
+  imports: [
+    MatIcon, NgIf, MatButton,
+  ],
   templateUrl: './tuto.component.html',
   styleUrls: ['./tuto.component.css']
 })

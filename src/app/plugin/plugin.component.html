@@ -21,9 +21,6 @@
           [duration]="50"
           *ngIf="slide==3" (close)="slide=slide+1"></app-tuto>
 
-
-
-
 <app-hourglass [message]="message" [modal]="true"></app-hourglass>
 
 <div class="background-form" [style.background-image]="'url('+background+')'">
@@ -106,8 +103,9 @@
 
             <mat-tab label="Wallet dédié">
               <button mat-raised-button
+                      *ngIf="message==''"
                       style="margin-top: 30px;" color="primary"
-                      title="Créer un wallet pour l'opération"
+                      title="Créer un wallet pour l'airdrop"
                       (click)="create_account()">
                 Créer un wallet dédié
               </button>
@@ -122,12 +120,17 @@
 
             <mat-tab label="Wallet existant">
               <br>
-              <div style="max-width: 300px;text-align: center;display: inline-block;">
-                <app-authent [connexion]="authent"
-                             [network]="network.value"
-                             (authent)="on_authent($event)">
+
+                <app-authent
+                  [connexion]="authent"
+                  style="max-width: 700px;width: 80%;display: inline-block;"
+                  [network]="network.value"
+                  [showCancel]="true"
+                  [use_cookie]="true"
+                  (cancel)="cancel()"
+                  (authent)="on_authent($event)">
                 </app-authent>
-              </div>
+
               <br>
             </mat-tab>
           </mat-tab-group>
@@ -169,15 +172,17 @@
               </div>
 
               <br>
+<!--              <div *ngIf="collections.length==0" style="margin-top: 20px;">Vous n'avez aucun NFT à distribuer sur le wallet sélectionné</div>-->
+
               <app-collection-selector [network]="airdrop.network"
                                        [refresh_delay]="refresh_delay*10"
                                        [owner]="owner_filter"
-                                       roles="canTransfer"
                                        [collection]="collection"
+                                       (endSearch)="onEndSearchCollection($event)"
                                        [query]="query_collection"
                                        w_image="100px" w_image_selected="200px"
                                        [min_supply]="1"
-                                       title="Sélectionner une collection"
+                                       title="Sélectionner la collection à distribuer"
                                        (selected)="select_collection($event)">
               </app-collection-selector>
               <br><br><br>
@@ -189,16 +194,13 @@
               </button>
 
               <button mat-raised-button
-                      (click)="collection=undefined;airdrop.collection=undefined"
+                      (click)="collection=emptyCollection();airdrop.collection=undefined"
                       *ngIf="collection">
-                Annuler
+                Changer de collection
               </button>
-
 
             </mat-tab>
           </mat-tab-group>
-
-
 
         </mat-expansion-panel>
 
@@ -297,8 +299,8 @@
     <app-tuto [force]="true" *ngIf="code_to_insert!=''" icon=""
               label="Il existe plusieurs facons de déclencher l'airdrop que vous venez de préparer"></app-tuto>
 
-		<mat-tab-group *ngIf="code_to_insert!=''" style="text-align: center;width:100%;margin-left: -10px;">
-			<mat-tab label="Affiliation" *ngIf="false">
+		<mat-tab-group *ngIf="code_to_insert!=''" style="text-align: center;width:100%;margin-left: -10px;" >
+			<mat-tab label="Affiliation" *ngIf="false" >
 
 				<br>
 				<app-input label="Votre lien à proposer" [value]="affiliate_url" (valueChange)="affiliate_url=$event"
@@ -339,6 +341,16 @@
 								   [value]="airdrop.random" [min]="1" [max]="100" value_type="slide"
 								   (valueChange)="airdrop.random=$event;">
 						</app-input>
+            <br>
+
+            <div class="expansion-content-left" style="margin-top: -20px;">
+              <app-input label="Image de fond de l'écran d'acceuil" style="width:75%;margin-right: 10px;"
+                         [value]="background_image" (valueChange)="background_image=$event"
+                         help="Cette image sera affiché comme fond d'écran"></app-input>
+
+              <button mat-raised-button (click)="find_images()">Banques d'images</button>
+
+            </div>
 					</mat-expansion-panel>
 
 				</div>
@@ -355,17 +367,17 @@
 				</div>
 			</mat-tab>
 
-			<mat-tab label="Lien direct (Faucet)" style="text-align: center;">
+			<mat-tab label="Lien direct (Faucet)" style="text-align: center;" >
 
 				<div *ngIf="url_bank!=''">
 					<br><br>
-					<app-link [content]="airdrop.redirect">Lien pour l'airdrop de {{airdrop.token.name}}<br></app-link>
+					<app-link [content]="airdrop.redirect">
+            Lien pour l'airdrop de {{airdrop.token.name}}<br>
+          </app-link>
 					<br><br>
 					<button mat-raised-button (click)="share_url(airdrop.redirect)">Partager</button>
 					<button mat-raised-button (click)="open_test(airdrop.redirect)">Tester</button>
 					<br><br>
-
-
 						<app-genlink [properties]="link_properties"
                          style="max-width: 500px;display: inline-block;"
                          [show_command_panel]="false"
@@ -413,7 +425,6 @@
 									   [value]="airdrop.dtEnd" (valueChange)="airdrop.dtEnd=$event"></app-input>
 
 						</div>
-
 
 
 						<app-input label="Informer le visiteur du versement" value_type="boolean"

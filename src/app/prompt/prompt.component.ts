@@ -1,5 +1,16 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {
+  MAT_DIALOG_DATA, MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle
+} from "@angular/material/dialog";
+import {InputComponent} from "../input/input.component";
+import {MatHint} from "@angular/material/form-field";
+import {SafePipe} from "../safe.pipe";
+import {NgFor, NgIf} from "@angular/common";
+import {MatButton} from "@angular/material/button";
 
 export function _prompt(vm:any,title:string,_default:string="",description="",_type="text",lbl_ok="ok",
                         lbl_cancel="Annuler",onlyConfirm=true,options:any=null,
@@ -60,6 +71,13 @@ export interface DialogData {
 
 @Component({
   selector: 'app-prompt',
+  standalone:true,
+  imports: [
+    InputComponent,
+    MatHint,
+    SafePipe, NgIf, NgFor,
+    MatDialogClose, MatDialogContent, MatDialogTitle, MatButton, MatDialogActions
+  ],
   templateUrl: './prompt.component.html',
   styleUrls: ['./prompt.component.css']
 })

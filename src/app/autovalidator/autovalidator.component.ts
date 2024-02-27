@@ -5,9 +5,16 @@ import {Collection, Connexion} from "../../operation";
 import {NetworkService} from "../network.service";
 import {NFT} from "../../nft";
 import {environment} from "../../environments/environment";
+import {AuthentComponent} from "../authent/authent.component";
+import {NgFor, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-autovalidator',
+  standalone:true,
+  imports: [
+    AuthentComponent, NgIf,NgFor,
+  ],
+
   templateUrl: './autovalidator.component.html',
   styleUrls: ['./autovalidator.component.css']
 })
@@ -38,7 +45,7 @@ export class AutovalidatorComponent implements OnInit, OnDestroy, OnChanges {
   @Output('validate') onvalidate: EventEmitter<string> = new EventEmitter();
   @Output('fail') onfail: EventEmitter<string> = new EventEmitter();
 
-  @Input() collections: string[] = [];
+  @Input() collections: any[] = [];
   @Input() min_supply: number[] = [];
   _collections: Collection[] = [];
   validator: string = "";
@@ -58,7 +65,7 @@ export class AutovalidatorComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.showCollections && this.collections.length > 0) {
-      if (typeof this.collections == "string") this.collections = [this.collections];
+      if (typeof(this.collections)== "object") this.collections=[this.collections[0]]
 
       this.api.get_collections(this.collections.join(","), this.network, true).subscribe((cols: Collection[]) => {
         $$("Récupération des collections", cols);
@@ -103,7 +110,8 @@ export class AutovalidatorComponent implements OnInit, OnDestroy, OnChanges {
     if(this.collections.length>0 && this.validator_name.length>0){
       $$("Le systeme d'authent demande le QRCode en mode wallet_connect")
 
-      if(typeof this.collections=="string")this.collections=[this.collections]; //Transforme le NFT en collection
+      if(!Array.isArray(this.collections))this.collections=[this.collections]; //Transforme le NFT en collection
+      if(typeof this.collections[0]!="string")this.collections=[this.collections[0].id]
       let cols=this.collections.join(",")
       $$("Demande d'enregistrement comme validateur pour les collections "+cols)
       this.api.subscribe_as_validator(cols,this.network,this.validator_name).subscribe((result:any)=>{
@@ -120,7 +128,6 @@ export class AutovalidatorComponent implements OnInit, OnDestroy, OnChanges {
           this.qrcode_enabled=false;
           $$("Le validateur est déconnecté");
         }))
-
         $$("Le validateur s'inscrit à la réception des événements "+result.id)
         this.socket.on(result.id,(data:any) => {
           if(data.hasOwnProperty("message")){

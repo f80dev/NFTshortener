@@ -1,9 +1,39 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {MatIcon} from "@angular/material/icon";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatSlider, MatSliderThumb} from "@angular/material/slider";
+import {MatListOption, MatSelectionList} from "@angular/material/list";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatInputModule} from "@angular/material/input";
+import {MatButton} from "@angular/material/button";
 //version 1.0 3/3/23
 
 @Component({
   selector: 'app-input',
+  standalone:true,
+  imports: [
+    MatFormField,
+    MatHint,
+    NgIf,
+    MatLabel,
+    NgClass,
+    MatIcon,
+    MatSelect,
+    MatInputModule,
+    MatOption,
+    MatSlider,
+    FormsModule,
+    MatListOption,
+    MatSelectionList,
+    MatCheckbox,
+    ReactiveFormsModule,
+    MatButton,
+    NgForOf,
+    MatSliderThumb
+  ],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss']
 })
@@ -117,13 +147,13 @@ export class InputComponent implements OnChanges,OnInit {
         }
       }
 
-      if (typeof (changes["options"]) == "string") { // @ts-ignore
-        changes["options"] = changes["options"].split(",")
+      if (typeof (changes["options"].currentValue) == "string") { // @ts-ignore
+        changes["options"].currentValue = changes["options"].currentValue.split(",")
       }
       if (changes["options"] && changes["options"].previousValue != changes["options"].currentValue) {
         this.options = [];
         for (let option of changes["options"].currentValue) {
-          if (typeof(option) == "string") option = {label: option, value: option};
+          if (typeof(option) != "object") option = {label: option, value: option};
           if (typeof(option) == "object") {
             option.label = option["label"] || option["name"] || option["caption"] || option["title"];
             // if (this.value_field.length > 0){
@@ -132,6 +162,8 @@ export class InputComponent implements OnChanges,OnInit {
             //   option.value= JSON.parse(JSON.stringify(option))
             // }
           }
+          //TODO: a analyser
+          //thif(this.label.indexOf(option)>-1)
           this.options.push(option);
         }
       }

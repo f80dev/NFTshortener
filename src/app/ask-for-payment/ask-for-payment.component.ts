@@ -1,10 +1,19 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Merchant} from "../payment/payment.component";
+import {
+    MAT_DIALOG_DATA,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogRef, MatDialogTitle
+} from "@angular/material/dialog";
+import {Merchant, PaymentComponent} from "../payment/payment.component";
 import {$$, Bank, showMessage} from "../../tools";
 import {UserService} from "../user.service";
 import {NetworkService} from "../network.service";
 import {Connexion} from "../../operation";
+import {AuthentComponent} from "../authent/authent.component";
+import {NgFor, NgIf} from "@angular/common";
+import {MatButton} from "@angular/material/button";
 
 export function _ask_for_paiement(vm:any,
                                   token_id:string,
@@ -55,6 +64,12 @@ export function _ask_for_paiement(vm:any,
 
 @Component({
     selector: 'app-ask-for-payment',
+    standalone:true,
+    imports: [
+        AuthentComponent,
+        PaymentComponent,
+        MatDialogClose, NgIf, NgFor, MatDialogContent, MatDialogActions, MatButton, MatDialogTitle,
+    ],
     templateUrl: './ask-for-payment.component.html',
     styleUrls: ['./ask-for-payment.component.css']
 })

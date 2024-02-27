@@ -1,11 +1,16 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NFT} from "../../nft";
-import {Collection} from "../../operation";
 import {NetworkService} from "../network.service";
 import {$$} from "../../tools";
+import {NgFor, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-showroom',
+  standalone:true,
+  imports: [
+    NgIf,NgFor,
+  ],
+
   templateUrl: './showroom.component.html',
   styleUrls: ['./showroom.component.css']
 })

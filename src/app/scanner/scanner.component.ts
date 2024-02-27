@@ -1,11 +1,17 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import jsQR from "jsqr";
-import {WebcamImage} from "ngx-webcam";
+import {WebcamImage, WebcamModule} from "ngx-webcam";
 import {$$} from "../../tools";
+import {NgIf} from "@angular/common";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-scanner',
+  standalone: true,
+    imports: [
+        WebcamModule, NgIf, MatButton,
+    ],
   templateUrl: './scanner.component.html',
   styleUrls: ['./scanner.component.css']
 })

@@ -3,9 +3,13 @@ xcopy /f /y ..\NFTCalvi\src\app\splash\*.* src\app\splash\
 xcopy /f /y ..\NFTCalvi\src\app\input\*.* src\app\input\
 xcopy /f /y ..\NFTCalvi\src\app\signature\*.* src\app\signature\
 xcopy /f /y ..\NFTCalvi\src\app\payment\*.* src\app\payment\
+xcopy /f /y ..\NFTCalvi\src\app\menu\*.* src\app\menu\
+xcopy /f /y ..\NFTCalvi\src\app\tuto\*.* src\app\tuto\
 xcopy /f /y ..\NFTCalvi\src\app\selkey\*.* src\app\selkey\
+xcopy /f /y ..\NFTCalvi\src\app\genlink\*.* src\app\genlink\
 xcopy /f /y ..\NFTCalvi\src\app\autovalidator\*.* src\app\autovalidator\
 xcopy /f /y ..\NFTCalvi\src\app\faqs\*.* src\app\faqs\
+xcopy /f /y ..\NFTCalvi\src\app\link\*.* src\app\link\
 xcopy /f /y ..\NFTCalvi\src\app\token-selector\*.* src\app\token-selector\
 xcopy /f /y ..\NFTCalvi\src\app\collection-selector\*.* src\app\collection-selector\
 xcopy /f /y ..\NFTCalvi\src\app\showroom\*.* src\app\showroom\
@@ -30,7 +34,7 @@ xcopy /f /y ..\NFTCalvi\src\app\scanner\*.*  src\app\scanner\
 xcopy /f /y ..\NFTCalvi\src\app\upload-file\*.*  src\app\upload-file\
 xcopy /f /y ..\NFTCalvi\src\create.ts src\
 xcopy /f /y ..\NFTCalvi\src\operation.ts src\
-xcopy /f /y ..\NFTCalvi\src\app\tuto\*.* src\app\tuto\
+
 xcopy /f /y ..\NFTCalvi\src\tools.ts src\
 xcopy /f /y ..\NFTCalvi\src\nft.ts src\
 xcopy /f /y ..\NFTCalvi\src\definitions.ts src\
