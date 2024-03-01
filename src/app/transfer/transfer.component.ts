@@ -52,15 +52,16 @@ export class TransferComponent implements OnInit {
     //   this.api._get("sl/"+cid).subscribe((r:any)=>{
     //     $$("URL courte: Récupération des paramètres ",r)
     r.style=r.style || "background:none"
-    r.price=r.price || 0
+    r.price=r.price || Number(r.quantity) || 0
+    r.message=r.message || "L'accès est limité"
+    r.network=r.network || "elrond-devnet"
     this.config=r;
 
     if(r.hasOwnProperty("airdrop")){
       this.config.connexion=r.connexion
       this.config.airdrop=r.airdrop
       this.url=r.redirect
-      this.config.network=r.network;
-      this.config.messages=r.messages;
+      this.config.messages={intro:r.messages};
 
       if(r.airdrop.force_authent){
         this.address=""
@@ -70,12 +71,18 @@ export class TransferComponent implements OnInit {
       }
 
     }else{
-      for(let k of Object.keys(this.config.messages)){
-        if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
-        if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
+      if(!this.config.merchant){
+        this.config.merchant={wallet:{address:r.address,token:r.token,network:r.network}}
+
       }
-      if(!r.collection && r.price==0){
-        this.authent(r.redirect);
+      if(this.config.messages){
+        for(let k of Object.keys(this.config.messages)){
+          if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
+          if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
+        }
+        if(!r.collection && r.price==0){
+          this.authent(r.redirect);
+        }
       }
     }
 

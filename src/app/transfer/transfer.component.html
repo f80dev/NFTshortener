@@ -7,7 +7,9 @@
 
 	<div *ngIf="final_message==''">
 		<br>
-		<div class="mat-headline-4" style="margin:3%;">{{config.messages.intro}}</div>
+		<div class="mat-headline-4" style="margin:3%;" *ngIf="config?.message && config.message?.intro">
+      {{config.messages.intro}}
+    </div>
 		<div style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
 		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
 			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}<br><br>
@@ -66,6 +68,18 @@
 						(validate)="authent($event)"></app-autovalidator>
 			</div>
 		</div>
+
+
+    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.humanity">
+      Pour continuer vous devez vous cliquer ici
+      <br><br>
+      <div style="margin: 5%;width:90%;">
+        <re-captcha (resolved)="redirect()" siteKey="6LdUq4MpAAAAAJx-LY7Kzw0qLVEcQpi2pSEaqx5Q"></re-captcha>
+<!--      <button mat-raised-button (click)="redirect()">-->
+<!--        Cliquer Ici-->
+<!--      </button>-->
+      </div>
+    </div>
 
 
 

@@ -28,6 +28,7 @@ export const environment = {
   default_bank:"https://faucet.nfluent.io",
   histo:"db-server-nfluent_local",
   redirect_server:"https://gate.nfluent.io",
+  gate_server:"https://gate.nfluent.io",
   token:"",
   shorter_service:"https://t.f80.fr",
 

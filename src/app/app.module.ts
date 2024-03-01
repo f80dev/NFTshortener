@@ -65,6 +65,7 @@ import {LinkComponent} from "./link/link.component";
 import {TutoComponent} from "./tuto/tuto.component";
 import { MenuComponent } from './menu/menu.component';
 import { MintComponent } from './mint/mint.component';
+import {RecaptchaModule} from "ng-recaptcha";
 const config: SocketIoConfig = { url: environment.server, options: {} };
 
 
@@ -145,6 +146,7 @@ const routes: Routes = [
     ScannerComponent,
     UploadFileComponent,
     TranslatePipe,
+    RecaptchaModule,
   ],
   providers: [
     DeviceService,StyleManagerService,

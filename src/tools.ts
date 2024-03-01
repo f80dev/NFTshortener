@@ -369,6 +369,9 @@ export function getParams(routes:ActivatedRoute,local_setting_params="",force_tr
         }
 
         if(ps){
+          if(ps.hasOwnProperty("b")){
+            resolve(JSON.parse(decrypt(ps.b)))
+          }
           if(ps.hasOwnProperty("p")){
             let temp:any=analyse_params(decodeURIComponent(ps["p"]));
             for(let k of Object.keys(ps)){
