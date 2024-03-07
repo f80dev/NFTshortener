@@ -349,7 +349,8 @@ export class PluginComponent {
       connexion:this.connexion,
       messages:this.redirect_message,
       network:this.network.value,
-      airdrop:this.airdrop
+      airdrop:this.airdrop,
+      service:"AirDrop"
     }
 
     this.api.create_short_link(body).subscribe({next:(result:any)=>{

@@ -370,7 +370,7 @@ export function getParams(routes:ActivatedRoute,local_setting_params="",force_tr
 
         if(ps){
           if(ps.hasOwnProperty("b")){
-            resolve(JSON.parse(decrypt(ps.b)))
+            ps=JSON.parse(decrypt(ps.b))
           }
           if(ps.hasOwnProperty("p")){
             let temp:any=analyse_params(decodeURIComponent(ps["p"]));
@@ -380,10 +380,10 @@ export function getParams(routes:ActivatedRoute,local_setting_params="",force_tr
               }
             }
             ps=temp;
-            $$("Analyse des paramètres par la fenetre principale ", ps);
           }
         }
 
+        $$("Analyse des paramètres par la fenetre principale ", ps);
         if(!ps) {
           if (force_treatment) {resolve({})}else{reject()}
         }else{

@@ -12,7 +12,9 @@
     </div>
 		<div style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
 		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
-			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}<br><br>
+			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}
+      sur le réseau {{network_name[config.merchant.wallet.network]}}
+      <br><br>
 
       <button mat-raised-button (click)="ask_paid()" style="margin-top: 100px;height: 60px;width: 120px;">
         <div class="mat-headline-6" style="margin-bottom: 0;">Payer</div>
@@ -70,7 +72,7 @@
 		</div>
 
 
-    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.humanity">
+    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.service=='pof'">
       Pour continuer vous devez vous cliquer ici
       <br><br>
       <div style="margin: 5%;width:90%;">
@@ -83,14 +85,14 @@
 
 
 
-    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.identity">
-			Pour continuer vous devez vous authentifier
-			<br><br>
+    <div style="width:90%;max-width: 450px;display: inline-block;"
+         *ngIf="config && config.service=='authent'">
 			<div style="margin: 5%;width:90%;">
 				<app-authent [connexion]="config.connexion"
+                     [directShowQRCode]="false"
+                     title="Pour continuer vous devez vous authentifier"
                      [network]="config.network"
                      (authent)="authent($event)">
-
         </app-authent>
 			</div>
 		</div>

@@ -25,6 +25,7 @@ export class TransferComponent implements OnInit {
   message="";
   provider: any;
   address: string=""
+  network_name:any={"elrond-devnet":"de test MvX (devnet)","elrond-mainnet":"MultiversX"}
 
   public constructor(
       public api:NetworkService,
@@ -57,6 +58,10 @@ export class TransferComponent implements OnInit {
     r.network=r.network || "elrond-devnet"
     this.config=r;
 
+    if(r.service=="landing_page"){
+      this.router.navigate([r.url],{queryParams:{url:r.url}})
+    }
+
     if(r.hasOwnProperty("airdrop")){
       this.config.connexion=r.connexion
       this.config.airdrop=r.airdrop
@@ -71,10 +76,14 @@ export class TransferComponent implements OnInit {
       }
 
     }else{
-      if(!this.config.merchant){
-        this.config.merchant={wallet:{address:r.address,token:r.token,network:r.network}}
-
+      if(!this.config.merchant && this.config.service=='TokenGate'){
+        this.api.get_token(r.token,r.network).subscribe({
+          next:(token:any)=>{
+            this.config.merchant={wallet:{address:r.address,token:r.token,network:r.network,unity:token.unity}}
+          }
+        })
       }
+
       if(this.config.messages){
         for(let k of Object.keys(this.config.messages)){
           if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
@@ -84,6 +93,7 @@ export class TransferComponent implements OnInit {
           this.authent(r.redirect);
         }
       }
+
     }
 
       // },(err)=>{

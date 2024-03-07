@@ -187,6 +187,7 @@ export class CreateComponent implements OnInit {
       messages:this.messages,
       required:this.min_required,
       network:this.network.value,
+      service:"TokenGate",
       store:this.store,
       style:this.dialog_style,
       bank:this.bank,

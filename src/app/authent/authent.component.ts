@@ -55,7 +55,7 @@ export class AuthentComponent implements OnInit,OnChanges {
   @Input() network:string="";
   @Input() connexion:Connexion={
     address: false,
-    direct_connect: true,
+    direct_connect: false,
     email: false,
     extension_wallet: true,
     google: false,
@@ -144,7 +144,7 @@ export class AuthentComponent implements OnInit,OnChanges {
 
 
   refresh(){
-    $$("Refresh de l'écran");
+    $$("Refresh de l'écran pour app-authent avec network="+this.network+" & connexion="+this.connexion);
     if (this.provider) {
       this.provider.init().then(()=>{
         if(this.showWalletConnect && this.directShowQRCode)this.open_wallet_connect()
@@ -187,10 +187,8 @@ export class AuthentComponent implements OnInit,OnChanges {
     setTimeout(()=>{        //TODO : cet item doit passer dans l'update
       this.api.server_nfluent=this.nfluent_server;
 
-
       // if(this.network.indexOf("polygon")>-1){
       // }
-
 
       this.address="";
       if(this.use_cookie)this.address=localStorage.getItem("authent_address") || "";
@@ -463,6 +461,8 @@ export class AuthentComponent implements OnInit,OnChanges {
 
   async open_wallet_connect() {
     //https://docs.multiversx.com/sdk-and-tools/sdk-js/sdk-js-signing-providers/#the-wallet-connect-provider
+
+    $$("Initiaisation de wallconnect")
 
     const callbacks:any ={
       onClientLogin: async ()=> {
