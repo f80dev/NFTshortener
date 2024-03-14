@@ -39,30 +39,22 @@ export class TransferComponent implements OnInit {
   ) {
   }
 
-  async ngOnInit() {
-    let r:any=await getParams(this.routes);
-    // let cid=params.cid;
-    // if(!cid){
-    //   let url=this.router.url
-    //   if(url.indexOf("?")>-1)cid=url.split("?")[1]
-    // }
-    // if(!cid || cid.length>10){
-    //   this.router.navigate(["menu"],{queryParams:params})
-    // }else{
-    //   cid=cid.split("=")[0]
-    //   this.api._get("sl/"+cid).subscribe((r:any)=>{
-    //     $$("URL courte: Récupération des paramètres ",r)
-    r.style=r.style || "background:none"
+  analyse_params(r:any) {
+    r.style=r.style || "background-color:gray;"
     r.price=r.price || Number(r.quantity) || 0
     r.message=r.message || "L'accès est limité"
     r.network=r.network || "elrond-devnet"
     this.config=r;
 
     if(r.service=="landing_page"){
-      this.router.navigate([r.url],{queryParams:{url:r.url}})
+      const delay=Number(r.quantity)*1000 || 1000
+      setTimeout(()=>{
+        this.router.navigate([r.url],{queryParams:{url:r.url}})
+      },delay)
+
     }
 
-    if(r.hasOwnProperty("airdrop")){
+    if(r.hasOwnProperty("airdrop") || r.service=="airdrop"){
       this.config.connexion=r.connexion
       this.config.airdrop=r.airdrop
       this.url=r.redirect
@@ -75,31 +67,40 @@ export class TransferComponent implements OnInit {
         this.transfert_fund(this.address)
       }
 
-    }else{
-      if(!this.config.merchant && this.config.service=='TokenGate'){
-        this.api.get_token(r.token,r.network).subscribe({
-          next:(token:any)=>{
-            this.config.merchant={wallet:{address:r.address,token:r.token,network:r.network,unity:token.unity}}
-          }
-        })
-      }
+    }
 
-      if(this.config.messages){
-        for(let k of Object.keys(this.config.messages)){
-          if(this.config.merchant && this.config.merchant!.wallet!.unity)this.config.messages[k]=this.config.messages[k].replace("__coin__",this.config.merchant.wallet.unity)
-          if(this.config.collection)this.config.messages[k]=this.config.messages[k].replace("__collection__",this.config.collection.name)
+    if (!r.merchant && r.service == 'TokenGate') {
+      this.api.get_token(r.token, r.network).subscribe({
+        next: (token: any) => {
+          this.config.merchant = {
+            wallet: {
+              address: r.address,
+              token: r.token,
+              network: r.network,
+              unity: token.unity
+            }
+          }
         }
-        if(!r.collection && r.price==0){
+      })
+
+
+      if (this.config.messages) {
+        for (let k of Object.keys(this.config.messages)) {
+          if (this.config.merchant && this.config.merchant!.wallet!.unity) this.config.messages[k] = this.config.messages[k].replace("__coin__", this.config.merchant.wallet.unity)
+          if (this.config.collection) this.config.messages[k] = this.config.messages[k].replace("__collection__", this.config.collection.name)
+        }
+        if (!r.collection && r.price == 0) {
           this.authent(r.redirect);
         }
       }
-
     }
+  }
 
-      // },(err)=>{
-      //   showError(this,err);
-      // })
-    // }
+  async ngOnInit() {
+    setTimeout(async ()=>{
+      let r:any=await getParams(this.routes);
+      this.analyse_params(r)
+    },200)
   }
 
 

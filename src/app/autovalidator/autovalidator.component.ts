@@ -26,6 +26,7 @@ export class AutovalidatorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() network: string = "";
   @Input() validator_name: string = "";
   @Input() connexion: Connexion = {
+    xAlias: false,
     private_key: false,
     keystore: false,
     direct_connect: false,

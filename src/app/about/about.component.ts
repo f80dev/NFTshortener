@@ -8,12 +8,13 @@ import {UserService} from "../user.service";
 import {NgNavigatorShareService} from "ng-navigator-share";
 import {_prompt} from "../prompt/prompt.component";
 import {MatIcon} from "@angular/material/icon";
+import {MatIconButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-about',
   standalone:true,
   imports: [
-    MatIcon, NgIf
+    MatIcon, NgIf, MatIconButton
   ],
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']

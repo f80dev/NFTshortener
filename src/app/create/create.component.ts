@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NetworkService} from "../network.service";
-import {Collection, Connexion} from "../../operation";
+import {Collection, Connexion, get_default_connexion} from "../../operation";
 import {NFT} from "../../nft";
 import {wait_message} from "../hourglass/hourglass.component";
 import {
@@ -41,20 +41,7 @@ export class CreateComponent implements OnInit {
   nft: NFT | null=null;
   domain=environment.appli;
   min_required=1;
-  connexion: Connexion={
-    private_key: false,
-    keystore: false,
-    address: false,
-    direct_connect: false,
-    email: false,
-    extension_wallet: true,
-    google: false,
-    nfluent_wallet_connect: false,
-    on_device: false,
-    wallet_connect: true,
-    web_wallet: true,
-    webcam: false
-  }
+  connexion: Connexion=get_default_connexion()
   store: string=""
   message: string = "";
   messages={

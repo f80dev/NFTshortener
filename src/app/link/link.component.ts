@@ -40,7 +40,7 @@ export class LinkComponent implements OnInit {
       let body = {long_url: this.content}
       this.api.create_short_link(body).subscribe({
         next: (result: any) => {
-          this.content = environment.gate_server + "?" + result.cid
+          this.content = environment.shorter_service   + "?" + result.cid
         },
         error:(err:any)=>{
           $$("Erreur de raccourcis",err)

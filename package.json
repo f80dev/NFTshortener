@@ -28,6 +28,7 @@
     "@angular/service-worker": "17.1.2",
     "@google-pay/button-angular": "^3.0.8",
     "@multiversx/sdk-core": "^12.18.0",
+    "@multiversx/sdk-native-auth-client": "1.0.7",
     "@multiversx/sdk-extension-provider": "^3.0.0",
     "@multiversx/sdk-network-providers": "^1.4.0",
     "@multiversx/sdk-wallet-connect-provider": "^4.1.0",

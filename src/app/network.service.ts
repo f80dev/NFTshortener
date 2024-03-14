@@ -786,9 +786,12 @@ export class NetworkService implements OnInit {
     }
 
     create_account(network: string, email: string,
-                   new_account_mail="mail_new_account.html",
-                   existing_account_mail="mail_existing_account.html",dictionnary={},force=false,subject="Votre nouveau wallet") {
+                   new_account_mail="",
+                   existing_account_mail="",dictionnary={},force=false,subject="Votre nouveau wallet") {
         //On pourra utiliser %network% pour inserer le nom du réseau dans le nom des emails de confirmations
+        if(new_account_mail=="")new_account_mail="mail_new_account.html"
+        if(existing_account_mail=="")existing_account_mail="mail_existing_account.html"
+
         let body={
             email:email,
             subject:subject,

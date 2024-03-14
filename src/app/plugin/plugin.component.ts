@@ -21,7 +21,7 @@ import {_prompt} from "../prompt/prompt.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {UserService} from "../user.service";
-import {Collection, Connexion, emptyCollection} from "../../operation";
+import {Collection, Connexion, emptyCollection, get_default_connexion} from "../../operation";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {wait_message} from "../hourglass/hourglass.component";
 
@@ -52,35 +52,9 @@ export class PluginComponent {
     {label: "Style",value:"nfluent-dark.css",name:"style",width:"350px"},
   ]
   style_properties: any={}
-  authent:Connexion={
-    address: false,
-    direct_connect: false,
-    email: false,
-    extension_wallet: false,
-    google: false,
-    keystore: true,
-    nfluent_wallet_connect: false,
-    on_device: false,
-    private_key: true,
-    wallet_connect: false,
-    web_wallet: false,
-    webcam: false
-  }
+  authent:Connexion=get_default_connexion()
 
-  connexion:Connexion={
-    private_key: false,
-    keystore: false,
-    address: true,
-    direct_connect: true,
-    email: true,
-    extension_wallet: true,
-    google: true,
-    nfluent_wallet_connect: false,
-    on_device: true,
-    wallet_connect: true,
-    web_wallet: false,
-    webcam: false
-  }
+  connexion:Connexion=get_default_connexion()
   qrcode_wallet: string = "";
   affiliate_url: string = "https://nfluent.io";
   redirect: string = "https://nfluent.io";

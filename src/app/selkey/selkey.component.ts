@@ -13,7 +13,7 @@ import {CryptoKey,  newCryptoKey, setParams} from "../../tools";
 import {_prompt} from "../prompt/prompt.component";
 import {Router} from "@angular/router";
 import {HourglassComponent, wait_message} from "../hourglass/hourglass.component";
-import {Connexion} from "../../operation";
+import {Connexion, get_default_connexion} from "../../operation";
 import {AuthentComponent} from "../authent/authent.component";
 import {InputComponent} from "../input/input.component";
 import {MatIcon} from "@angular/material/icon";
@@ -47,20 +47,7 @@ export class SelkeyComponent implements OnChanges {
   keys: CryptoKey[]=[];
   message=""
   show_authent: boolean=false;
-  connexion: Connexion={
-    address: false,
-    direct_connect: false,
-    email: false,
-    extension_wallet: true,
-    google: false,
-    keystore: false,
-    nfluent_wallet_connect: false,
-    on_device: false,
-    private_key: false,
-    wallet_connect: true,
-    web_wallet: false,
-    webcam: false
-  }
+  connexion: Connexion=get_default_connexion()
   provider: any;
 
 

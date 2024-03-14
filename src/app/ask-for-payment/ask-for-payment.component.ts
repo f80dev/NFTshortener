@@ -78,6 +78,7 @@ export class AskForPaymentComponent implements OnInit {
     buy_method: "fiat" | "crypto" | "" = "";
     nb_payment=0;
     connexion: Connexion = {
+        xAlias: false,
         private_key: false,
         address: false,
         direct_connect: true,

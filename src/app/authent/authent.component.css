@@ -18,6 +18,15 @@ button {
   padding: 20px;
 }
 
+mat-expansion-panel-header {
+  text-align: left;
+  line-height: 85%;
+}
+
+button {
+  line-height: 85%;
+}
+
 
 .polygon-button {
   background-color: #8044df;

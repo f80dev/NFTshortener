@@ -147,26 +147,29 @@ export class InputComponent implements OnChanges,OnInit {
         }
       }
 
-      if (typeof (changes["options"].currentValue) == "string") { // @ts-ignore
-        changes["options"].currentValue = changes["options"].currentValue.split(",")
-      }
-      if (changes["options"] && changes["options"].previousValue != changes["options"].currentValue) {
-        this.options = [];
-        for (let option of changes["options"].currentValue) {
-          if (typeof(option) != "object") option = {label: option, value: option};
-          if (typeof(option) == "object") {
-            option.label = option["label"] || option["name"] || option["caption"] || option["title"];
-            // if (this.value_field.length > 0){
-            //   option.value=option[this.value_field]
-            // }else{
-            //   option.value= JSON.parse(JSON.stringify(option))
-            // }
+      if(changes["options"]){
+        if (typeof (changes["options"].currentValue) == "string") { // @ts-ignore
+          changes["options"].currentValue = changes["options"].currentValue.split(",")
+        }
+        if (changes["options"] && changes["options"].previousValue != changes["options"].currentValue) {
+          this.options = [];
+          for (let option of changes["options"].currentValue) {
+            if (typeof(option) != "object") option = {label: option, value: option};
+            if (typeof(option) == "object") {
+              option.label = option["label"] || option["name"] || option["caption"] || option["title"];
+              // if (this.value_field.length > 0){
+              //   option.value=option[this.value_field]
+              // }else{
+              //   option.value= JSON.parse(JSON.stringify(option))
+              // }
+            }
+            //TODO: a analyser
+            //thif(this.label.indexOf(option)>-1)
+            this.options.push(option);
           }
-          //TODO: a analyser
-          //thif(this.label.indexOf(option)>-1)
-          this.options.push(option);
         }
       }
+
     }
   }
 

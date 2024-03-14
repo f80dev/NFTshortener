@@ -32,7 +32,26 @@ export interface Connexion {
   web_wallet:boolean | false
   private_key:boolean | false
   direct_connect: boolean | false
+  xAlias: boolean | false,
   nfluent_wallet_connect: boolean | false            //QRCode proposé par nfluent en substitution de Wallet Connect à utiliser depuis le wallet nfluent
+}
+
+export function get_default_connexion(): Connexion {
+  return {
+    xAlias: false,
+    address: false,
+    direct_connect: false,
+    email: false,
+    extension_wallet: true,
+    google: false,
+    keystore: false,
+    nfluent_wallet_connect: false,
+    on_device: false,
+    private_key: false,
+    wallet_connect: true,
+    web_wallet: false,
+    webcam: false
+  }
 }
 
 export interface Source {

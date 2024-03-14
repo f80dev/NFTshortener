@@ -5,13 +5,20 @@
 	          title="Effacer l'adresse pré-enregistrée"
 	          (click)="clear_cookie()">delete</mat-icon>
 
-	<div *ngIf="final_message==''">
-		<br>
+
+
+	<div *ngIf="final_message=='' && config">
+
+
+    <br>
 		<div class="mat-headline-4" style="margin:3%;" *ngIf="config?.message && config.message?.intro">
       {{config.messages.intro}}
     </div>
+
+
+<!--    token_gate-->
 		<div style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
-		     *ngIf="config!.price>0 && url.length==0 && !config.collection">
+		     *ngIf="config.service=='token_gate'">
 			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}
       sur le réseau {{network_name[config.merchant.wallet.network]}}
       <br><br>
@@ -21,7 +28,7 @@
       </button>
 			<br><br>
 
-      <a *ngIf="config?.bank && config?.bank.length>0"
+      <a *ngIf="config.bank && config?.bank.length>0"
               class="mat-body-2" style="margin: 100px;"
 			        [href]="this.config!.bank">
                 En savoir plus ou acqérir des {{config.merchant.wallet.unity}}
@@ -29,8 +36,12 @@
 		</div>
 		<br>
 
+
+
+
+<!--    Airdrop -->
 		<div style="width:80%;max-width: 450px;display: inline-block;"
-         *ngIf="config && config.airdrop && message=='' && address==''">
+         *ngIf="config.service=='airdrop'">
 			<div class="mat-headline-5" style="margin:10%;">{{config.messages.intro_message}}</div>
 
       <br>
@@ -51,7 +62,9 @@
 			<button mat-raised-button color="primary" (click)="redirect()">Continuez</button>
 		</div>
 
-		<div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.collection && url.length==0">
+
+<!--    nft_gate-->
+		<div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config.service=='nft_gate'">
 			Pour continuer vous devez posséder un NFT de la collection
 			<span *ngIf="config.store?.length>0"><a [href]="config.store">{{config.collection.name}}</a></span>
 			<span *ngIf="!config.store || config.store.length==0">{{config.collection.name}}</span>
@@ -71,8 +84,8 @@
 			</div>
 		</div>
 
-
-    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config && config.service=='pof'">
+    <!--    poh : proof of humanity -->
+    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config.service=='pof'">
       Pour continuer vous devez vous cliquer ici
       <br><br>
       <div style="margin: 5%;width:90%;">
@@ -84,9 +97,9 @@
     </div>
 
 
-
+<!--Authentification-->
     <div style="width:90%;max-width: 450px;display: inline-block;"
-         *ngIf="config && config.service=='authent'">
+         *ngIf="config.service=='authent'">
 			<div style="margin: 5%;width:90%;">
 				<app-authent [connexion]="config.connexion"
                      [directShowQRCode]="false"

@@ -4,24 +4,30 @@
 
   <!--  Permet l'authentification force par code d'accés ou directement seed phrase-->
   <mat-accordion *ngIf="!directShowQRCode">
-    <mat-expansion-panel *ngIf="network.indexOf('elrond')>-1 && (showWalletConnect || showExtensionWallet || showWebWallet)" [expanded]="true">
-      <mat-expansion-panel-header class="color-primary">Utiliser Wallet Connect</mat-expansion-panel-header>
+    <mat-expansion-panel *ngIf="network.indexOf('elrond')>-1 && (showWalletConnect || showExtensionWallet || showWebWallet)" [expanded]="walletconnect_open">
+      <mat-expansion-panel-header class="color-primary">Se connecter avec son wallet</mat-expansion-panel-header>
       <mat-card style="text-align: center;width: fit-content;display: inline-block;" class="multiverx-background" *ngIf="qrcode.length==0">
         <mat-card-title class="multiversx-text">S'authentifier sur MultiversX via</mat-card-title>
         <button mat-raised-button class="multiversx-button"
-                *ngIf="showWalletConnect && qrcode.length==0"
+                *ngIf="connexion.wallet_connect && qrcode.length==0"
                 (click)="open_wallet_connect()">
           L'application xPortal
         </button>
 
         <button mat-raised-button class="multiversx-button"
-                *ngIf="showWebWallet"
+                *ngIf="connexion.web_wallet"
                 (click)="open_web_wallet()">
           Le wallet du Web
         </button>
 
         <button mat-raised-button class="multiversx-button"
-                *ngIf="showExtensionWallet"
+                *ngIf="connexion.xAlias"
+                (click)="open_web_wallet('xAlias')">
+          Avec Google
+        </button>
+
+        <button mat-raised-button class="multiversx-button"
+                *ngIf="connexion.extension_wallet"
                 (click)="open_extension_wallet()">
           L'extension Chrome
         </button>
@@ -138,7 +144,7 @@
         </asl-google-signin-button>
 
         <app-input
-                *ngIf="showEmail || showAddress"
+                *ngIf="connexion.email || connexion.address"
                 maxwidth="600px" style="width: 80%"
                 [label]="intro_message"
                 [placeholder]="prompt"
