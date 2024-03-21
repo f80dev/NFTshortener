@@ -307,7 +307,16 @@ export function get_images_from_banks(vm:any,api:any,sample:string="",sticker:bo
     }
 
   })
+}
 
+export function deleteAllCookies() {
+  var cookies = document.cookie.split(';');
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    var eqPos = cookie.indexOf('=');
+    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  }
 }
 
 export function eval_direct_url_xportal(uri:string) : string {
@@ -321,7 +330,7 @@ export function apply_params(vm:any,params:any,env:any={}){
   }
 
   if(vm.hasOwnProperty("network")){
-    if(typeof vm.network=="string")vm.network = params.networks || env.network || "elrond-devnet"
+    if(typeof vm.network=="string")vm.network = params.network || env.network || "elrond-devnet"
   }
   if(params.hasOwnProperty("advanced_mode"))vm.advanced_mode=(params.advanced_mode=='true');
 
@@ -370,9 +379,9 @@ export function getParams(routes:ActivatedRoute,local_setting_params="",force_tr
 
         if(ps){
           if(ps.hasOwnProperty("b")){
-            let params=JSON.parse(decrypt(ps.b))
-            $$("Les parametres lus sont les suivants ", params);
-            resolve(params)
+            let rc=JSON.parse(decrypt(ps.b))
+            $$("Lecture des paramètres ",rc)
+            resolve(rc)
           }
           if(ps.hasOwnProperty("p")){
             let temp:any=analyse_params(decodeURIComponent(ps["p"]));

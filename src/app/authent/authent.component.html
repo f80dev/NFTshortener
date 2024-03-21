@@ -32,7 +32,6 @@
           L'extension Chrome
         </button>
 
-
       </mat-card>
 
       <br>
@@ -154,16 +153,12 @@
                 [help]="explain_message">
         </app-input>
 
-
         <button mat-icon-button (click)="run_scanner()" *ngIf="showWebcam" style="margin-top: -10px;">
           <mat-icon>qr_code_scanner</mat-icon>
         </button>
 
-
       </div>
     </mat-expansion-panel>
-
-
 
   </mat-accordion>
 
@@ -180,13 +175,11 @@
   <div *ngIf="directShowQRCode && network.indexOf('elrond')>-1">
     <div *ngIf="nfluent_wallet_connect_qrcode.length>0 && showNfluentWalletConnect"
          [style.opacity]="qrcode_enabled ? 1 : 0.5" >
-      <img
-              title="Flasher avec votre wallet nfluent"
-              [cdkCopyToClipboard]="nfluent_wallet_connect_qrcode"
-              [src]="nfluent_wallet_connect_qrcode"
-              style="cursor: copy;" [style.width]="size"><br>
+      <img title="Flasher avec votre wallet nfluent"
+           [cdkCopyToClipboard]="nfluent_wallet_connect_qrcode"
+           [src]="nfluent_wallet_connect_qrcode"
+           style="cursor: copy;" [style.width]="size"><br>
       <small>{{title}}</small>
-
     </div>
 
     {{intro_message}}<br>

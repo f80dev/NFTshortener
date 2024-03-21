@@ -86,7 +86,6 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     AdminComponent,
-    TransferComponent,
     PluginComponent,
     AffiliatedLinksComponent,
     CreateComponent,

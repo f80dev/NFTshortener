@@ -1,4 +1,4 @@
-<div class="mainform background-form" style="height:100vh;" [style]="config.style">
+<div class="mainform" style="height:100vh;" [style]="config.style">
 	<app-hourglass style="margin-top:5vh" [message]="message"></app-hourglass>
 
 	<mat-icon *ngIf="message!=''" style="cursor: pointer"
@@ -6,12 +6,11 @@
 	          (click)="clear_cookie()">delete</mat-icon>
 
 
-
 	<div *ngIf="final_message=='' && config">
 
-
     <br>
-		<div class="mat-headline-4" style="margin:3%;" *ngIf="config?.message && config.message?.intro">
+		<div class="mat-headline-5 color-primary" style="margin:5%;"
+         *ngIf="config && config.message">
       {{config.messages.intro}}
     </div>
 
@@ -23,7 +22,7 @@
       sur le réseau {{network_name[config.merchant.wallet.network]}}
       <br><br>
 
-      <button mat-raised-button (click)="ask_paid()" style="margin-top: 100px;height: 60px;width: 120px;">
+      <button mat-raised-button color="primary" (click)="ask_paid()" style="margin-top: 100px;height: 60px;width: 120px;">
         <div class="mat-headline-6" style="margin-bottom: 0;">Payer</div>
       </button>
 			<br><br>
@@ -38,11 +37,9 @@
 
 
 
-
 <!--    Airdrop -->
-		<div style="width:80%;max-width: 450px;display: inline-block;"
-         *ngIf="config.service=='airdrop'">
-			<div class="mat-headline-5" style="margin:10%;">{{config.messages.intro_message}}</div>
+		<div style="width:80%;max-width: 450px;display: inline-block;" *ngIf="config.service=='airdrop'">
+			<div class="mat-headline-5" style="margin:10%;">{{config.messages.intro}}</div>
 
       <br>
       <div *ngIf="config.airdrop.token.name">Authentifiez vous, pour recevoir {{config.airdrop.amount}} {{config.airdrop.token.name}}<br></div>
@@ -57,7 +54,7 @@
 			</app-authent>
 
 			<br><br>
-      Vous pouvez également continuer vers {{url}} sans récompense<br>
+      Vous pouvez également continuer vers {{url_to_redirect}} sans récompense<br>
       <br>
 			<button mat-raised-button color="primary" (click)="redirect()">Continuez</button>
 		</div>
@@ -84,15 +81,15 @@
 			</div>
 		</div>
 
-    <!--    poh : proof of humanity -->
-    <div style="width:90%;max-width: 450px;display: inline-block;" *ngIf="config.service=='pof'">
-      Pour continuer vous devez vous cliquer ici
-      <br><br>
+
+    <!--  poh : proof of humanity -->
+    <div style="max-width: 450px;display: inline-block;" *ngIf="config.service=='poh'">
+      <br>
       <div style="margin: 5%;width:90%;">
-        <re-captcha (resolved)="redirect()" siteKey="6LdUq4MpAAAAAJx-LY7Kzw0qLVEcQpi2pSEaqx5Q"></re-captcha>
-<!--      <button mat-raised-button (click)="redirect()">-->
-<!--        Cliquer Ici-->
-<!--      </button>-->
+        <re-captcha (resolved)="redirect()"
+                    (errored)="onError($event)" errorMode="handled"
+                    [siteKey]="this.sitekey">
+        </re-captcha>
       </div>
     </div>
 
@@ -136,7 +133,7 @@
 
   <br>
 	<button color="primary" mat-raised-button
-          (click)="redirect()" *ngIf="url.length>0 && !config.airdrop">
+          (click)="redirect()" *ngIf="url_to_redirect.length>0 && config.service=='airdrop'">
 		Continuer
 	</button>
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute, Router} from "@angular/router";
-import {apply_params, getParams} from "../../tools";
+import {apply_params, deleteAllCookies, getParams} from "../../tools";
 import {Location, NgIf} from "@angular/common";
 import {StyleManagerService} from "../style-manager.service";
 import {UserService} from "../user.service";
@@ -70,4 +70,8 @@ export class AboutComponent implements OnInit {
     }
 
   }
+
+    clear() {
+      deleteAllCookies()
+    }
 }

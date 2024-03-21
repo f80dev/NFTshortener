@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {$$, Bank, CryptoKey, encrypt,  words} from "../tools";
 import {environment} from "../environments/environment";
 
-import {catchError, retry, Subject, throwError, timeout} from "rxjs";
+import {catchError, Observable, retry, Subject, throwError, timeout} from "rxjs";
 import {Collection, Operation} from "../operation";
 import {NFT, SolanaToken, SplTokenInfo, Validator} from "../nft";
 import {Configuration, Layer} from "../create";
@@ -1157,7 +1157,7 @@ export class NetworkService implements OnInit {
         return this._get("canvas/","svg="+encodeURIComponent(svg)+"&width="+width+"&height="+height);
     }
 
-    create_short_link(body:any) {
+    create_short_link(body:{url:string}) : Observable<{cid:string}> {
         return this._post(environment.shorter_service+"/api/add/","",body)
         //return this._post("short_link/","",body)
     }

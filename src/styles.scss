@@ -212,4 +212,7 @@ a:active { text-decoration: none; color: gray; }
   text-align: center;
   width:100%;
   min-height: 100vh;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

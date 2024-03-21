@@ -1,6 +1,6 @@
 import {AfterContentInit, Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {Location, NgIf} from "@angular/common";
+import {Location, NgFor, NgIf} from "@angular/common";
 import {NetworkService} from "../network.service";
 import {environment} from "../../environments/environment";
 import {getParams} from "../../tools";
@@ -19,7 +19,7 @@ export interface FAQ {
   selector: 'app-faqs',
   standalone:true,
   imports: [
-    MatExpansionPanel,NgIf,
+    MatExpansionPanel,NgIf,NgFor,
     MatExpansionPanelHeader
   ],
   templateUrl: './faqs.component.html',

@@ -36,22 +36,26 @@ export interface Connexion {
   nfluent_wallet_connect: boolean | false            //QRCode proposé par nfluent en substitution de Wallet Connect à utiliser depuis le wallet nfluent
 }
 
-export function get_default_connexion(): Connexion {
-  return {
+export function get_default_connexion(keys="wallet_connect,extension_wallet"): Connexion {
+  let rc:any={
     xAlias: false,
     address: false,
     direct_connect: false,
     email: false,
-    extension_wallet: true,
+    extension_wallet: false,
     google: false,
     keystore: false,
     nfluent_wallet_connect: false,
     on_device: false,
     private_key: false,
-    wallet_connect: true,
+    wallet_connect: false,
     web_wallet: false,
     webcam: false
   }
+  for(let k of keys.split(",")){
+    rc[k]=true
+  }
+  return rc
 }
 
 export interface Source {

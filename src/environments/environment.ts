@@ -33,6 +33,9 @@ export const environment = {
   //shorter_service:"https://t.f80.fr",
   shorter_service: "http://localhost:80",
 
+  recaptcha: {
+    siteKey: '6Lf7UL0cAAAAAIt_m-d24WG4mA1XFPHE8yVckc5S',
+  },
 
   merchant:{
     id:"BCR2DN4TYD4Z5XCR",

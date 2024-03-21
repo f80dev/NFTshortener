@@ -25,6 +25,7 @@ import {HourglassComponent, wait_message} from "../hourglass/hourglass.component
 import {DeviceService} from "../device.service";
 import {DecimalPipe, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
+import {MatButton} from "@angular/material/button";
 
 export interface PaymentTransaction {
   transaction:string ,
@@ -73,12 +74,12 @@ export function extract_merchant_from_param(params:any) : Merchant | undefined {
 @Component({
   selector: 'app-payment',
   standalone:true,
-  imports: [
-    HourglassComponent,
-    DecimalPipe,
-    MatIcon,NgIf,
-    GooglePayButtonModule
-  ],
+    imports: [
+        HourglassComponent,
+        DecimalPipe,
+        MatIcon, NgIf,
+        GooglePayButtonModule, MatButton
+    ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })

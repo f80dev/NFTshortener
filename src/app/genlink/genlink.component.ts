@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {$$, get_images_from_banks, setParams} from "../../tools";
+import {$$, get_images_from_banks, setParams, showMessage} from "../../tools";
 import {DeviceService} from "../device.service";
 import {NgNavigatorShareService} from "ng-navigator-share";
 import {MatDialog} from "@angular/material/dialog";
@@ -8,6 +8,9 @@ import {MatExpansionPanel, MatExpansionPanelHeader} from "@angular/material/expa
 import {InputComponent} from "../input/input.component";
 import {NgFor, NgIf} from "@angular/common";
 import {MatButton} from "@angular/material/button";
+import {Clipboard} from "@angular/cdk/clipboard";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {environment} from "../../environments/environment";
 
 export function genlink_to_obj(links:any[]){
   let obj:any={}
@@ -42,7 +45,9 @@ export class GenlinkComponent implements OnChanges {
   constructor(
       public device:DeviceService,
       public dialog:MatDialog,
+      public clipboard:Clipboard,
       public api:NetworkService,
+      public toast:MatSnackBar,
       public ngShare:NgNavigatorShareService
   ) {
 
@@ -99,18 +104,26 @@ export class GenlinkComponent implements OnChanges {
   }
 
 
+
   share_url() {
     this.create_url();
     let obj:any={}
     for(let p of this.properties){
       obj[p.name]=p.value
     }
-    this.ngShare.share({
-      title:obj["appname"],
-      url:obj["url"],
-      text:obj["claim"]
+    this.api.create_short_link({url:this.url}).subscribe((r)=>{
+      let url=environment.shorter_service+"/"+r.cid
+      this.ngShare.share({
+        title:obj["appname"],
+        url:url,
+        text:obj["claim"]
+      })
+      this.clipboard.copy(url)
+      showMessage(this,"Lien copié")
     })
+
   }
+
 
 
   async call_picture(prop:any) {
