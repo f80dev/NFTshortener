@@ -1,6 +1,6 @@
 import {HostListener, Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {$$, Bank, CryptoKey, encrypt,  words} from "../tools";
+import {$$, Bank, CryptoKey, encrypt, hashCode, words} from "../tools";
 import {environment} from "../environments/environment";
 
 import {catchError, Observable, retry, Subject, throwError, timeout} from "rxjs";
@@ -34,6 +34,9 @@ export class NetworkService implements OnInit {
     stockage_available:string[]=[];             //stockage visuel et metadata
     stockage_document_available:string[]=[];    //stockage document attaché
     chain_id="D"                                //Chain_id du réseau elrond
+    private cache$: any ={};
+    private cacheTime:any={};
+    private cacheExpiry = 300000; // Five minutes
 
     constructor(
         private httpClient : HttpClient
@@ -381,8 +384,6 @@ export class NetworkService implements OnInit {
         }else{
             return false;
         }
-
-
     }
 
 
@@ -402,13 +403,28 @@ export class NetworkService implements OnInit {
         return throwError(() => new Error('Problème technique. Serveur probablement injoignable'));
     }
 
-    _get(url: string, param: string="",_timeout=30000) {
+    refreshCacheIfNeeded(cache_id:string,cacheDelay=300): void {
+        if (this.cacheTime.hasOwnProperty(cache_id) && ( new Date().getTime() - this.cacheTime[cache_id].getTime()) > cacheDelay*1000) {
+            this.cache$[cache_id] = null;
+            this.cacheTime[cache_id] = null;
+        }
+    }
+
+    _get(url: string, param: string="",_timeout=30000,cacheDelayInSec=0) {
         if(!url.startsWith("http")){
             url="/api/"+url;
             url=this.server_nfluent+url.replace("//","/").replace("/api/api/","/api/")
         }
-        $$("Appel de "+url+"?"+param)
-        return this.httpClient.get<any>(url+"?"+param).pipe(retry(1),timeout(_timeout),catchError(this.handleError))
+
+        let cache_id=hashCode(url).toString(16)
+        this.refreshCacheIfNeeded(cache_id,cacheDelayInSec)
+        if (!this.cache$.hasOwnProperty(cache_id)) {
+            $$(cache_id+" - Appel de "+url+"?"+param)
+            this.cache$[cache_id] = this.httpClient.get<any>(url+"?"+param).pipe(retry(1),timeout(_timeout),catchError(this.handleError))
+            this.cacheTime[cache_id] = new Date();
+        }
+
+        return this.cache$[cache_id];
     }
 
 
@@ -427,6 +443,8 @@ export class NetworkService implements OnInit {
         }
         return this.httpClient.delete(url+"?"+param).pipe(retry(1),timeout(2000),catchError(this.handleError))
     }
+
+
 
 
 
@@ -458,7 +476,7 @@ export class NetworkService implements OnInit {
                 }
 
                 if(network.indexOf("elrond")>-1 || network.indexOf("polygon")>-1 || network.startsWith("db-")){
-                    this.httpClient.get(this.server_nfluent+"/api/nfts/?limit="+limit+"&withAttr="+with_attr+"&offset="+offset+"&account="+addr+"&network="+network).subscribe((r:any)=>{
+                    this._get("/nfts/","limit="+limit+"&withAttr="+with_attr+"&offset="+offset+"&account="+addr+"&network="+network,30000,300).subscribe((r:any)=>{
                         resolve({result:r,offset:offset});
                     },(err:any)=>{
                         reject(err);
@@ -1162,7 +1180,9 @@ export class NetworkService implements OnInit {
         //return this._post("short_link/","",body)
     }
 
-    find_tokens(network: string, filter: string,with_detail=false,limit=200) {
-        return this._get("tokens/","network="+network+"&filter="+filter+"&with_detail="+with_detail+"&limit="+limit)
+
+    find_tokens(network: string, filter: string="",filter_by_name:string="",with_detail=false,limit=200) : Observable<any[]> {
+        return this._get("tokens/","network="+network+"&filter="+filter+"&filter_by_name="+filter_by_name+"&with_detail="+with_detail+"&limit="+limit,60000,300)
     }
+
 }

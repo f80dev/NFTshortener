@@ -290,7 +290,7 @@ export class PluginComponent {
 
   async update_dealer_balances(){
     return new Promise((resolve, reject) => {
-      this.api.find_tokens(this.airdrop.network,this.airdrop.dealer_wallet,false).subscribe({
+      this.api.find_tokens(this.airdrop.network,this.airdrop.dealer_wallet,"",false).subscribe({
         next:(r:any)=> {
           this.balances=r;
           resolve(r)

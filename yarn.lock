@@ -7213,9 +7213,9 @@ ng-navigator-share@1.0.4:
   resolved "https://registry.npmjs.org/ng-navigator-share/-/ng-navigator-share-1.0.4.tgz"
   integrity sha512-Gj/YWA8PuZ8ArZ6et8zCr/qkZfDtylcoUZ/XabWyIHrWOaBamtBlvxxsZ5yy9e+LNAqb8isEmS4IdZWwa6aEDw==
 
-ng-recaptcha@^13.2.1:
+ng-recaptcha@13.2.1:
   version "13.2.1"
-  resolved "https://registry.npmjs.org/ng-recaptcha/-/ng-recaptcha-13.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/ng-recaptcha/-/ng-recaptcha-13.2.1.tgz#25138a4e3b6ce3606c5991c5355ea2b00f18e2c9"
   integrity sha512-aBOoFla9t6AfT9t5paykoXomCDKreBKouB16VUFxSZwn1RCfDsdcaTmSNJKYLFz5j0Cq/V+szY9f3mHLgzRw5Q==
   dependencies:
     "@types/grecaptcha" "^3.0.7"

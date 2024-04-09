@@ -353,7 +353,7 @@ export class CreateComponent implements OnInit {
 
   update_token(token: any) {
     if(typeof(token)=="string"){
-      this.api.find_tokens(this.network.value,token,true,1).subscribe((r)=> {
+      this.api.find_tokens(this.network.value,token,"",true,1).subscribe((r)=> {
         if(r.length>0){
           this.token = r[0];
         }

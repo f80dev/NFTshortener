@@ -126,7 +126,7 @@ export class PaymentComponent implements AfterContentInit,OnDestroy {
     let network=this.merchant?.wallet!.network!
     let token=this.merchant?.wallet?.token || "egld"
     this.networkService.get_token(token,network).subscribe({
-      next:async (money)=>{
+      next:async (money:any)=>{
         this.money=money
         if(this.wallet_provider && this.wallet_provider.account){
           this.user=this.wallet_provider.account.address;

@@ -147,6 +147,17 @@ export class InputComponent implements OnChanges,OnInit {
         }
       }
 
+      if(changes["filter"]){
+        let filter=changes["filter"].currentValue
+        let options=[]
+        for(let option of this.options){
+          if(filter=="" || (option && option.label && option.label.indexOf(this.filter)>-1)){
+            options.push(option)
+          }
+        }
+        this.options=options
+      }
+
       if(changes["options"]){
         if (typeof (changes["options"].currentValue) == "string") { // @ts-ignore
           changes["options"].currentValue = changes["options"].currentValue.split(",")
@@ -164,7 +175,6 @@ export class InputComponent implements OnChanges,OnInit {
               // }
             }
             //TODO: a analyser
-            //thif(this.label.indexOf(option)>-1)
             this.options.push(option);
           }
         }

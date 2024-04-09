@@ -20,7 +20,7 @@ export class AffiliatedLinksComponent implements OnInit {
   ngOnInit(): void {
     this.api._get("affiliated_links/").subscribe({
       next:(links:any[])=>{this.urls=links;},
-      error:(err)=>{showError(this,err)}
+      error:(err:any)=>{showError(this,err)}
     })
   }
 
