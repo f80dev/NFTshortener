@@ -53,87 +53,87 @@
         <mat-expansion-panel [expanded]="airdrop?.address==''">
           <mat-expansion-panel-header>Désigner le wallet qui va faire la distribution</mat-expansion-panel-header>
 
-          <p *ngIf="airdrop.address!=''">
-            Wallet de distribution
-            {{airdrop.address | screencutter:"erd..."+airdrop.address.substring(30)}}<br>
+<!--          <p *ngIf="airdrop.address!=''">-->
+<!--            Wallet de distribution-->
+<!--            {{airdrop.address | screencutter:"erd..."+airdrop.address.substring(30)}}<br>-->
 
-            <br><br>
-            <app-link [content]="airdrop.address+'/tokens'" [network]="network.value"
-                      title="Voir les token" _type="accounts"
-                      *ngIf="airdrop.address" icon="travel_explore" style="margin-left: 15px;">
-            </app-link>
-            <mat-icon (click)="restart()" title="Choisir un autre wallet" style="cursor: pointer;">cancel</mat-icon>
-          </p>
-
-
-          <mat-tab-group style="width: 88%;margin-left:3%;padding: 3%;min-height:200px;"  *ngIf="airdrop.address==''">
-            <mat-tab label="Wallet de test" *ngIf="airdrop && airdrop.network!.indexOf('devnet')>-1">
-
-              <br>
-              <p>L'usage d'un compte de test est le meilleur moyen de tester totalement gratuitement le système de distribution proposé par {{appname}}</p>
-              <br>
-              <div style="width: 100%;" class="expansion-content" *ngIf="airdrop.network">
-                <app-selkey
-                  style="width: 350px;"
-                  [with_balance]="false"
-                  filter="bob,alice,dudule,carol,franck,eve,dan"
-                  [can_see_nfluent_wallet]="false"
-                  [can_see_explorer]="false"
-                  [can_use_own_key]="false"
-                  label="Séletionner un wallet de test"
-                  (onChange)="set_public_wallet($event)"
-                  [network]="airdrop.network"></app-selkey>
-
-                <div *ngIf="selkey">
-                  <div *ngIf="selkey.balance==0">Vous devez transférer quelques eGld sur ce wallet pour pouvoir l'utiliser</div>
-                  <button mat-raised-button (click)="use_selkey()" color="primary">
-                    Utiliser {{selkey.name}}
-                  </button>
-                </div>
+<!--            <br><br>-->
+<!--            <app-link [content]="airdrop.address+'/tokens'" [network]="network.value"-->
+<!--                      title="Voir les token" _type="accounts"-->
+<!--                      *ngIf="airdrop.address" icon="travel_explore" style="margin-left: 15px;">-->
+<!--            </app-link>-->
+<!--            <mat-icon (click)="restart()" title="Choisir un autre wallet" style="cursor: pointer;">cancel</mat-icon>-->
+<!--          </p>-->
 
 
+<!--          <mat-tab-group style="width: 88%;margin-left:3%;padding: 3%;min-height:200px;"  *ngIf="airdrop.address==''">-->
+<!--            <mat-tab label="Wallet de test" *ngIf="airdrop && airdrop.network!.indexOf('devnet')>-1">-->
 
-              </div>
+<!--              <br>-->
+<!--              <p>L'usage d'un compte de test est le meilleur moyen de tester totalement gratuitement le système de distribution proposé par {{appname}}</p>-->
+<!--              <br>-->
+<!--              <div style="width: 100%;" class="expansion-content" *ngIf="airdrop.network">-->
+<!--                <app-selkey-->
+<!--                  style="width: 350px;"-->
+<!--                  [with_balance]="false"-->
+<!--                  filter="bob,alice,dudule,carol,franck,eve,dan"-->
+<!--                  [can_see_nfluent_wallet]="false"-->
+<!--                  [can_see_explorer]="false"-->
+<!--                  [can_use_own_key]="false"-->
+<!--                  label="Séletionner un wallet de test"-->
+<!--                  (onChange)="set_public_wallet($event)"-->
+<!--                  [network]="airdrop.network"></app-selkey>-->
 
-              <!--						<app-input label="Séletionner un wallet de test"-->
-              <!--								   value_type="list" width="240px" style="display: inline-block;"-->
-              <!--								   [options]="public_wallets" (valueChange)="set_public_wallet($event)"></app-input>-->
-              <br>
-            </mat-tab>
-
-            <mat-tab label="Wallet dédié">
-              <button mat-raised-button
-                      *ngIf="message==''"
-                      style="margin-top: 30px;" color="primary"
-                      title="Créer un wallet pour l'airdrop"
-                      (click)="create_account()">
-                Créer un wallet dédié
-              </button>
-
-              <br>
-              <app-tuto [force]="true" [delay]="5" [duration]="100"
-                        label="Une fois créé, vous devez transférer au wallet dédié, la monnaie que vous souhaitez distribuer et un egld pour les frais de gaz nécéssaires a la distribution">
-              </app-tuto>
+<!--                <div *ngIf="selkey">-->
+<!--                  <div *ngIf="selkey.balance==0">Vous devez transférer quelques eGld sur ce wallet pour pouvoir l'utiliser</div>-->
+<!--                  <button mat-raised-button (click)="use_selkey()" color="primary">-->
+<!--                    Utiliser {{selkey.name}}-->
+<!--                  </button>-->
+<!--                </div>-->
 
 
-            </mat-tab>
 
-            <mat-tab label="Wallet existant">
-              <br>
+<!--              </div>-->
 
-              <app-authent
-                [connexion]="authent"
-                style="max-width: 700px;width: 80%;display: inline-block;"
-                [network]="network.value"
-                [showCancel]="true"
-                [use_cookie]="true"
-                (cancel)="cancel()"
-                (authent)="on_authent($event)">
-              </app-authent>
+<!--              &lt;!&ndash;						<app-input label="Séletionner un wallet de test"&ndash;&gt;-->
+<!--              &lt;!&ndash;								   value_type="list" width="240px" style="display: inline-block;"&ndash;&gt;-->
+<!--              &lt;!&ndash;								   [options]="public_wallets" (valueChange)="set_public_wallet($event)"></app-input>&ndash;&gt;-->
+<!--              <br>-->
+<!--            </mat-tab>-->
 
-              <br>
-            </mat-tab>
-          </mat-tab-group>
+<!--            <mat-tab label="Wallet dédié">-->
+<!--              <button mat-raised-button-->
+<!--                      *ngIf="message==''"-->
+<!--                      style="margin-top: 30px;" color="primary"-->
+<!--                      title="Créer un wallet pour l'airdrop"-->
+<!--                      (click)="create_account()">-->
+<!--                Créer un wallet dédié-->
+<!--              </button>-->
+
+<!--              <br>-->
+<!--              <app-tuto [force]="true" [delay]="5" [duration]="100"-->
+<!--                        label="Une fois créé, vous devez transférer au wallet dédié, la monnaie que vous souhaitez distribuer et un egld pour les frais de gaz nécéssaires a la distribution">-->
+<!--              </app-tuto>-->
+
+
+<!--            </mat-tab>-->
+
+<!--            <mat-tab label="Wallet existant">-->
+<!--              <br>-->
+
+<!--              <app-authent-->
+<!--                [connexion]="authent"-->
+<!--                style="max-width: 700px;width: 80%;display: inline-block;"-->
+<!--                [network]="network.value"-->
+<!--                [showCancel]="true"-->
+<!--                [use_cookie]="true"-->
+<!--                (cancel)="cancel()"-->
+<!--                (authent)="on_authent($event)">-->
+<!--              </app-authent>-->
+
+<!--              <br>-->
+<!--            </mat-tab>-->
+<!--          </mat-tab-group>-->
 
         </mat-expansion-panel>
 
