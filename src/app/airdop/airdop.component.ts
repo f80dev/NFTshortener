@@ -9,48 +9,61 @@ import {MatAccordion, MatExpansionPanel, MatExpansionPanelHeader} from "@angular
 import {MatButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
-import {NgIf} from "@angular/common";
+import {NgFor, NgIf} from "@angular/common";
 import {ScreencutterPipe} from "../screencutter.pipe";
 import {SelkeyComponent} from "../selkey/selkey.component";
 import {SplashComponent} from "../splash/splash.component";
 import {TokenSelectorComponent} from "../token-selector/token-selector.component";
 import {TutoComponent} from "../tuto/tuto.component";
 import {Collection, Connexion, emptyCollection, get_default_connexion} from "../../operation";
-import {$$, CryptoKey, get_images_from_banks, now, setParams, showError, showMessage} from "../../tools";
+import {
+  $$,
+  apply_params,
+  CryptoKey,
+  get_images_from_banks,
+  getParams,
+  now,
+  setParams,
+  showError,
+  showMessage
+} from "../../tools";
 import {NetworkService} from "../network.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Clipboard} from "@angular/cdk/clipboard";
+import {CdkCopyToClipboard, Clipboard} from "@angular/cdk/clipboard";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {UserService} from "../user.service";
 import {NgNavigatorShareService} from "ng-navigator-share";
 import {StyleManagerService} from "../style-manager.service";
 import {environment} from "../../environments/environment";
+import {UploadFileComponent} from "../upload-file/upload-file.component";
 
 @Component({
   selector: 'app-airdop',
   standalone: true,
-    imports: [
-        AuthentComponent,
-        CollectionSelectorComponent,
-        GenlinkComponent,
-        HourglassComponent,
-        InputComponent,
-        LinkComponent,
-        MatAccordion,
-        MatButton,
-        MatExpansionPanel,
-        MatExpansionPanelHeader,
-        MatIcon,
-        MatTab,
-        MatTabGroup,
-        NgIf,
-        ScreencutterPipe,
-        SelkeyComponent,
-        SplashComponent,
-        TokenSelectorComponent,
-        TutoComponent
-    ],
+  imports: [
+    AuthentComponent,
+    CollectionSelectorComponent,
+    GenlinkComponent,
+    HourglassComponent,
+    InputComponent,
+    LinkComponent,
+    MatAccordion,
+    CdkCopyToClipboard,
+    MatButton,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatIcon,
+    MatTab,
+    MatTabGroup,
+    NgIf,NgFor,
+    ScreencutterPipe,
+    SelkeyComponent,
+    SplashComponent,
+    TokenSelectorComponent,
+    TutoComponent,
+    UploadFileComponent
+  ],
   templateUrl: './airdop.component.html',
   styleUrl: './airdop.component.css'
 })
@@ -65,10 +78,11 @@ export class AirdopComponent {
   title="Vendre ou restreindre l'accès à un contenu";
   slide: number=0
   message="";
-  airdrop:any={address:""}
+  airdrop:any={dealer_wallet:"",token:{},claimers:[],marge:0.1}
   selkey: undefined;
   networks:any[]=environment.networks
   network:any=this.networks[0]
+  query_collection=""
 
   style_properties: any={}
 
@@ -84,10 +98,9 @@ export class AirdopComponent {
   url_bank: string="https://tokenforge.nfluent.io/bank"
   handle:any;
   collection: Collection=emptyCollection()
-  refresh_delay: number=10        //Temps de rafraichissement sur les tokens du wallet
   show_quantity: boolean=false
   collections: Collection[]=[]
-  show_token: boolean=false;
+  show_token: boolean=true;
   background_image="";
   link_properties:any[]=[
     {label: "Fond d'écran",value:"https://s.f80.fr/assets/wood.jpg",name:"background",width:"350px"},
@@ -96,6 +109,8 @@ export class AirdopComponent {
     {label: "Claim",value:"",name:"claim",width:"350px",help:"Phrase affiché en haut de la fenêtre"},
     {label: "Style",value:"nfluent-dark.css",name:"style",width:"350px"},
   ]
+  balances: any[]=[]
+  balance: number = 0;
 
   constructor(
     public api:NetworkService,
@@ -108,6 +123,81 @@ export class AirdopComponent {
     public style:StyleManagerService,
     public routes:ActivatedRoute) {
   }
+
+  async ngOnInit() {
+    this.restart()
+    let params:any=await getParams(this.routes)
+    apply_params(this,params,environment)
+    if(params.wallet){
+      this.airdrop.dealer_wallet=params.wallet
+      this.network={value:params.network || "elrond-devnet"}
+    }
+    if(this.airdrop.dealer_wallet.length>0){
+      this.find_address_from_encrypt()
+    }else{
+      this.airdrop.dealer_wallet=params.address || ""
+    }
+  }
+
+
+
+  find_address_from_encrypt(){
+    this.api.get_account(this.airdrop.dealer_wallet,this.airdrop.network).subscribe((r:any[])=>{
+      if(r.length>0){
+        this.airdrop.dealer_wallet=r[0].encrypted
+        $$("Récupération de l'adresse du wallet de distribution "+this.airdrop.dealer_wallet)
+      }else{
+        showError(this)
+      }
+    })
+  }
+
+
+  update_authent($event: any) {
+    this.airdrop.force_authent=$event
+  }
+
+
+  onEndSearchCollection(cols: Collection[]) {
+    this.collections=cols
+  }
+
+
+  modify() {
+    this.short_url=''
+    this.redirect=""
+  }
+
+
+  onEndSearch($event: any[]) {
+    this.balances=$event
+    if($event.length==0){
+      //showMessage(this,"Aucune monnaie trouvée dans ce wallet");
+      this.show_token=true
+      this.api.qrcode(this.airdrop.dealer_wallet,"json").subscribe((r:any)=>{this.qrcode_wallet=r.qrcode;})
+    }
+  }
+
+
+  select_collection($event: Collection) {
+    this.collection=$event;
+  }
+
+
+  add_affiliate_link() {
+    this.api._post("affiliated_links/","",{url:this.affiliate_url,airdrop:this.airdrop}).subscribe({
+      next:(r:any)=>{
+        if(r.message=="ok")
+          showMessage(this,"Votre lien est enregistré")
+        else
+          showMessage(this,r.message)
+      },
+      error:(err)=>{
+        showError(this,err)
+      }
+    })
+  }
+
 
   save_airdrop() {
 
@@ -168,15 +258,27 @@ export class AirdopComponent {
 
 
   on_authent($event: { strong: boolean; address: string; provider: any ,encrypted:string}) {
-    this.airdrop.address=$event.address;
-    this.airdrop.dealer_wallet=$event.encrypted
     this.owner_filter=$event.address;
+    this.airdrop.provider=$event.provider;
+    this.airdrop.dealer_wallet=$event.address;
     this.update_dealer_balances()
   }
 
-  onEndSearchCollection(cols: Collection[]) {
-    this.collections=cols
+
+  async update_dealer_balances(){
+    return new Promise((resolve, reject) => {
+      this.api.find_tokens(this.airdrop.network,this.airdrop.dealer_wallet,"",false).subscribe({
+        next:(r:any)=> {
+          this.balances=r;
+
+          resolve(r)
+        }
+      })
+    });
   }
+
+
+
 
   share_url(url:string) {
     let gift=this.airdrop.token.name ? this.airdrop.token.name : "NFT de la collection "+this.airdrop.collection.name
@@ -201,8 +303,9 @@ export class AirdopComponent {
     this.airdrop={
       dialog_style:"color:lighrey;background-color: #53576EFF;",
       dealer_wallet:"",
-      address:"",
       token:{},
+      marge:0.1,
+      claimers:[],
       limit_by_day:5,
       limit_by_wallet:3,
       force_authent:false,
@@ -224,10 +327,15 @@ export class AirdopComponent {
 
   select_token($event: any) {
     this.airdrop.token=$event;
-    this.refresh_delay=0
     this.airdrop.unity=$event.name.substring(0,10)
     this.show_token=false
     this.show_quantity=true;
+    for(let token of this.balances){
+      if(token.identifier==$event.identifier){
+        this.balance=token.balance;
+      }
+    }
+
   }
 
   cancel() {
@@ -238,9 +346,6 @@ export class AirdopComponent {
     this.router.navigate(["menu"])
   }
 
-  onEndSearchCollection(cols: Collection[]) {
-    this.collections=cols
-  }
 
   update_network($event: any) {
     this.network=$event
@@ -289,5 +394,37 @@ export class AirdopComponent {
       },error:(err)=>{showError(this,err)}})
   }
 
+  protected readonly emptyCollection = emptyCollection;
+  intro=6;
+  claimer_addresses: string="";
+  to_send_airdrop: number=1;
 
+  upload_addresses($event: any) {
+    let sep="\n"
+    this.airdrop.claimers = []
+    this.airdrop.total=0;
+    let content = $event.file;
+    if (content) {
+      if (content.indexOf("base64,")>-1) {
+        content = content.split("base64,")[1]
+        content = atob(content)
+        sep="\r\n"
+      }
+    }
+
+    for (let r of content.split(sep)) {
+      if(r.startsWith("erd")){
+        this.airdrop.claimers.push(r);
+        this.airdrop.total=this.airdrop.total+this.airdrop.amount;
+      }
+    }
+
+    this.airdrop.total=this.airdrop.total+(this.airdrop.marge/100)*this.airdrop.total;
+
+  }
+
+  update_total($event: any) {
+    this.to_send_airdrop=Number($event);
+    this.airdrop.total=this.to_send_airdrop+this.to_send_airdrop*this.airdrop.marge/100;
+  }
 }

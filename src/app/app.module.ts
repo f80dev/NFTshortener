@@ -66,6 +66,7 @@ import {TutoComponent} from "./tuto/tuto.component";
 import { MenuComponent } from './menu/menu.component';
 import { MintComponent } from './mint/mint.component';
 import {RecaptchaModule} from "ng-recaptcha";
+import {AirdopComponent} from "./airdop/airdop.component";
 const config: SocketIoConfig = { url: environment.server, options: {} };
 
 
@@ -73,7 +74,8 @@ const routes: Routes = [
   { path: 'about', component: AboutComponent},
   { path: 'create', component: CreateComponent},
   { path: 'links', component: AffiliatedLinksComponent},
-  { path: 'plugin', component: PluginComponent},
+  { path: 'airdrop', component: AirdopComponent},
+  { path: 'plugin', component: AirdopComponent},
   { path: 'admin', component: AdminComponent,pathMatch: 'full' },
   { path: 'mint', component: MintComponent},
   { path: 'redirect', component: TransferComponent},

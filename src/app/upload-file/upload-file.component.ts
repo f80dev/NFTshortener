@@ -29,7 +29,7 @@ export class UploadFileComponent implements OnInit, OnChanges {
   @Input() width: string = "fit-content";
   @Input() height: string = "fit-content";
   @Input() zone: boolean = false;
-  @Input("encode") encode = true;
+  // @Input("encode") encode = true;
   @Input() format = "binary";
   @Input() visual="";
   @Input() can_drop: boolean = true;
@@ -90,7 +90,7 @@ export class UploadFileComponent implements OnInit, OnChanges {
             this.refresh();
           }
           this.message = "";
-          if(!this.encode)content=atob(content);
+          // if(!this.encode)content=atob(content);
           if(this.format=="text"){
             this.onupload.emit({
               filename:file.name,
