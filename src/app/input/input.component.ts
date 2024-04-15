@@ -125,6 +125,8 @@ export class InputComponent implements OnChanges,OnInit {
 
   on_key($event: any) {
     if(this.value_type=="daterange"){
+      this.range.value
+      if($event.target.constructor.name=="MatStartDate")this.value=
       this.valueChange.emit($event.target);
     }else{
       if($event.key=='Enter'){
