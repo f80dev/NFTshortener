@@ -22,7 +22,7 @@ import {
   CryptoKey,
   get_images_from_banks,
   getParams,
-  now,
+  now, parseFrenchDate,
   setParams,
   showError,
   showMessage
@@ -137,6 +137,7 @@ export class AirdopComponent {
     }else{
       this.airdrop.dealer_wallet=params.address || ""
     }
+    this.update_total(this.to_send_airdrop);
   }
 
 
@@ -205,13 +206,18 @@ export class AirdopComponent {
       this.airdrop.dialog_style="background-image:url('"+this.background_image+"');background-size:cover;"
     }
 
+    debugger
+    this.airdrop.dtStart=parseFrenchDate(this.range.split(" - ")[0])!.getMilliseconds()/1000
+    this.airdrop.dtStart=parseFrenchDate(this.range.split(" - ")[1])!.getMilliseconds()/1000
+
+
     $$("Enregistrement des parametres de l'airdrop",this.airdrop)
-    if(this.airdrop.amount>this.airdrop.limit_by_day){
-      showMessage(this,"Le montant doit être inférieur a la limite");return;
-    }
+    // if(this.airdrop.amount>this.airdrop.limit_by_day){
+    //   showMessage(this,"Le montant doit être inférieur a la limite");return;
+    // }
     localStorage.setItem("airdrop",JSON.stringify(this.airdrop))
     wait_message(this,"Construction en cours")
-    this.api._post("airdrops/","from_domain="+environment.appli,this.airdrop).subscribe({
+    this.api._post("airdrop_fund/","from_domain="+environment.appli,this.airdrop).subscribe({
       next:(r:any)=>{
         wait_message(this)
         if(r.code){
@@ -398,6 +404,9 @@ export class AirdopComponent {
   intro=6;
   claimer_addresses: string="";
   to_send_airdrop: number=1;
+  show_addresses: boolean = false;
+  range=now("text")+" - "+now("text",10000000);
+  hour="00:00"
 
   upload_addresses($event: any) {
     let sep="\n"

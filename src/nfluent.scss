@@ -132,6 +132,10 @@ $nfluent-dark-theme: mat.define-dark-theme((
 // emit any typography styles.
 @include mat.all-component-themes($nfluent-theme);
 @include mat.all-component-typographies($nfluent-typography);
+//:root {
+//  @include mat.all-component-themes($nfluent-theme);
+//}
+
 
 //voir https://material.angular.io/guide/theming#application-background-color
 body,html {

@@ -36,6 +36,26 @@ export function url_wallet(network:string) : string {
 }
 
 
+export function parseFrenchDate(dateString: string): Date | null {
+  const dateParts = dateString.split('/');
+
+  if (dateParts.length !== 3) {
+    console.error('Invalid date format');
+    return null;
+  }
+
+  const day = parseInt(dateParts[0], 10);
+  const month = parseInt(dateParts[1], 10) - 1; // Months are zero-based in JavaScript
+  const year = parseInt(dateParts[2], 10);
+
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {
+    console.error('Invalid date components');
+    return null;
+  }
+
+  return new Date(year, month, day);
+}
+
 export function hashCode(s:string):number {
   var hash = 0,
     i, chr;

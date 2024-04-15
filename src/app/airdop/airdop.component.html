@@ -204,105 +204,145 @@
 
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="airdrop!.token! && (airdrop!.token.identifier || airdrop!.collection)" [expanded]="show_quantity">
-          <mat-expansion-panel-header>Paramètres de l'airdrop</mat-expansion-panel-header>
+        <div *ngIf="airdrop!.token! && (airdrop!.token.identifier || airdrop!.collection)">
+          <mat-expansion-panel  [expanded]="show_quantity"  [expanded]="true">
+            <mat-expansion-panel-header>Type d'airdrop</mat-expansion-panel-header>
 
-          <h5>Montant total + frais de service ({{airdrop.marge}}%)</h5>
-          <h3 style="margin-top: -10px;">{{airdrop.total}} {{airdrop.token.name}}</h3>
+            <mat-tab-group>
+              <mat-tab label="Open AirDrop">
+                <p class="explain-bloc">Airdrop ouvert à tous tant qu'il reste quelque chose à distributer</p>
 
-          <div style="width: 100%;display: flex;flex-wrap: wrap;align-items: center;justify-content:space-around;margin-left: -5px;margin-top:40px;">
+                <app-input label="Montant aloué à l'airdrop" width="300px" style="display: inline-block;"
+                           [value]="to_send_airdrop" [min]="0" [max]="balance"
+                           [unity]="airdrop.unity"
+                           (valueChange)="update_total($event)"
+                           value_type="number"></app-input>
 
-            <app-tuto *ngIf="airdrop!.token.identifier" [force]="true"
-                      label="Vous maitrisez le montant du versement à chaque visite ainsi que la quantité maximum / jour et la limite par wallet au-delà de laquelle le versement n'a plus lieu"></app-tuto>
+              </mat-tab>
+              <mat-tab label="Airdrop fermé">
+                <p class="explain-bloc" *ngIf="airdrop.claimers!.length==0">Seule une liste limitée d'adresses peut revevoir l'airdrop</p>
+                <div *ngIf="airdrop.claimers.length==0">
+                  <app-upload-file extensions=".csv,.xls"
+                                   title="Charger le fichier contenant les adresses"
+                                   [zone]="true"
+                                   width="100%"
+                                   height="80px"
+                                   (uploaded)="upload_addresses($event)">
+                    Fichier d'adresses éligibles
+                  </app-upload-file>
+
+                  <br>
+
+                  <app-input value_type="memo" [value]="claimer_addresses"
+                             style="width:350px;display:inline-block;"
+                             [rows]="5"
+                             (valueChange)="upload_addresses({file:$event})"
+                             label="Coller ici la liste des adresses"></app-input>
+                </div>
 
 
-            <app-input label="Montant versé à chaque demande" width="300px" style="display: inline-block;"
-                       [value]="airdrop.amount" [min]="0" [max]="airdrop.limit_by_day"
-                       [unity]="airdrop.unity"
-                       (valueChange)="airdrop.amount=$event"
-                       value_type="number"></app-input>
+                <div *ngIf="airdrop.claimers.length>0" >
+
+                  <br>
+
+                  {{airdrop.claimers.length}} adresses sont éligibles
+
+                  <app-input value_type="boolean" [value]="show_addresses"
+                             style="display: inline-block;"
+                             (valueChange)="show_addresses=$event"
+                             label="Voir les adresses"></app-input>
+
+                  <br><br>
+
+                  <button mat-raised-button
+                          (click)="airdrop.claimers=[]"
+                          *ngIf="airdrop!.token.identifier || airdrop!.collection">
+                    Effacer les adresses
+                  </button>
+                  <br><br>
 
 
-            <!--            <app-input label="Rechargement maximum / jour" width="300px%"  style="display: inline-block;"-->
-            <!--                       [value]="airdrop.limit_by_day" [min]="0"-->
-            <!--                       [unity]="airdrop.unity"-->
-            <!--                       (valueChange)="airdrop.limit_by_day=$event"-->
-            <!--                       value_type="number"></app-input>-->
+                  <div *ngIf="show_addresses" style="width: 100%;overflow: scroll;">
+                    <div *ngFor="let r of airdrop.claimers">{{r}}</div>
+                  </div>
 
-            <app-input label="Limite par wallet" width="300px%"  style="display: inline-block;"
-                       help="Au delà de ce montant par wallet, le rechargement n'a plus lieu"
-                       [value]="airdrop.limit_by_wallet" [min]="0"
-                       [unity]="airdrop.unity"
-                       (valueChange)="airdrop.limit_by_wallet=$event"
-                       value_type="number"></app-input>
-          </div>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </mat-expansion-panel>
 
 
-          <h4>Sélectionner un type d'airdrop</h4>
 
-          <mat-tab-group>
-            <mat-tab label="Open AirDrop">
-              <p class="explain-bloc">Airdrop est ouvert à tous tant qu'il reste quelque chose à distributer</p>
+<!--          -->
 
-              <app-input label="Montant aloué à l'airdrop" width="300px" style="display: inline-block;"
-                         [value]="to_send_airdrop" [min]="0" [max]="balance"
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>Montants</mat-expansion-panel-header>
+
+            <h5>Montant total + frais de service ({{airdrop.marge}}%)</h5>
+            <h3 style="margin-top: -10px;">{{airdrop.total}} {{airdrop.token.name}}</h3>
+
+
+            <div style="width: 100%;display: flex;flex-wrap: wrap;align-items: center;justify-content:space-around;margin-left: -5px;margin-top:40px;">
+
+              <app-tuto *ngIf="airdrop!.token.identifier" [force]="true"
+                        label="Vous maitrisez le montant du versement à chaque visite ainsi que la quantité maximum / jour et la limite par wallet au-delà de laquelle le versement n'a plus lieu"></app-tuto>
+
+
+              <app-input label="Montant versé à chaque demande" width="300px" style="display: inline-block;"
+                         [value]="airdrop.amount" [min]="0" [max]="airdrop.limit_by_day"
                          [unity]="airdrop.unity"
-                         (valueChange)="update_total($event)"
+                         (valueChange)="airdrop.amount=$event"
                          value_type="number"></app-input>
 
-            </mat-tab>
-            <mat-tab label="Airdrop fermé">
-              <p class="explain-bloc">Seule une liste limitée d'adresses peut revevoir l'airdrop</p>
-              <div *ngIf="airdrop.claimers.length==0">
-                <app-upload-file extensions=".csv,.xls"
-                                 title="Charger le fichier contenant les adresses"
-                                 [zone]="true"
-                                 width="100%"
-                                 height="60px"
-                                 (uploaded)="upload_addresses($event)">
-                  Fichier d'adresses éligible
-                </app-upload-file>
 
-                <br>
+              <!--            <app-input label="Rechargement maximum / jour" width="300px%"  style="display: inline-block;"-->
+              <!--                       [value]="airdrop.limit_by_day" [min]="0"-->
+              <!--                       [unity]="airdrop.unity"-->
+              <!--                       (valueChange)="airdrop.limit_by_day=$event"-->
+              <!--                       value_type="number"></app-input>-->
 
-                <app-input value_type="memo" [value]="claimer_addresses"
-                           [rows]="5"
-                           (valueChange)="upload_addresses({file:$event})"
-                           label="Coller ici la liste des adresses"></app-input>
-              </div>
-              <div *ngIf="airdrop.claimers.length>0" style="width: 100%;height:100px;overflow: scroll;">
-                <table>
-                  <tr *ngFor="let r of airdrop.claimers">
-                    <td>{{r}}</td>
-                  </tr>
-                </table><br>
-                <mat-icon (click)="airdrop.claimers=[]" style="cursor: pointer">cancel</mat-icon>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
+              <app-input label="Limite par wallet" width="300px%"  style="display: inline-block;"
+                         help="Au delà de ce montant par wallet, le rechargement n'a plus lieu"
+                         [value]="airdrop.limit_by_wallet" [min]="0"
+                         [unity]="airdrop.unity"
+                         (valueChange)="airdrop.limit_by_wallet=$event"
+                         value_type="number"></app-input>
+            </div>
+
+            <app-input label="Période de l'airdrop" style="display: inline-block;"
+                       [value]="range"
+                       (valueChange)="range=$event"
+                       value_type="daterange"></app-input>
+
+            <app-input label="Heure de début" style="display: inline-block;"
+                       [value]="hour"
+                       (valueChange)="hour=$event"
+                       value_type="time"></app-input>
 
 
 
-        </mat-expansion-panel>
 
+          </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="airdrop!.token! && airdrop!.token.identifier || airdrop!.collection" [expanded]="false">
-          <mat-expansion-panel-header>Process d'authentification</mat-expansion-panel-header>
-          <app-input value_type="boolean" [value]="airdrop.force_authent"
-                     help="Dans le cas contraire, l'adresse de l'utilisateur est enregistré sous forme de cookie donc demander à la première visite uniquement"
-                     (valueChange)="update_authent($event)"
-                     label="Forcer l'authentification avant chaque versement"></app-input>
-          <br>
+          <mat-expansion-panel *ngIf="airdrop!.token! && airdrop!.token.identifier || airdrop!.collection" [expanded]="false">
+            <mat-expansion-panel-header>Process d'authentification</mat-expansion-panel-header>
+            <app-input value_type="boolean" [value]="airdrop.force_authent"
+                       help="Dans le cas contraire, l'adresse de l'utilisateur est enregistré sous forme de cookie donc demander à la première visite uniquement"
+                       (valueChange)="update_authent($event)"
+                       label="Forcer l'authentification avant chaque versement"></app-input>
+            <br>
 
-          <p style="text-align: left;" class="mat-body-1">
-            L'authentification est possible via :<br>
-            <app-input label="Wallet connect" [value]="connexion.wallet_connect" (valueChange)="connexion.wallet_connect=$event" value_type="boolean"></app-input>
-            <app-input label="Extension Chrome" [value]="connexion.extension_wallet" (valueChange)="connexion.extension_wallet=$event" value_type="boolean"></app-input>
-            <app-input label="Email / Google (entrainant une création de wallet)" [value]="connexion.email" (valueChange)="connexion.email=$event" value_type="boolean"></app-input>
+            <p style="text-align: left;" class="mat-body-1">
+              L'authentification est possible via :<br>
+              <app-input label="Wallet connect" [value]="connexion.wallet_connect" (valueChange)="connexion.wallet_connect=$event" value_type="boolean"></app-input>
+              <app-input label="Extension Chrome" [value]="connexion.extension_wallet" (valueChange)="connexion.extension_wallet=$event" value_type="boolean"></app-input>
+              <app-input label="Email / Google (entrainant une création de wallet)" [value]="connexion.email" (valueChange)="connexion.email=$event" value_type="boolean"></app-input>
 
-          </p>
+            </p>
 
-        </mat-expansion-panel>
+          </mat-expansion-panel>
+        </div>
+
       </mat-accordion>
 
 

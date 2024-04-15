@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
@@ -9,6 +9,14 @@ import {MatListOption, MatSelectionList} from "@angular/material/list";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatInputModule} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
+import {
+  MatDatepickerModule,
+  MatDatepickerToggle,
+  MatDateRangeInput,
+  MatDateRangePicker
+} from "@angular/material/datepicker";
+import { MAT_DATE_LOCALE, provideNativeDateAdapter} from "@angular/material/core";
+import {parseFrenchDate} from "../../tools";
 //version 1.0 3/3/23
 
 @Component({
@@ -32,7 +40,15 @@ import {MatButton} from "@angular/material/button";
     ReactiveFormsModule,
     MatButton,
     NgForOf,
-    MatSliderThumb
+    MatSliderThumb,
+    MatDatepickerToggle,
+    MatDatepickerModule,
+    MatDateRangeInput,
+    MatDateRangePicker
+  ],
+  providers: [
+      provideNativeDateAdapter(),
+      {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
   ],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss']
@@ -69,7 +85,7 @@ export class InputComponent implements OnChanges,OnInit {
   @Output() action=new EventEmitter();
   @Output() cancel=new EventEmitter();
 
-  @Input() value_type:"text" | "number" | "memo" | "list" | "listimages" | "boolean" | "images" | "slide" | "slider" = "text";
+  @Input() value_type:"text" | "time" | "daterange" | "number" | "memo" | "list" | "listimages" | "boolean" | "images" | "slide" | "slider" = "text";
   @Input() help:string="";
   @Input() help_input: string="";
   @Input() help_button: string="Enregistrez";
@@ -85,9 +101,15 @@ export class InputComponent implements OnChanges,OnInit {
   @Input() fontname="mat-body-2"
   @Input() height="200px"
   @Input() unity: string="";
+  range= new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
 
 
-  constructor() { }
+  constructor( @Inject(MAT_DATE_LOCALE) private _locale: string,) {
+    this._locale = 'fr';
+  }
 
   on_clear() {
     this.value=null;
@@ -102,10 +124,18 @@ export class InputComponent implements OnChanges,OnInit {
   }
 
   on_key($event: any) {
-    if($event.key=='Enter')
-      this.on_validate();
-    else
-      this.valueChange.emit(this.value);
+    if(this.value_type=="daterange"){
+      this.valueChange.emit($event.target);
+    }else{
+      if($event.key=='Enter'){
+        this.on_validate();
+      } else {
+        this.valueChange.emit(this.value);
+      }
+
+    }
+
+
   }
 
   sel_change($event: any) {
@@ -182,11 +212,16 @@ export class InputComponent implements OnChanges,OnInit {
 
     }
   }
-
   ngOnInit(): void {
     if(typeof(this.options)=="string")this.options=this.options.split(",")
     if(this.options.length>0){this.value_type="list";}
     if(this.rows>0 && this.cols==0)this.cols=10;
+    if(this.value_type=="daterange"){
+      this.range== new FormGroup({
+        start: new FormControl<Date | null>(parseFrenchDate(this.value.split(" - ")[0])),
+        end: new FormControl<Date | null>(parseFrenchDate(this.value.split(" - ")[1])),
+      });
+    }
   }
 
   on_cancel() {
