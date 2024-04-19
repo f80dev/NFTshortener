@@ -5,7 +5,7 @@ import {$$, showMessage} from "../../tools";
 import {_prompt} from "../prompt/prompt.component";
 import {MatDialog} from "@angular/material/dialog";
 import {HourglassComponent} from "../hourglass/hourglass.component";
-import {MatFormField} from "@angular/material/form-field";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatIcon} from "@angular/material/icon";
 import {InputComponent} from "../input/input.component";
@@ -20,7 +20,7 @@ const BACKUP_IMG="https://tokenforge.nfluent.io/assets/icons/egld-token-logo.web
   standalone: true,
     imports: [
         HourglassComponent,
-        MatFormField,
+        MatFormField,MatLabel,
         MatSelect,
         MatOption, NgIf,
         MatIcon,
@@ -32,6 +32,9 @@ const BACKUP_IMG="https://tokenforge.nfluent.io/assets/icons/egld-token-logo.web
 export class TokenSelectorComponent implements OnChanges,OnInit {
   @Input() network:string=""
   @Input() owner:string=""
+  @Input() label_change_filter="Modifier le filtre";
+  @Input() canChangeFilter: boolean=true
+  @Input() canCreateMoney: boolean=true
   @Input() type:string="Fungible";
   @Input() size:string="30px";
   @Input() size_selected:string="80px";
@@ -39,7 +42,6 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
   @Input() refresh_delay:number=0;
   @Input() show_createtoken_button=true;
   @Input("value") sel_token:any={id:""}
-  @Input() label="Sélectionner un token"
   @Input() with_detail=false
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
   @Output() endSearch: EventEmitter<any> = new EventEmitter();
@@ -133,6 +135,7 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
   //   clearTimeout(this.handler)
   //   this.handler=setTimeout(()=>{this.refresh()},1000)
   // }
+
 
   switch_token(evt:any) {
     if(evt=="owner"){

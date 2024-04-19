@@ -3,7 +3,6 @@ import {ActivatedRoute} from "@angular/router";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {_prompt} from "./app/prompt/prompt.component";
 
-
 export interface CryptoKey {
   name: string | null
   address: string
@@ -27,13 +26,7 @@ export function newCryptoKey(address="",name="",privateKey="",encrypted:string |
   return rc
 }
 
-export function url_wallet(network:string) : string {
-  if(network.indexOf("elrond")>-1){
-    return network.indexOf("devnet")==-1 ? "https://wallet.elrond.com" : "https://devnet-wallet.elrond.com";
-  } else {
-    return "";
-  }
-}
+
 
 
 export function parseFrenchDate(dateString: string): Date | null {
@@ -75,6 +68,8 @@ export function b64DecodeUnicode(s:string):string {
   }).join(''))
 }
 
+
+
 export function encodeUnicode(str:string) {
   // first we use encodeURIComponent to get percent-encoded UTF-8,
   // then we convert the percent encodings into raw bytes which
@@ -90,6 +85,7 @@ export function encrypt(s:string) : string {
   //TODO fonction a terminer
   return btoa(s);
 }
+
 
 
 export function getBrowserName() {
@@ -261,6 +257,7 @@ export function showIosInstallModal(localStorageKey: string="ios_install"): bool
     );
   };
 
+
   // show the modal only once
   const localStorageKeyValue = localStorage.getItem(localStorageKey);
   const iosInstallModalShown = localStorageKeyValue
@@ -337,11 +334,6 @@ export function deleteAllCookies() {
     var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
     document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
   }
-}
-
-export function eval_direct_url_xportal(uri:string) : string {
-  let rc="https://xportal.com/?wallet-connect="+uri; //"+this.provider.?relay-protocol%3Dirn&symKey=2a0e80dd8b982dac05eef5ce071fbe541d390fc302666d09856ae379416bfa6e"
-  return "https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet&link="+encodeURIComponent(rc);
 }
 
 export function apply_params(vm:any,params:any,env:any={}){
@@ -472,16 +464,6 @@ export function syntaxHighlight(json:any) {
 }
 
 
-export function removeBigInt(obj:any) {
-  Object.keys(obj).map((key:any, index:any) =>
-    typeof obj[key] === 'bigint'
-      ? obj[key] .toString()
-      : obj[key]  // return everything else unchanged
-  );
-
-  return obj;
-}
-
 // @ts-ignore
 /**
  * Affichage du message
@@ -606,19 +588,6 @@ export function copyAchievements(clp:Clipboard,to_copy:string) {
 
 
 
-export function find_miner_from_operation(operation:any,addr:string) : any {
-  let to_network=isEmail(addr) ? operation.mining?.networks[0].network : detect_network(addr);  //Si l'adresse est email on prend la première source du mining
-  for(let n of operation.mining!.networks){
-    if(n.network.startsWith(to_network)){
-      return n;
-    }
-  }
-  return {}
-}
-
-
-
-
 export function find(liste:any[],elt_to_search:any,index_name:any=0){
   let rc=0;
   for(let item of liste){
@@ -666,25 +635,6 @@ export function create_manifest_for_webapp_install(content:any,document:any,icon
 }
 
 
-export function getNetworks(name:string="elrond"): any[] {
-  let rc=[]
-  if(name.indexOf("elrond")>-1 || name.indexOf("multiversx")>-1) {
-    rc.push({label:"MultiversX Test",value:"elrond-devnet"})
-    rc.push({label:"MultiversX",value:"elrond-mainnet"})
-    rc.push({label:"MultiversX Test 2",value:"elrond-devnet2"})
-  }
-  return rc;
-}
-
-export function getWalletUrl(network="elrond"): string {
-  if(network.indexOf("elrond")>-1){
-    let _type=network.split("-")[1]+"-"
-    if(_type=="mainnet-")_type=""
-    return "https://"+_type+"wallet.multiversx.com"
-  }
-  return ""
-}
-
 export function detect_type_network(network:string){
   if(network.indexOf("devnet")>-1)return "devnet";
   if(network.toLowerCase().indexOf(" test")>-1)return "devnet";
@@ -720,6 +670,7 @@ export interface Bank {
   histo: string //Base de données de stockage de l'historique des transactions
 }
 
+
 export function convert_to_list(text:string="",separator=",",labelandvalue=false) : any[] {
   if(!text)return [];
   if(typeof text!="string")return text;
@@ -732,22 +683,4 @@ export function convert_to_list(text:string="",separator=",",labelandvalue=false
       rc.push({label:t,value:t})
   }
   return rc
-}
-
-export function extract_bank_from_param(params:any) : Bank | undefined {
-  if(params && params["bank.miner"] && params["bank.token"]){
-    return {
-      miner: newCryptoKey("","","",params["bank.miner"]),
-      network: params["bank.network"],
-      refund: params["bank.refund"],
-      title: params["bank.title"],
-      token: params["bank.token"],
-      wallet_limit:params["bank.wallet_limit"],
-      limit: params["bank.limit"],
-      histo:params["bank.histo"],
-      collection:params["bank.collection"]
-    }
-  }
-
-  return undefined;
 }

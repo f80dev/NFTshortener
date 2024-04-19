@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {apply_params, getParams, getWalletUrl} from "../../tools";
+import {apply_params, getParams} from "../../tools";
 import {environment} from "../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
 import {StyleManagerService} from "../style-manager.service";
 import {NetworkService} from "../network.service";
 import {get_nfluent_wallet_url} from "../../nfluent";
+import {getWalletUrl} from "../../crypto";
 
 @Component({
   selector: 'app-mint',

@@ -36,6 +36,7 @@ xcopy /f /y ..\NFTCalvi\src\create.ts src\
 xcopy /f /y ..\NFTCalvi\src\operation.ts src\
 
 xcopy /f /y ..\NFTCalvi\src\tools.ts src\
+xcopy /f /y ..\NFTCalvi\src\crypto.ts src\
 xcopy /f /y ..\NFTCalvi\src\nft.ts src\
 xcopy /f /y ..\NFTCalvi\src\definitions.ts src\
 xcopy /f /y ..\NFTCalvi\run_server.bat .

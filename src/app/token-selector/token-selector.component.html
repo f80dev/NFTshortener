@@ -19,8 +19,8 @@
         <!--             *ngIf="message=='' && tokens.length>0" (click)="switch_token()">-->
 
 
-        <mat-form-field style="flex-grow: 1;" *ngIf="owner!=''">
-            <!--                <mat-label>{{label}}</mat-label>-->
+        <mat-form-field style="flex-grow: 1;max-width: 500px;" *ngIf="owner!='' && canChangeFilter">
+            <mat-label>{{label_change_filter}}</mat-label>
             <mat-select [(value)]="sel_filter" (valueChange)="switch_token($event)">
                 <mat-option value="all">Tous les tokens</mat-option>
                 <mat-option value="owner">Les tokens de <app-link [content]="owner"></app-link></mat-option>
@@ -29,11 +29,12 @@
 
         <table style="text-align:left;font-size: x-large;opacity: 0.9;" *ngIf="message==''">
             <td>
-                <mat-icon (click)="open_create_esdt()"
+                <mat-icon (click)="open_create_esdt()" *ngIf="canCreateMoney"
                           title="Comment créer votre propre monnaie"
                           style="cursor: pointer;">add_circle</mat-icon>
 
                 <mat-icon
+                        *ngIf="tokens && tokens.length>10"
                         (click)="open_search_token()"
                         title="Chercher une monnaie par nom"
                         style="cursor: pointer;">

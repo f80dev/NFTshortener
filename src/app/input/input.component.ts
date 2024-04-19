@@ -101,6 +101,7 @@ export class InputComponent implements OnChanges,OnInit {
   @Input() fontname="mat-body-2"
   @Input() height="200px"
   @Input() unity: string="";
+  @Input() init: string="";
   range= new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
@@ -125,9 +126,7 @@ export class InputComponent implements OnChanges,OnInit {
 
   on_key($event: any) {
     if(this.value_type=="daterange"){
-      this.range.value
-      if($event.target.constructor.name=="MatStartDate")this.value=
-      this.valueChange.emit($event.target);
+      this.valueChange.emit(this.range.value);
     }else{
       if($event.key=='Enter'){
         this.on_validate();
@@ -163,6 +162,16 @@ export class InputComponent implements OnChanges,OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(this.value_type=="daterange"){
+      if(changes["value"]){
+        let values=changes["value"].currentValue.split(" - ")
+        let start=parseFrenchDate(values[0])
+        let end=parseFrenchDate(values[1])
+        this.range.setValue({start: start, end: end  })
+        this.valueChange.emit({start:start,end:end});
+      }
+    }
+
     if(this.value_type=="list" || this.value_type=="listimages" || this.value_type=="images") {
       if(changes["value"]){
         if(this.value_field==""){

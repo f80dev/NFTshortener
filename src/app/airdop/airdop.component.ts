@@ -78,7 +78,7 @@ export class AirdopComponent {
   title="Vendre ou restreindre l'accès à un contenu";
   slide: number=0
   message="";
-  airdrop:any={dealer_wallet:"",token:{},claimers:[],marge:0.1}
+  airdrop:any={dealer_wallet:"",token:{},claimers:[],marge:0}
   selkey: undefined;
   networks:any[]=environment.networks
   network:any=this.networks[0]
@@ -132,12 +132,16 @@ export class AirdopComponent {
       this.airdrop.dealer_wallet=params.wallet
       this.network={value:params.network || "elrond-devnet"}
     }
+    this.api._get("/airdrop_marge","network="+this.airdrop.network).subscribe((r:any)=>{
+      this.airdrop.marge=r.marge
+      this.update_total(this.to_send_airdrop)
+    })
     if(this.airdrop.dealer_wallet.length>0){
       this.find_address_from_encrypt()
     }else{
       this.airdrop.dealer_wallet=params.address || ""
     }
-    this.update_total(this.to_send_airdrop);
+
   }
 
 
@@ -206,10 +210,10 @@ export class AirdopComponent {
       this.airdrop.dialog_style="background-image:url('"+this.background_image+"');background-size:cover;"
     }
 
-    debugger
-    this.airdrop.dtStart=parseFrenchDate(this.range.split(" - ")[0])!.getMilliseconds()/1000
-    this.airdrop.dtStart=parseFrenchDate(this.range.split(" - ")[1])!.getMilliseconds()/1000
-
+    if(this.range){
+      this.airdrop.dtStart=this.range.start
+      this.airdrop.dtStart=this.range.end
+    }
 
     $$("Enregistrement des parametres de l'airdrop",this.airdrop)
     // if(this.airdrop.amount>this.airdrop.limit_by_day){
@@ -217,8 +221,16 @@ export class AirdopComponent {
     // }
     localStorage.setItem("airdrop",JSON.stringify(this.airdrop))
     wait_message(this,"Construction en cours")
-    this.api._post("airdrop_fund/","from_domain="+environment.appli,this.airdrop).subscribe({
-      next:(r:any)=>{
+    this.api._post("airdrop_fund/","from_domain="+environment.appli,this.airdrop).subscribe( {
+      next:async (r:any)=>{
+        try{
+          wait_message(this,"Mise en place l'airdrop")
+          await this.api.execute(r.transaction,this.airdrop.network,this.airdrop.provider)
+        } catch (e) {
+          showMessage(this,"Annulation de l'airdrop")
+          return
+        }
+
         wait_message(this)
         if(r.code){
           this.code_to_insert=r.code
@@ -322,7 +334,7 @@ export class AirdopComponent {
       authent_delay:5,
       dtStart:now("datetime",100000),
       dtEnd:now("datetime",10000000),
-      network:this.networks[0].value
+      network:this.network.value
     };
     this.code_to_insert=""
     this.url_qrcode="";
@@ -339,8 +351,11 @@ export class AirdopComponent {
     for(let token of this.balances){
       if(token.identifier==$event.identifier){
         this.balance=token.balance;
+        this.update_total(Math.round(token.balance/10))
+        this.airdrop.amount=Math.round(this.to_send_airdrop/1000)+1
       }
     }
+
 
   }
 
@@ -405,8 +420,9 @@ export class AirdopComponent {
   claimer_addresses: string="";
   to_send_airdrop: number=1;
   show_addresses: boolean = false;
-  range=now("text")+" - "+now("text",10000000);
+  range:any
   hour="00:00"
+  start_date=now("text")+" - "+now("text",10000);
 
   upload_addresses($event: any) {
     let sep="\n"
@@ -434,6 +450,6 @@ export class AirdopComponent {
 
   update_total($event: any) {
     this.to_send_airdrop=Number($event);
-    this.airdrop.total=this.to_send_airdrop+this.to_send_airdrop*this.airdrop.marge/100;
+    this.airdrop.total=this.to_send_airdrop+(this.airdrop.marge>0 ? this.to_send_airdrop/this.airdrop.marge : 0);
   }
 }
