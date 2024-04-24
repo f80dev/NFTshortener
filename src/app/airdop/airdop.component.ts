@@ -19,10 +19,9 @@ import {Collection, Connexion, emptyCollection, get_default_connexion} from "../
 import {
   $$,
   apply_params,
-  CryptoKey,
   get_images_from_banks,
   getParams,
-  now, parseFrenchDate,
+  now,
   setParams,
   showError,
   showMessage
@@ -133,7 +132,7 @@ export class AirdopComponent {
       this.network={value:params.network || "elrond-devnet"}
     }
     this.api._get("/airdrop_marge","network="+this.airdrop.network).subscribe((r:any)=>{
-      this.airdrop.marge=r.marge
+      this.airdrop.marge=1000/r.marge;
       this.update_total(this.to_send_airdrop)
     })
     if(this.airdrop.dealer_wallet.length>0){
@@ -210,10 +209,6 @@ export class AirdopComponent {
       this.airdrop.dialog_style="background-image:url('"+this.background_image+"');background-size:cover;"
     }
 
-    if(this.range){
-      this.airdrop.dtStart=this.range.start
-      this.airdrop.dtStart=this.range.end
-    }
 
     $$("Enregistrement des parametres de l'airdrop",this.airdrop)
     // if(this.airdrop.amount>this.airdrop.limit_by_day){
@@ -332,8 +327,8 @@ export class AirdopComponent {
       show_deal:true,
       redirect:"",
       authent_delay:5,
-      dtStart:now("datetime",100000),
-      dtEnd:now("datetime",10000000),
+      delay:0,
+      duration:60,
       network:this.network.value
     };
     this.code_to_insert=""

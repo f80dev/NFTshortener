@@ -64,7 +64,8 @@ export const environment = {
       "Créer le lien":"Build the link",
       "Lien pour acquérir un NFT":"Link to buy the required NFT"
     }
-  }
+  },
+  max_file_size: 1000000
 };
 
 

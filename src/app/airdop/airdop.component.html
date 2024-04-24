@@ -311,18 +311,15 @@
                          value_type="number"></app-input>
             </div>
 
-            <app-input label="Période de l'airdrop" style="display: inline-block;"
-                       [value]="start_date"
-                       (valueChange)="range=$event"
-                       value_type="daterange"></app-input>
+            <app-input label="Dans combien de temps" style="display: inline-block;"
+                       [value]="airdrop.delay"
+                       (valueChange)="airdrop.delay=$event"
+                       value_type="number"></app-input>
 
-            <app-input label="Heure de début" style="display: inline-block;"
-                       [value]="hour"
-                       (valueChange)="hour=$event"
-                       value_type="time"></app-input>
-
-
-
+            <app-input label="Pendant combien de temps" style="display: inline-block;"
+                       [value]="airdrop.duration"
+                       (valueChange)="airdrop.duration=$event"
+                       value_type="number"></app-input>
 
           </mat-expansion-panel>
 
