@@ -29,8 +29,12 @@ export function newCryptoKey(address="",name="",privateKey="",encrypted:string |
 
 
 
+
+
 export function parseFrenchDate(dateString: string): Date | null {
-  const dateParts = dateString.split('/');
+  let _time=dateString.indexOf(" ")>-1 ? dateString.split(" ")[1] : "00:00:00"
+
+  const dateParts = dateString.split(" ")[0].split('/');
 
   if (dateParts.length !== 3) {
     console.error('Invalid date format');
@@ -41,13 +45,21 @@ export function parseFrenchDate(dateString: string): Date | null {
   const month = parseInt(dateParts[1], 10) - 1; // Months are zero-based in JavaScript
   const year = parseInt(dateParts[2], 10);
 
+  const hour=parseInt(_time.split(":")[0])
+  const minute=parseInt(_time.split(":")[1])
+  const sec=parseInt(_time.split(":")[2])
+
   if (isNaN(day) || isNaN(month) || isNaN(year)) {
     console.error('Invalid date components');
     return null;
   }
 
-  return new Date(year, month, day);
+  return new Date(year, month, day,hour,minute,sec);
 }
+
+
+
+
 
 export function hashCode(s:string):number {
   var hash = 0,

@@ -21,7 +21,7 @@ import {
   apply_params,
   get_images_from_banks,
   getParams,
-  now,
+  now, parseFrenchDate,
   setParams,
   showError,
   showMessage
@@ -209,6 +209,14 @@ export class AirdopComponent {
       this.airdrop.dialog_style="background-image:url('"+this.background_image+"');background-size:cover;"
     }
 
+    if(this.airdrop.delay.indexOf("/")>0){
+      let dt=parseFrenchDate(this.airdrop.delay)!.getTime() || now("date");
+      this.airdrop.delay=(dt-now())/(60*1000)
+    }else{
+      this.airdrop.delay=Number(this.airdrop.delay)*60
+    }
+    if(this.airdrop.delay<0)this.airdrop.delay=0;
+
 
     $$("Enregistrement des parametres de l'airdrop",this.airdrop)
     // if(this.airdrop.amount>this.airdrop.limit_by_day){
@@ -327,7 +335,7 @@ export class AirdopComponent {
       show_deal:true,
       redirect:"",
       authent_delay:5,
-      delay:0,
+      delay:"0",
       duration:60,
       network:this.network.value
     };

@@ -14,7 +14,7 @@ import {DeviceService} from "../device.service";
 import { WalletConnectV2Provider } from "@multiversx/sdk-wallet-connect-provider";
 import { ExtensionProvider } from "@multiversx/sdk-extension-provider";
 import {WALLET_PROVIDER_DEVNET, WALLET_PROVIDER_MAINNET, WalletProvider} from "@multiversx/sdk-web-wallet-provider";
-import {Socket, SocketIoConfig, SocketIoModule} from "ngx-socket-io";
+import {Socket, SocketIoConfig} from "ngx-socket-io";
 import {EvmWalletServiceService} from "../evm-wallet-service.service";
 import {_prompt} from "../prompt/prompt.component";
 import {MatDialog} from "@angular/material/dialog";

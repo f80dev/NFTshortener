@@ -54,20 +54,20 @@ import {parseFrenchDate} from "../../tools";
   styleUrls: ['./input.component.scss']
 })
 export class InputComponent implements OnChanges,OnInit {
-  @Input() infobulle:string="";
-  @Input() label:string="";
-  @Input() color:string="black";
+  @Input() infobulle:string=""
+  @Input() label:string=""
+  @Input() color:string="black"
 
-  @Input() label_button:string="";
-  @Input() cancel_button:string="";
+  @Input() label_button:string=""
+  @Input() cancel_button:string=""
 
   @Input() maxlength:string=""
-  @Input() width:string="100%";
-  @Input() maxwidth:string="100%";
-  @Input() color_value="darkgray";
-  @Input() size_image="40px";
-  @Input() icon_action="";
-  @Input() filter="";
+  @Input() width:string="100%"
+  @Input() maxwidth:string="100%"
+  @Input() color_value="darkgray"
+  @Input() size_image="40px"
+  @Input() icon_action=""
+  @Input() filter=""
 
 
   @Input() options:any=[];
@@ -85,7 +85,7 @@ export class InputComponent implements OnChanges,OnInit {
   @Output() action=new EventEmitter();
   @Output() cancel=new EventEmitter();
 
-  @Input() value_type:"text" | "time" | "daterange" | "number" | "memo" | "list" | "listimages" | "boolean" | "images" | "slide" | "slider" = "text";
+  @Input() value_type:"text" | "time" | "date" | "daterange" | "number" | "memo" | "list" | "listimages" | "boolean" | "images" | "slide" | "slider" = "text";
   @Input() help:string="";
   @Input() help_input: string="";
   @Input() help_button: string="Enregistrez";
@@ -106,6 +106,7 @@ export class InputComponent implements OnChanges,OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
+  date_control= new FormControl(new Date());
 
 
   constructor( @Inject(MAT_DATE_LOCALE) private _locale: string,) {
@@ -169,6 +170,12 @@ export class InputComponent implements OnChanges,OnInit {
         let end=parseFrenchDate(values[1])
         this.range.setValue({start: start, end: end  })
         this.valueChange.emit({start:start,end:end});
+      }
+    }
+
+    if(this.value_type=="date"){
+      if(changes["value"]){
+        this.value.setValue(parseFrenchDate(changes["value"].currentValue))
       }
     }
 

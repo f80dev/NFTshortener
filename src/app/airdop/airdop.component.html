@@ -311,12 +311,13 @@
                          value_type="number"></app-input>
             </div>
 
-            <app-input label="Dans combien de temps" style="display: inline-block;"
-                       [value]="airdrop.delay"
+            <app-input label="Dans combien de temps (Heure ou date)" style="display: inline-block;width:40%;" unity="Hrs"
+                       [value]="airdrop.delay" help="Inscrire une date ou le temps avant le début en heure"
                        (valueChange)="airdrop.delay=$event"
-                       value_type="number"></app-input>
+                       value_type="text"></app-input>
 
-            <app-input label="Pendant combien de temps" style="display: inline-block;"
+            <app-input label="Pendant combien de temps (heures)" style="display: inline-block;"
+                       unity="Hrs"
                        [value]="airdrop.duration"
                        (valueChange)="airdrop.duration=$event"
                        value_type="number"></app-input>

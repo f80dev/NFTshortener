@@ -13,7 +13,7 @@ import {environment} from "../../environments/environment";
   standalone:true,
   imports: [
     NgStyle, NgIf,
-    MatIcon, MatIconButton, MatButton, FileDragNDropDirective
+    MatIcon, MatIconButton, MatButton
   ],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css']

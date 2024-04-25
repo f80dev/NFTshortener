@@ -55,12 +55,25 @@
 
 
 <!--  Timepicker -->
-
-  <mat-form-field *ngIf="value_type=='time'">
+  <mat-form-field *ngIf="value_type=='time'" >
     <mat-label>{{label}}</mat-label>
     <input matInput type="time" placeholder="Heure" [(ngModel)]="value"
+           style="width: 150px;"
            (mouseup)="on_key($event)" (keyup)="on_key($event)">
   </mat-form-field>
+
+
+
+
+<!--  Date picker voir : https://material.angular.io/components/datepicker/overview -->
+  <mat-form-field appearance="fill" *ngIf="value_type=='date'" [formControl]="date_control">
+    <mat-label>{{label}}</mat-label>
+    <input matInput [matDatepicker]="value" >
+    <mat-datepicker-toggle matIconSuffix [for]="picker_date"></mat-datepicker-toggle>
+    <mat-datepicker #picker_date></mat-datepicker>
+  </mat-form-field>
+
+
 
 <!--  Date range-->
     <mat-form-field appearance="fill" *ngIf="value_type=='daterange'">
@@ -75,7 +88,6 @@
 
       <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Date de début non valide</mat-error>
       <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Date de fin non valide</mat-error>
-
     </mat-form-field>
 
 
