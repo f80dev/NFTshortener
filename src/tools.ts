@@ -27,7 +27,13 @@ export function newCryptoKey(address="",name="",privateKey="",encrypted:string |
 }
 
 
-
+export function bytesToInt(bytes: number[]): number {
+  let value = 0;
+  for (let i = 0; i < bytes.length; i++) {
+    value += bytes[i] << (i * 8);
+  }
+  return value;
+}
 
 
 

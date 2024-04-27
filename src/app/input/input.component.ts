@@ -206,6 +206,7 @@ export class InputComponent implements OnChanges,OnInit {
         this.options=options
       }
 
+
       if(changes["options"]){
         if (typeof (changes["options"].currentValue) == "string") { // @ts-ignore
           changes["options"].currentValue = changes["options"].currentValue.split(",")

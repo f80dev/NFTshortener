@@ -135,7 +135,13 @@
 
         <!--        </mat-expansion-panel>-->
 
-        <mat-expansion-panel *ngIf="airdrop.dealer_wallet!=''" [expanded]="show_token">
+        <mat-expansion-panel *ngIf="airdrops.length>0">
+          <mat-expansion-panel-header>Vos airdrops</mat-expansion-panel-header>
+
+        </mat-expansion-panel>
+
+
+          <mat-expansion-panel *ngIf="airdrop.dealer_wallet!=''" [expanded]="show_token">
           <mat-expansion-panel-header>
             <span *ngIf="!airdrop.token.hasOwnProperty('identifier')">Que va t'on distribuer ?</span>
             <span *ngIf="airdrop.token.hasOwnProperty('identifier')">Airdrop de {{airdrop.token.name}}</span>

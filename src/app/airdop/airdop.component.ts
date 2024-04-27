@@ -278,11 +278,22 @@ export class AirdopComponent {
   }
 
 
+
+
   on_authent($event: { strong: boolean; address: string; provider: any ,encrypted:string}) {
     this.owner_filter=$event.address;
     this.airdrop.provider=$event.provider;
     this.airdrop.dealer_wallet=$event.address;
     this.update_dealer_balances()
+    this.api._get("airdrop_list/?addr="+$event.address).subscribe(
+      (ids:any)=>{
+        for(let id of ids.airdrops){
+          this.api._get("get_airdrop_by_id/"+id).subscribe((airdrop:any)=>{
+            this.airdrops.push(airdrop)
+          })
+        }
+      }
+    )
   }
 
 
@@ -426,6 +437,7 @@ export class AirdopComponent {
   range:any
   hour="00:00"
   start_date=now("text")+" - "+now("text",10000);
+  airdrops: any[]=[];
 
   upload_addresses($event: any) {
     let sep="\n"
