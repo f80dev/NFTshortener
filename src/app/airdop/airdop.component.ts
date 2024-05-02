@@ -131,10 +131,7 @@ export class AirdopComponent {
       this.airdrop.dealer_wallet=params.wallet
       this.network={value:params.network || "elrond-devnet"}
     }
-    this.api._get("/airdrop_marge","network="+this.airdrop.network).subscribe((r:any)=>{
-      this.airdrop.marge=1000/r.marge;
-      this.update_total(this.to_send_airdrop)
-    })
+
     if(this.airdrop.dealer_wallet.length>0){
       this.find_address_from_encrypt()
     }else{
@@ -209,6 +206,7 @@ export class AirdopComponent {
       this.airdrop.dialog_style="background-image:url('"+this.background_image+"');background-size:cover;"
     }
 
+    if (typeof this.airdrop.delay!="string")this.airdrop.delay=this.airdrop.delay.toString()
     if(this.airdrop.delay.indexOf("/")>0){
       let dt=parseFrenchDate(this.airdrop.delay)!.getTime() || now("date");
       this.airdrop.delay=(dt-now())/(60*1000)
@@ -228,7 +226,16 @@ export class AirdopComponent {
       next:async (r:any)=>{
         try{
           wait_message(this,"Mise en place l'airdrop")
-          await this.api.execute(r.transaction,this.airdrop.network,this.airdrop.provider)
+          let rep:any=await this.api.execute(r.transaction,this.airdrop.network,this.airdrop.provider)
+          wait_message(this)
+          if(rep.results.hasOwnProperty("writeLog")){
+            let idx=rep.results["writeLog"].split("@")[2]
+            this.airdrop.redirect=environment.gate_server+"/transfer/?airdrop="+idx
+            this.code_to_insert=r.code;
+          } else {
+            showMessage(this,"Problème de création "+rep.results["internalVMErrors"])
+            return;
+          }
         } catch (e) {
           showMessage(this,"Annulation de l'airdrop")
           return
@@ -336,7 +343,7 @@ export class AirdopComponent {
       dialog_style:"color:lighrey;background-color: #53576EFF;",
       dealer_wallet:"",
       token:{},
-      marge:0.1,
+      marge:0,
       claimers:[],
       limit_by_day:5,
       limit_by_wallet:3,
@@ -354,6 +361,10 @@ export class AirdopComponent {
     this.url_qrcode="";
     this.url_bank="https://tokenforge.nfluent.io/bank";
     this.owner_filter="";
+    this.api._get("/airdrop_marge","network="+this.airdrop.network).subscribe((r:any)=>{
+      this.airdrop.marge=r.marge
+      this.update_total(this.to_send_airdrop)
+    })
   }
 
 
@@ -459,7 +470,7 @@ export class AirdopComponent {
       }
     }
 
-    this.airdrop.total=this.airdrop.total+(this.airdrop.marge/100)*this.airdrop.total;
+    this.airdrop.total=this.airdrop.total+(this.airdrop.marge>0 ? this.airdrop.total/this.airdrop.marge : 0)
 
   }
 
