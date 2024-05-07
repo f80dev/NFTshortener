@@ -91,7 +91,13 @@
     </mat-form-field>
 
 
+<!--  Proposition d'options-->
 
+  <div *ngIf="value_type=='options'">
+    <div *ngFor="let opt of options">
+      <mat-checkbox [(ngModel)]="opt.value" (ngModelChange)="on_key(null)">{{opt.label}}</mat-checkbox><br>
+    </div>
+  </div>
 
   <!-- input de type textarea-->
   <mat-form-field style="width: 100%;" *ngIf="cols>0 && rows>0" appearance="fill">

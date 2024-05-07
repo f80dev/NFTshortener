@@ -30,8 +30,9 @@ export const environment = {
   company:"Nfluent",
   histo:"db-server-nfluent_local",
   gate_server:"http://localhost:4200",
-  //shorter_service:"https://t.f80.fr",
-  shorter_service: "http://localhost:80",
+  shorter_service:"https://t.f80.fr",
+  transfer_page:"https://x.f80.fr",
+  //shorter_service: "http://localhost:80",
 
   recaptcha: {
     siteKey: '6Lf7UL0cAAAAAIt_m-d24WG4mA1XFPHE8yVckc5S',

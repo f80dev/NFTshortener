@@ -101,7 +101,6 @@ export class PluginComponent {
         wait_message(this)
         if(r.code){
           this.code_to_insert=r.code
-
           $$("Evaluation du lien internet")
           if(this.link_properties){
             let params=r.params

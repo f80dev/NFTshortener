@@ -224,6 +224,14 @@
                            [value]="to_send_airdrop" [min]="0" [max]="balance"
                            [unity]="airdrop.unity"
                            (valueChange)="update_total($event)"
+                           (focusout)="update_amount()"
+                           value_type="number"></app-input>
+
+
+                <app-input label="Montant versé à chaque demande" width="300px" style="display: inline-block;"
+                           [value]="airdrop.amount" [min]="0" [max]="to_send_airdrop"
+                           [unity]="airdrop.unity"
+                           (valueChange)="airdrop.amount=$event"
                            value_type="number"></app-input>
 
               </mat-tab>
@@ -248,6 +256,13 @@
                              label="Coller ici la liste des adresses"></app-input>
                 </div>
 
+
+                <app-input label="Montant versé à chaque demande" width="300px" style="display: inline-block;"
+                           [value]="airdrop.amount" [min]="0" [max]="to_send_airdrop"
+                           [unity]="airdrop.unity"
+                           (valueChange)="airdrop.amount=$event"
+                           value_type="number"></app-input>
+                <br>
 
                 <div *ngIf="airdrop.claimers.length>0" >
 
@@ -292,15 +307,11 @@
 
             <div style="width: 100%;display: flex;flex-wrap: wrap;align-items: center;justify-content:space-around;margin-left: -5px;margin-top:40px;">
 
-              <app-tuto *ngIf="airdrop!.token.identifier" [force]="true"
-                        label="Vous maitrisez le montant du versement à chaque visite ainsi que la quantité maximum / jour et la limite par wallet au-delà de laquelle le versement n'a plus lieu"></app-tuto>
+<!--              <app-tuto *ngIf="airdrop!.token.identifier" [force]="true"-->
+<!--                        label="Vous maitrisez le montant du versement à chaque visite ainsi que la quantité maximum / jour et la limite par wallet au-delà de laquelle le versement n'a plus lieu"></app-tuto>-->
 
 
-              <app-input label="Montant versé à chaque demande" width="300px" style="display: inline-block;"
-                         [value]="airdrop.amount" [min]="0" [max]="airdrop.limit_by_day"
-                         [unity]="airdrop.unity"
-                         (valueChange)="airdrop.amount=$event"
-                         value_type="number"></app-input>
+
 
 
               <!--            <app-input label="Rechargement maximum / jour" width="300px%"  style="display: inline-block;"-->
@@ -309,15 +320,15 @@
               <!--                       (valueChange)="airdrop.limit_by_day=$event"-->
               <!--                       value_type="number"></app-input>-->
 
-              <app-input label="Limite par wallet" width="300px%"  style="display: inline-block;"
-                         help="Au delà de ce montant par wallet, le rechargement n'a plus lieu"
-                         [value]="airdrop.limit_by_wallet" [min]="0"
-                         [unity]="airdrop.unity"
-                         (valueChange)="airdrop.limit_by_wallet=$event"
-                         value_type="number"></app-input>
+<!--              <app-input label="Limite par wallet" width="300px%"  style="display: inline-block;"-->
+<!--                         help="Au delà de ce montant par wallet, le rechargement n'a plus lieu"-->
+<!--                         [value]="airdrop.limit_by_wallet" [min]="0"-->
+<!--                         [unity]="airdrop.unity"-->
+<!--                         (valueChange)="airdrop.limit_by_wallet=$event"-->
+<!--                         value_type="number"></app-input>-->
             </div>
 
-            <app-input label="Dans combien de temps (Heure ou date)" style="display: inline-block;width:40%;" unity="Hrs"
+            <app-input label="Dans combien de temps" style="display: inline-block;width:40%;" unity="Hrs"
                        [value]="airdrop.delay" help="Inscrire une date ou le temps avant le début en heure"
                        (valueChange)="airdrop.delay=$event"
                        value_type="text"></app-input>

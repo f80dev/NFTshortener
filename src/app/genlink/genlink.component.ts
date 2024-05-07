@@ -112,7 +112,7 @@ export class GenlinkComponent implements OnChanges {
       obj[p.name]=p.value
     }
     this.api.create_short_link({url:this.url}).subscribe((r)=>{
-      let url=environment.shorter_service+"/"+r.cid
+      let url=environment.transfer_page+"/"+r.cid
       this.ngShare.share({
         title:obj["appname"],
         url:url,

@@ -85,7 +85,7 @@ export class InputComponent implements OnChanges,OnInit {
   @Output() action=new EventEmitter();
   @Output() cancel=new EventEmitter();
 
-  @Input() value_type:"text" | "time" | "date" | "daterange" | "number" | "memo" | "list" | "listimages" | "boolean" | "images" | "slide" | "slider" = "text";
+  @Input() value_type: "options" | "text" | "time" | "date" | "daterange" | "number" | "memo" | "list" | "listimages" | "boolean" | "images" | "slide" | "slider" = "text";
   @Input() help:string="";
   @Input() help_input: string="";
   @Input() help_button: string="Enregistrez";
@@ -126,6 +126,9 @@ export class InputComponent implements OnChanges,OnInit {
   }
 
   on_key($event: any) {
+    if(this.value_type=="options"){
+      this.valueChange.emit(this.options);
+    }
     if(this.value_type=="daterange"){
       this.valueChange.emit(this.range.value);
     }else{
@@ -233,7 +236,7 @@ export class InputComponent implements OnChanges,OnInit {
   }
   ngOnInit(): void {
     if(typeof(this.options)=="string")this.options=this.options.split(",")
-    if(this.options.length>0){this.value_type="list";}
+    //if(this.options.length>0 && this.value_type==""){this.value_type="list";}
     if(this.rows>0 && this.cols==0)this.cols=10;
     if(this.value_type=="daterange"){
       this.range== new FormGroup({

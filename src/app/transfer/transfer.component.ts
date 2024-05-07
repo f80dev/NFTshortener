@@ -64,6 +64,8 @@ export class TransferComponent implements OnInit {
   }
 
   analyse_params(r:any) : any {
+    //Analyse des paramètres
+
     r.style=r.style || "background-color:gray;"
     r.price=r.price || Number(r.quantity) || 0
     r.network=r.network || "elrond-devnet"
@@ -145,6 +147,12 @@ export class TransferComponent implements OnInit {
 
   authent($event: any) {
     this.final_message=this.config.messages.success
+    if(this.config.service=="airdrop"){
+      //TODO Demander la creation du clam
+      //TODO Signer la transaction et l'executer
+
+    }
+
     if(this.config.price>0){
       this.config.collection=null;
       $$("on annule la question de la collection puisque c'est ok")

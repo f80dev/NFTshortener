@@ -890,9 +890,7 @@ export class NetworkService implements OnInit {
             }
             $$("Envoi du corps pour execution ",body)
             return this._post("execute/","", body,120000).subscribe({
-                next:(r:any)=>{
-                  resolve(r)
-                },
+                next:(r:any)=>{resolve(r)},
                 error:(err:any)=> {reject(err)}
             })
         })

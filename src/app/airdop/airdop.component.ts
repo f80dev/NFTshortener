@@ -77,7 +77,7 @@ export class AirdopComponent {
   title="Vendre ou restreindre l'accès à un contenu";
   slide: number=0
   message="";
-  airdrop:any={dealer_wallet:"",token:{},claimers:[],marge:0}
+  airdrop:any={id:0,dealer_wallet:"",token:{},claimers:[],marge:0}
   selkey: undefined;
   networks:any[]=environment.networks
   network:any=this.networks[0]
@@ -229,9 +229,11 @@ export class AirdopComponent {
           let rep:any=await this.api.execute(r.transaction,this.airdrop.network,this.airdrop.provider)
           wait_message(this)
           if(rep.results.hasOwnProperty("writeLog")){
-            let idx=rep.results["writeLog"].split("@")[2]
-            this.airdrop.redirect=environment.gate_server+"/transfer/?airdrop="+idx
-            this.code_to_insert=r.code;
+            let idx_hex:string=rep.results["writeLog"].split("@")[2]
+            let idx=parseInt(idx_hex, 16)
+            this.airdrop.id=idx
+            this.airdrop.contract=r.contract
+            this.code_to_insert=r.code
           } else {
             showMessage(this,"Problème de création "+rep.results["internalVMErrors"])
             return;
@@ -419,17 +421,17 @@ export class AirdopComponent {
     this.connexion.address=this.connexion.email
     let body:any={
       url:environment.gate_server,
-      redirect:this.redirect,
+      redirect:this.redirect,             //Après traitement
       connexion:this.connexion,
       messages:this.redirect_message,
       network:this.network.value,
       airdrop:this.airdrop,
-      service:"AirDrop"
+      service:"redirect"
     }
 
     this.api.create_short_link(body).subscribe({next:(result:any)=>{
-        $$("Fabrication du lien avec serveur de redirection sur "+environment.gate_server)
-        this.short_url=environment.shorter_service+"?"+result.cid;
+        $$("Fabrication du lien avec serveur de redirection sur "+environment.shorter_service)
+        this.short_url=environment.transfer_page+"?"+result.cid;
 
         this.clipboard.copy(this.short_url);
         this.api.qrcode(this.short_url,"json").subscribe((r:any)=>{
@@ -437,7 +439,10 @@ export class AirdopComponent {
         })
 
         showMessage(this,"Votre lien est disponible dans le presse-papier")
-      },error:(err)=>{showError(this,err)}})
+      },error:(err)=>{
+        showError(this,err);
+      }
+    })
   }
 
   protected readonly emptyCollection = emptyCollection;
@@ -476,6 +481,11 @@ export class AirdopComponent {
 
   update_total($event: any) {
     this.to_send_airdrop=Number($event);
+
     this.airdrop.total=this.to_send_airdrop+(this.airdrop.marge>0 ? this.to_send_airdrop/this.airdrop.marge : 0);
+  }
+
+  update_amount() {
+    if(this.airdrop.amount>this.to_send_airdrop)this.airdrop.amount=this.to_send_airdrop/100;
   }
 }
