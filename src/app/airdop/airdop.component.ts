@@ -36,6 +36,7 @@ import {NgNavigatorShareService} from "ng-navigator-share";
 import {StyleManagerService} from "../style-manager.service";
 import {environment} from "../../environments/environment";
 import {UploadFileComponent} from "../upload-file/upload-file.component";
+import {_prompt} from "../prompt/prompt.component";
 
 @Component({
   selector: 'app-airdop',
@@ -280,7 +281,7 @@ export class AirdopComponent {
   }
 
   async find_images() {
-    let images=await get_images_from_banks(this,this.api,"background",false,1)
+    let images=await get_images_from_banks(this,_prompt,this.api,"background",false,1)
     if(images.length>0){
       this.background_image=images[0].image
     }
@@ -428,6 +429,8 @@ export class AirdopComponent {
       airdrop:this.airdrop,
       service:"redirect"
     }
+
+
 
     this.api.create_short_link(body).subscribe({next:(result:any)=>{
         $$("Fabrication du lien avec serveur de redirection sur "+environment.shorter_service)

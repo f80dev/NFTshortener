@@ -69,6 +69,11 @@ export class TransferComponent implements OnInit {
     r.style=r.style || "background-color:gray;"
     r.price=r.price || Number(r.quantity) || 0
     r.network=r.network || "elrond-devnet"
+    if(!r.hasOwnProperty("messages"))r.messages={intro:r.message,success:"",fail:""}
+    r.messages["success"]=r.messages["success"] || "Redirection dans quelques secondes"
+    r.messages["fail"]=r.messages["fail"] || "Impossible de continuer"
+    if(!r.messages.intro)r.messages.intro=r.message
+
 
     apply_params(this,r)
     if(r.service=="landing_page"){
@@ -117,8 +122,6 @@ export class TransferComponent implements OnInit {
 
     }
 
-    r.messages.success=r.messages.success || "Redirection dans quelques secondes"
-    r.messages.fail=r.messages.fail || "Impossible de continuer"
 
     return(r)
   }

@@ -11,6 +11,7 @@ import {MatButton} from "@angular/material/button";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {environment} from "../../environments/environment";
+import {_prompt} from "../prompt/prompt.component";
 
 export function genlink_to_obj(links:any[]){
   let obj:any={}
@@ -127,7 +128,7 @@ export class GenlinkComponent implements OnChanges {
 
 
   async call_picture(prop:any) {
-    let images=await get_images_from_banks(this,this.api,"",false,1)
+    let images=await get_images_from_banks(this,_prompt,this.api,"",false,1)
     if(images.length>0)prop.value=images[0].image
   }
 }

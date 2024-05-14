@@ -5,7 +5,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatSlider, MatSliderThumb} from "@angular/material/slider";
-import {MatListOption, MatSelectionList} from "@angular/material/list";
+import {MatList, MatListItem, MatListItemAvatar, MatListOption, MatSelectionList} from "@angular/material/list";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatInputModule} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
@@ -44,7 +44,10 @@ import {parseFrenchDate} from "../../tools";
     MatDatepickerToggle,
     MatDatepickerModule,
     MatDateRangeInput,
-    MatDateRangePicker
+    MatDateRangePicker,
+    MatListItem,
+    MatList,
+    MatListItemAvatar
   ],
   providers: [
       provideNativeDateAdapter(),
@@ -99,7 +102,7 @@ export class InputComponent implements OnChanges,OnInit {
   @Input() multiselect: boolean = false;
   @Input() showClear: boolean=true
   @Input() fontname="mat-body-2"
-  @Input() height="200px"
+  @Input() height="auto"
   @Input() unity: string="";
   @Input() init: string="";
   range= new FormGroup({

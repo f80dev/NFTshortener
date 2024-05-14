@@ -28,7 +28,7 @@
 
 
   <a *ngIf="content.startsWith('erd')" [href]="get_explorer(content,suffix)" target="_blank" [title]="title">
-    <span *ngIf="icon==''">{{content.replace(content.substring(10,30),"..")}}</span>
+    <span *ngIf="icon==''">{{content.replace(content.substring(7,37),"..")}}</span>
     <mat-icon *ngIf="icon!=''">{{icon}}</mat-icon>
   </a>
 

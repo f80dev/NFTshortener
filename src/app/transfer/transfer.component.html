@@ -17,8 +17,8 @@
 
 <!--    token_gate-->
 		<div style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
-		     *ngIf="config.service=='token_gate'">
-			Pour continuer vous devez régler {{config.price}} {{config.merchant.wallet.unity}}
+		     *ngIf="config.service=='token_gate' && config.merchant">
+			Pour continuer vous devez régler {{config.price}} {{config.merchant!.wallet.unity}}
       sur le réseau {{network_name[config.merchant.wallet.network]}}
       <br><br>
 

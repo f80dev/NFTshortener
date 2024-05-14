@@ -3,8 +3,7 @@
 
     <div class="expansion-content-left" style="width:100%;">
         <app-hourglass style="display: inline-block" [message]="message"></app-hourglass>
-        <div *ngIf="tokens.length==0 && message==''"
-             style="margin-top: -4px;">Aucune monnaie disponible</div>
+
 
         <!--        <input [(ngModel)]="filter_by_name" -->
         <!--               title="Filtre par nom de la monnaie ou adresse de wallet"-->
@@ -19,15 +18,22 @@
         <!--             *ngIf="message=='' && tokens.length>0" (click)="switch_token()">-->
 
 
-        <mat-form-field style="flex-grow: 1;max-width: 500px;" *ngIf="owner!='' && canChangeFilter">
-            <mat-label>{{label_change_filter}}</mat-label>
-            <mat-select [(value)]="sel_filter" (valueChange)="switch_token($event)">
-                <mat-option value="all">Tous les tokens</mat-option>
-                <mat-option value="owner">Les tokens de <app-link [content]="owner"></app-link></mat-option>
+
+
+        <mat-form-field  *ngIf="owner!='' && canChangeFilter && message==''" >
+<!--            <mat-label>{{label_change_filter}}</mat-label>-->
+            <mat-select style="max-width: 400px;" [(value)]="sel_filter" (valueChange)="switch_token($event)">
+                <mat-option value="all">Voir toutes les monnaies</mat-option>
+                <mat-option value="owner">Voir les monnaies de {{owner.replace(owner.substring(7,53)," ... ")}}
+<!--                    <app-link [content]="owner"></app-link>-->
+                </mat-option>
             </mat-select>
         </mat-form-field>
 
-        <table style="text-align:left;font-size: x-large;opacity: 0.9;" *ngIf="message==''">
+
+        <table style="text-align:left;font-size: x-large;opacity: 0.9;"
+               *ngIf="message==''">
+            <tr>
             <td>
                 <mat-icon (click)="open_create_esdt()" *ngIf="canCreateMoney"
                           title="Comment créer votre propre monnaie"
@@ -55,13 +61,19 @@
                     cancel
                 </mat-icon>
             </td>
+            </tr>
         </table>
 
 
 
     </div>
+
+<!--    <div *ngIf="tokens.length==0 && message==''"-->
+<!--         style="margin-top: -4px;">Aucune monnaie disponible</div>-->
+
     <!--        Liste des token-->
-    <app-input [options]="tokens"
+
+    <app-input [options]="tokens" *ngIf="tokens.length>0"
                [multiselect]="false"
                value_type="listimages" height="250px" [size_image]="size"
                (valueChange)="update_sel($event)">
@@ -73,6 +85,7 @@
     <!--        <img [src]="sel_token.image" [style.width]="size"  [style.height]="size" >-->
     <!--        <span style="margin-left: 5px">{{sel_token.description}}</span>-->
     <!--    </div>-->
+
 </div>
 
 <div *ngIf="sel_token?.id?.length>0"

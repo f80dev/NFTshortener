@@ -30,7 +30,8 @@ export const environment = {
   redirect_server:"https://gate.nfluent.io",
   gate_server:"https://gate.nfluent.io",
   token:"",
-  shorter_service:"https://t.f80.fr",
+  shorter_service:"https://femis.f80.fr:444",
+  transfer_page:"https://x.f80.fr",
 
   merchant:{
     id:"BCR2DN4TYD4Z5XCR",

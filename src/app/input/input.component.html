@@ -92,7 +92,6 @@
 
 
 <!--  Proposition d'options-->
-
   <div *ngIf="value_type=='options'">
     <div *ngFor="let opt of options">
       <mat-checkbox [(ngModel)]="opt.value" (ngModelChange)="on_key(null)">{{opt.label}}</mat-checkbox><br>
@@ -148,12 +147,21 @@
   <div  style="width:100%;text-align: left;" *ngIf="(value_type=='images' || value_type=='listimages') && options.length>0" class="mat-elevation-z2">
     <div *ngIf="label.length>0" style="margin:10px;" class="mat-caption">{{label}}</div>
     <div style="overflow: scroll;" [style.height]="height">
-      <mat-selection-list (selectionChange)="sel_change($event)" [multiple]="multiselect" >
+
+      <mat-selection-list (selectionChange)="sel_change($event)" [multiple]="true" *ngIf="multiselect">
         <mat-list-option *ngFor="let option of options" [value]="option">
-          <img matListItemAvatar [src]="option.image" [style.width]="size_image" [style.height]="size_image" alt="Image de NFT">
-          <span [ngClass]="fontname">{{option.label}}</span>
+          <p matListItemLine [ngClass]="fontname">{{option.label}}</p>
         </mat-list-option>
       </mat-selection-list>
+
+      <mat-selection-list  *ngIf="!multiselect">
+        <mat-list-item *ngFor="let option of options" (click)="sel_change(option)">
+          <img matListItemAvatar [src]="option.image" [style.width]="size_image" [style.height]="size_image" alt="Image de NFT">
+          <p matListItemTitle [ngClass]="fontname">{{option.label}}</p>
+        </mat-list-item>
+      </mat-selection-list>
+
+
     </div>
   </div>
 

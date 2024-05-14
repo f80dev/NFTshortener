@@ -382,7 +382,7 @@ export class PluginComponent {
   }
 
   async find_images() {
-    let images=await get_images_from_banks(this,this.api,"background",false,1)
+    let images=await get_images_from_banks(this,_prompt,this.api,"background",false,1)
     if(images.length>0){
       this.background_image=images[0].image
     }

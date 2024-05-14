@@ -415,12 +415,13 @@ export class NetworkService implements OnInit {
             url="/api/"+url;
             url=this.server_nfluent+url.replace("//","/").replace("/api/api/","/api/")
         }
+        if(cacheDelayInSec==0)return this.httpClient.get<any>(url+"?"+param).pipe(retry(2),timeout(_timeout),catchError(this.handleError))
 
-        let cache_id=hashCode(url).toString(16)
+        let cache_id=hashCode(url+"?"+param).toString(16)
         this.refreshCacheIfNeeded(cache_id,cacheDelayInSec)
         if (!this.cache$.hasOwnProperty(cache_id)) {
             $$(cache_id+" - Appel de "+url+"?"+param)
-            this.cache$[cache_id] = this.httpClient.get<any>(url+"?"+param).pipe(retry(1),timeout(_timeout),catchError(this.handleError))
+            this.cache$[cache_id] = this.httpClient.get<any>(url+"?"+param).pipe(retry(2),timeout(_timeout),catchError(this.handleError))
             this.cacheTime[cache_id] = new Date();
         }
 

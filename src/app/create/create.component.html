@@ -90,11 +90,6 @@
                        value_type="memo" [rows]="2" [cols]="40"
                        help="Message à afficher"></app-input>
 
-            <app-input label="Message de promotion / mise en avant du contenu" style="margin-top: 5px;width:100%;"
-                       *ngIf="is_valide_URL(redirect)"
-                       [help]="'Message affiché à l\'ouverture du lien court créé par '+this.appname"
-                       [value]="messages.intro" (valueChange)="messages.intro=$event"
-            ></app-input>
 
 
           </div>
@@ -260,11 +255,12 @@
                              (valueChange)="token_filter_by_account($event)">
                   </app-input>
                   <br>
-                  <app-token-selector label="Choisissez la crypto du paiement"
+                  <app-token-selector
                                       style="width: 100%;margin: 5px;display:flex;"
                                       [owner]="token_filter"
                                       (unselect)="token=null"
-                                      [value]="token" [network]="network.value" size="30px"
+                                      [value]="token"
+                                      [network]="network.value" size="30px"
                                       (valueChange)="update_token($event)"></app-token-selector>
 
 
@@ -317,6 +313,13 @@
           <mat-expansion-panel-header>Personnalisation des messages</mat-expansion-panel-header>
           <app-tuto
             label="L'écran d'authentification ou paiement peut être personnaliser "></app-tuto>
+          <br>
+
+          <app-input label="Message de promotion / mise en avant du contenu" style="margin-top: 5px;width:100%;"
+                     *ngIf="is_valide_URL(redirect)"
+                     [help]="'Message affiché à l\'ouverture du lien court créé par '+this.appname"
+                     [value]="messages.intro" (valueChange)="messages.intro=$event"
+          ></app-input>
           <br>
 
           <app-input label="Message en cas d'échec" style="margin-top: 30px;"

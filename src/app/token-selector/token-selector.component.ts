@@ -65,9 +65,11 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes["network"] || changes["filter"] || changes["owner"]){
-      if(!changes["owner"] || changes["owner"].currentValue=="")clearInterval(this.handle)
+      //if(!changes["owner"] || changes["owner"].currentValue=="")clearInterval(this.handle)
       setTimeout(()=>{this.refresh();},500)
+      //this.refresh()
     }
+
     if(changes["refresh_delay"] && this.handle==0 && changes["refresh_delay"].currentValue>0){
       $$("Mise en place d'une collection des ESDT toute les "+changes["refresh_delay"].currentValue+" secondes")
       this.handle=setInterval(()=>{this.refresh()},changes["refresh_delay"].currentValue*1000)
@@ -102,12 +104,12 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
       this.message="Recherche des monnaies "+(this.owner_filter ? " de "+this.owner_filter : "")+" "+(this.filter_by_name ? " dont le nom contient \""+this.filter_by_name+"\"" : "")
       if(this.network.indexOf("devnet")>-1)this.message=this.message+" (réseau test)"
     }
+    this.tokens=[];
     this.api.find_tokens(this.network,this.owner_filter,this.filter_by_name,this.with_detail,2000).subscribe({next:(tokens:any[])=>{
-        this.tokens=[];
         this.message=""
         for(let t of tokens){
           t["label"]=t["name"]
-          if(t["balance"]>0)t["label"]=t["label"]+" ("+Math.round(t["balance"]*100)/100+")"
+          if(Number(t["balance"])>0)t["label"]=t["label"]+" ("+Math.round(t["balance"]*100)/100+")"
           if(this.filter_by_name=="" || (t["id"]+t["name"]+t["label"]).indexOf(this.filter_by_name)>-1) this.tokens.push(t)
         }
         this.endSearch.emit(this.tokens);

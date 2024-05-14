@@ -1,7 +1,7 @@
 import {environment} from "./environments/environment";
 import {ActivatedRoute} from "@angular/router";
 import {Clipboard} from "@angular/cdk/clipboard";
-import {_prompt} from "./app/prompt/prompt.component";
+
 
 export interface CryptoKey {
   name: string | null
@@ -316,13 +316,13 @@ export function rotate(src: string, angle: number, quality: number=1) : Promise<
   });
 }
 
-export function get_images_from_banks(vm:any,api:any,sample:string="",sticker:boolean=false,max=20) : Promise<any[]> {
+export function get_images_from_banks(vm:any,prompt_function:Function,api:any,sample:string="",sticker:boolean=false,max=20) : Promise<any[]> {
   //Permet de récupérer des images depuis internet
   //la fenetre appelante doit contenir une déclaration dialog:MatDialog
   return new Promise(async (resolve) => {
     if(vm && api){
       let rc:any[]=[]
-      let query=await _prompt(vm,"Recherche d'images",sample,
+      let query=await prompt_function(vm,"Recherche d'images",sample,
           "Votre requête en quelques mots en ANGLAIS de préférence (ajouter 'sticker' pour des images transparentes)",
           "text",
           "Rechercher",
@@ -331,7 +331,7 @@ export function get_images_from_banks(vm:any,api:any,sample:string="",sticker:bo
       if(sticker){query=query+" sticker"}
       api.search_images(query,sticker).subscribe(async (r:any)=>{
         let message=max>1 ? "Sélectionez une ou plusieurs images" : "Sélectionez une image";
-        let images=await _prompt(vm,message,"","","images","Sélectionner","Annuler",false,r.images,false,max)
+        let images=await prompt_function(vm,message,"","","images","Sélectionner","Annuler",false,r.images,false,max)
         let idx=0
         for(let link of images){
           rc.push({image:link,name:"bank_"+now("rand")+"_"+idx,ext:"image/jpg"});
@@ -343,6 +343,7 @@ export function get_images_from_banks(vm:any,api:any,sample:string="",sticker:bo
 
   })
 }
+
 
 export function deleteAllCookies() {
   var cookies = document.cookie.split(';');
