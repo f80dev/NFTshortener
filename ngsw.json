@@ -1,0 +1,151 @@
+{
+  "configVersion": 1,
+  "timestamp": 1715924376822,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/main.js",
+        "/nfluent-dark.css",
+        "/nfluent-mvx.css",
+        "/nfluent-yellow.css",
+        "/nfluent.css",
+        "/polyfills.js",
+        "/runtime.js",
+        "/styles.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/HelveticaInseratLT.ttf",
+        "/assets/anime.min.js",
+        "/assets/ciment.jpg",
+        "/assets/ciseaux.jpg",
+        "/assets/coffre.jpg",
+        "/assets/coins.webp",
+        "/assets/cuir.jpg",
+        "/assets/faqs.yaml",
+        "/assets/gate.jpg",
+        "/assets/gate2.jpg",
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/icons/nflux-128.png",
+        "/assets/icons/nflux-256.png",
+        "/assets/icons/nflux-512.png",
+        "/assets/icons/nflux-64.png",
+        "/assets/logo.png",
+        "/assets/painting.jpg",
+        "/assets/paper.jpg",
+        "/assets/peage.jpg",
+        "/assets/peage.webp",
+        "/assets/porte.jfif",
+        "/assets/scan.webp",
+        "/assets/webFonts/GilroyRegular/font.woff",
+        "/assets/webFonts/GilroyRegular/font.woff2",
+        "/assets/webFonts/HelveticaInseratLT.ttf",
+        "/assets/webFonts/MyFontsWebfontsKit.css",
+        "/assets/webFonts/Swiss721BlackCondensedBT.ttf",
+        "/assets/webFonts/mediasans.css",
+        "/assets/webFonts/mediasansweb-bold.woff",
+        "/assets/webFonts/mediasansweb-bold.woff2",
+        "/assets/webFonts/mediasansweb-regular.woff",
+        "/assets/webFonts/mediasansweb-regular.woff2",
+        "/assets/wood.jpg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/HelveticaInseratLT.ttf": "72bdaf283827e7e2c2dfde8c2635fdc1c4500bc3",
+    "/assets/anime.min.js": "332031949d78a49e8a18611556253660574e47db",
+    "/assets/ciment.jpg": "9968a69e793a4b69e46decdec7906a1d16fca8af",
+    "/assets/ciseaux.jpg": "7e715d71a8925ec9868f42290cc79fb41859482d",
+    "/assets/coffre.jpg": "42cdbf77fdaebcb9fbee34d43063a147966beb67",
+    "/assets/coins.webp": "d20d7572c4de0785c14b24b6f0e483d7f44a220d",
+    "/assets/cuir.jpg": "61c4c0f6ec6d66d6eacf13bf69068b18ad03256c",
+    "/assets/faqs.yaml": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "/assets/gate.jpg": "b64315dcfbaeef8220183bd16ee5b6b6abdafce8",
+    "/assets/gate2.jpg": "5cdc6734899dcdbc58ddf8a3956dff43bafa524b",
+    "/assets/icons/icon-128x128.png": "b1f06c7d714abb4a0cc4d1f7c954feb26826e4c4",
+    "/assets/icons/icon-144x144.png": "96a0d629765c1bc85d9263c6bc83094ca776d267",
+    "/assets/icons/icon-152x152.png": "b1fbbee3902eb96a7658e3bb006f31f78ca5a44c",
+    "/assets/icons/icon-192x192.png": "e4211163bf0911688fbfb80278d8ff4d2f77691d",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
+    "/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
+    "/assets/icons/nflux-128.png": "cd836c100f2009afb7adbf12f8e6b2c4e46c7394",
+    "/assets/icons/nflux-256.png": "a95ba2f3c09d65864dba29ee31293be5d4740e7a",
+    "/assets/icons/nflux-512.png": "34f327a717d22682fa99f45a6ca9856837c8620c",
+    "/assets/icons/nflux-64.png": "11923365f3b7c7a2c4c748669ae3285716f1d5f0",
+    "/assets/logo.png": "34f327a717d22682fa99f45a6ca9856837c8620c",
+    "/assets/painting.jpg": "a9b631d75a99b7df3357aec96a5176cb39963030",
+    "/assets/paper.jpg": "ce7d815c1232eafce4b001fdaceb40d01a4fee24",
+    "/assets/peage.jpg": "a210572681d3628ef8f4451b96edb3a53477e54d",
+    "/assets/peage.webp": "57b11e2630b0509da0b31bdfc72c08824c5c0134",
+    "/assets/porte.jfif": "e0ab316b4365d0e3aa784f324b9f31467336b0a8",
+    "/assets/scan.webp": "3033a9b8e28f160ebb5ae73896a2f363fd6bb1f8",
+    "/assets/webFonts/GilroyRegular/font.woff": "3af221642b4c256268420f0e82583519c21ef868",
+    "/assets/webFonts/GilroyRegular/font.woff2": "b37bd3ed335f0bf8ff29e4176b920a4be1f837b3",
+    "/assets/webFonts/HelveticaInseratLT.ttf": "72bdaf283827e7e2c2dfde8c2635fdc1c4500bc3",
+    "/assets/webFonts/MyFontsWebfontsKit.css": "857bb12ffc5177ebd6284903da805b15d3719c08",
+    "/assets/webFonts/Swiss721BlackCondensedBT.ttf": "2fab61e49e3db6ae73cb7312b6a7b13b8b4dcf59",
+    "/assets/webFonts/mediasans.css": "33546a33fffa6e4a6edc44dccdf29fb0d5e68b06",
+    "/assets/webFonts/mediasansweb-bold.woff": "30897bff3f932629e64a87ae691a2ebe397c92cd",
+    "/assets/webFonts/mediasansweb-bold.woff2": "2b4a1d98540df56d84c02084208fd26068f90de9",
+    "/assets/webFonts/mediasansweb-regular.woff": "c3ed8508e8a3ac5a4bce2c622920964674b9fc7e",
+    "/assets/webFonts/mediasansweb-regular.woff2": "7e99ced9bda11c1e8765ec5907b210c14a84bc06",
+    "/assets/wood.jpg": "35eac92cd829d3d753aff82f55da314ed8b92a34",
+    "/favicon.ico": "11923365f3b7c7a2c4c748669ae3285716f1d5f0",
+    "/index.html": "df6c81cad3c31e63e47a0e02beaea4c1acfc3a2e",
+    "/main.js": "b53f094e9a192e75d706fc61e05ec03615370b5b",
+    "/nfluent-dark.css": "b5cb884533112039149ddb3399472ff7762d2e3d",
+    "/nfluent-mvx.css": "e0f8b2b3fa3729bd9cfdce7c211677dde05fafd7",
+    "/nfluent-yellow.css": "30612f3ea469e4ca25104c860f9ed0caac5e3fa6",
+    "/nfluent.css": "52f89c4cba5084e536f557a7d646fe65fb34339a",
+    "/polyfills.js": "b8ecefa91473a8053cf5d60ba40f5516fa47b4ca",
+    "/runtime.js": "c086c77d0a32e9737d2e2920bfdc194b0a50a6a0",
+    "/styles.css": "be52501577a67a8bb2d9bd0c55f72ee2b11be22f"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
