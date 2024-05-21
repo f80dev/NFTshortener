@@ -6,12 +6,21 @@ import {MatIcon} from "@angular/material/icon";
 import {NgIf, NgStyle} from "@angular/common";
 import {MatProgressBar} from "@angular/material/progress-bar";
 
-export function wait_message(vm:any,message="",modal=false,duration=1000000) : boolean {
+export function wait_message(vm:any,message="",modal=false,duration=1000000,delay=0) : boolean {
   //Active les messages d'attentes
   if(!vm.hasOwnProperty("message"))return false;
   if(vm.hasOwnProperty("modal"))vm.modal=modal;
-  vm.message=message;
-  $$("Affichage de "+message)
+  clearTimeout(vm.hMessage);
+  if(delay>0){
+    vm.hMessage=setTimeout(()=>{
+      vm.message=message;
+      $$("Affichage de "+message)
+    },delay)
+  }else{
+    vm.message=message;
+    $$("Affichage de "+message)
+  }
+
   setTimeout(()=>{vm.message=""},duration);
   return true;
 }

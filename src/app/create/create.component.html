@@ -248,16 +248,18 @@
 
                 <div class="expansion-content-left" style="align-items: flex-start;" *ngIf="address!=''">
                   <br>
-                  <app-input label="Voir uniquement les monnaies de l'adresse de paiement"
-                             value_type="boolean"
-                             [value]="filter_by_wallet"
-                             style="text-align:left;margin-top:-5px;margin-left: 10px;margin-bottom: 5px;"
-                             (valueChange)="token_filter_by_account($event)">
-                  </app-input>
+<!--                  <app-input label="Voir uniquement les monnaies de l'adresse de paiement"-->
+<!--                             value_type="boolean"-->
+<!--                             [value]="filter_by_wallet"-->
+<!--                             style="text-align:left;margin-top:-5px;margin-left: 10px;margin-bottom: 5px;"-->
+<!--                             (valueChange)="token_filter_by_account($event)">-->
+<!--                  </app-input>-->
                   <br>
                   <app-token-selector
                                       style="width: 100%;margin: 5px;display:flex;"
-                                      [owner]="token_filter"
+                                      label_for_owner_filter="Monnaies du wallet de réception"
+                                      [owner]="address"
+                                      [canChangeFilter]="true"
                                       (unselect)="token=null"
                                       [value]="token"
                                       [network]="network.value" size="30px"

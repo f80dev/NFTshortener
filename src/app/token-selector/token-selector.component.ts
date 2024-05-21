@@ -4,7 +4,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {$$, showMessage} from "../../tools";
 import {_prompt} from "../prompt/prompt.component";
 import {MatDialog} from "@angular/material/dialog";
-import {HourglassComponent} from "../hourglass/hourglass.component";
+import {HourglassComponent, wait_message} from "../hourglass/hourglass.component";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatIcon} from "@angular/material/icon";
@@ -33,6 +33,8 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
   @Input() network:string=""
   @Input() owner:string=""
   @Input() label_change_filter="Modifier le filtre";
+  @Input() label_for_owner_filter="";
+
   @Input() canChangeFilter: boolean=true
   @Input() canCreateMoney: boolean=true
   @Input() type:string="Fungible";
@@ -48,6 +50,7 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
   @Output() unselect: EventEmitter<any> = new EventEmitter();
 
   tokens:any[]=[]
+  all_tokens:any[]=[]
   @Input() show_detail: boolean=true;
   message: string="";
   handler:any
@@ -65,6 +68,7 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes["network"] || changes["filter"] || changes["owner"]){
+      if(this.label_for_owner_filter=="")this.label_for_owner_filter="Voir les monnaies de "+this.owner.replace(this.owner.substring(7,53)," ... ")
       //if(!changes["owner"] || changes["owner"].currentValue=="")clearInterval(this.handle)
       setTimeout(()=>{this.refresh();},500)
       //this.refresh()
@@ -95,26 +99,49 @@ export class TokenSelectorComponent implements OnChanges,OnInit {
       this.sel_filter="all"
       this.owner_filter=""
     }
+    this.get_tokens()
   }
 
-  refresh() : void {
-    if(this.network=="")return
-
-    if(!this.handle || this.refresh_delay==0){
-      this.message="Recherche des monnaies "+(this.owner_filter ? " de "+this.owner_filter : "")+" "+(this.filter_by_name ? " dont le nom contient \""+this.filter_by_name+"\"" : "")
-      if(this.network.indexOf("devnet")>-1)this.message=this.message+" (réseau test)"
-    }
-    this.tokens=[];
-    this.api.find_tokens(this.network,this.owner_filter,this.filter_by_name,this.with_detail,2000).subscribe({next:(tokens:any[])=>{
-        this.message=""
-        for(let t of tokens){
-          t["label"]=t["name"]
-          if(Number(t["balance"])>0)t["label"]=t["label"]+" ("+Math.round(t["balance"]*100)/100+")"
-          if(this.filter_by_name=="" || (t["id"]+t["name"]+t["label"]).indexOf(this.filter_by_name)>-1) this.tokens.push(t)
-        }
-        this.endSearch.emit(this.tokens);
-      },error:()=>{this.message="";}
+  get_tokens(owner="",limit=6000) : Promise<any[]>{
+    return new Promise((resolve, reject) => {
+      if (this.all_tokens.length > 0 && owner=="") {
+        resolve(this.all_tokens);
+      } else {
+        this.api.find_tokens(this.network, owner, "", true, limit).subscribe({
+          next: (tokens: any[]) => {
+            if(owner=="")this.all_tokens = tokens;
+            resolve(tokens)
+          },
+          error:()=>{
+            $$("erreur de récupération des tokens")
+            reject()
+          }
+        });
+      }
     })
+  }
+
+  async refresh()  {
+    if (this.network == "") return
+
+    if (!this.handle || this.refresh_delay == 0) {
+      this.message = "Recherche des monnaies " + (this.owner_filter ? " de " + this.owner_filter : "") + " " + (this.filter_by_name ? " dont le nom contient \"" + this.filter_by_name + "\"" : "")
+      if (this.network.indexOf("devnet") > -1) this.message = this.message + " (réseau test)"
+    }
+    wait_message(this,"Recherche des monnaies",false,10000)
+    let tokens = await this.get_tokens(this.owner_filter)
+    wait_message(this)
+    this.message = ""
+    this.tokens=[]
+    for (let t of tokens) {
+      t["label"] = t["name"]
+      if (Number(t["balance"]) > 0) t["label"] = t["label"] + " (" + Math.round(t["balance"] * 100) / 100 + ")"
+      if (this.filter_by_name == "" || (t["id"] + t["name"] + t["label"]).toLowerCase().indexOf(this.filter_by_name.toLowerCase()) > -1){
+        this.tokens.push(t)
+      }
+    }
+    this.endSearch.emit(this.tokens);
+
   }
 
   update_sel($event: any) {

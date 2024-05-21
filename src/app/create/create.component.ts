@@ -219,7 +219,7 @@ export class CreateComponent implements OnInit {
           // }
           //Si pas de collection, le lien renvoi directement a l'api
 
-          this.url=environment.shorter_service+"/"+result.cid;
+          this.url=environment.transfer_page+"?"+result.cid;
           if(!this.url.startsWith("http")){
             if(this.url.indexOf("localhost")>-1){
               this.url="http://"+this.url;
@@ -381,7 +381,7 @@ export class CreateComponent implements OnInit {
       this.address=r.address
       this.filter_by_wallet=false
       this.token_filter=""
-      this.token=undefined
+      this.token={}
       showMessage(this,"Consulter votre mail pour récupérer les informations de votre nouveau wallet",10000)
     })
   }
