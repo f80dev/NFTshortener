@@ -9,14 +9,14 @@
 	<div *ngIf="final_message=='' && config">
 
     <br>
-		<div class="mat-headline-5 color-primary" style="margin:5%;"
+		<div class="mat-headline-5 color-primary text-with-shadow"
          *ngIf="config && config.message">
       {{config.messages.intro}}
     </div>
 
 
 <!--    token_gate-->
-		<div style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
+		<div class="text-with-shadow mat-headline-5" style="width:80%;max-width: 450px;display: inline-block;margin-top:-10px;"
 		     *ngIf="config.service=='token_gate' && config.merchant">
 			Pour continuer vous devez régler {{config.price}} {{config.merchant!.wallet.unity}}
       sur le réseau {{network_name[config.merchant.wallet.network]}}

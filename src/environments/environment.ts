@@ -20,7 +20,7 @@ export const environment = {
   claim:"Valoriser vos contenus en quelques clics",
   token:"NFLUCOIN-4921ed",
 
-  appli:"http://localhost:4200",
+  appli:"http://localhost:4202",
   server:"http://127.0.0.1:4242",
   website:"https://nfluent.io",
   style:"nfluent-dark.css",

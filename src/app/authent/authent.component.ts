@@ -33,7 +33,6 @@ import {eval_direct_url_xportal} from "../../crypto";
 
 const config: SocketIoConfig = { url: environment.server, options: {} };
 
-
 enum Wallet_Operation {
   Connect = "connect",
   Logout = "logout",
@@ -245,13 +244,13 @@ export class AuthentComponent implements OnInit,OnChanges {
       this.refresh();
       //Création d'un validateur nécéssaire pour le nfluent wallet connect
       let validator_name="val_"+now("rand")
-      // this.api.subscribe_as_validator("",this.network,validator_name).subscribe((result:any)=>{
-      //   this.nfluent_wallet_connect_qrcode=this.api.server_nfluent+"/api/qrcode/"+encodeURIComponent(result.access_code);
-      // });
-      this.socket.on(validator_name,((data:any) => {
-        this.address=data.address;
-        this.success()
-      }))
+      if(this.connexion.nfluent_wallet_connect){
+        this.socket.on(validator_name,((data:any) => {
+          this.address=data.address;
+          this.success()
+        }))
+      }
+
 
       // if(this.operation.length>0){
       //   $$("On utilise "+this.operation+" pour le paramétrage du module");
